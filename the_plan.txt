@@ -1,0 +1,12 @@
+/index          greet clients (practice inheritance)
+
+
+QUESTION
+
+/list   all questions on our website
+/add-question                          $ title and message
+/question/<question_id>               display question and answers
+/question/<question_id>/new-answer  
+
+/answers/<answer_id>/vote-up and /answer/<answer_id>/vote-down
+
