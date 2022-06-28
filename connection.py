@@ -5,13 +5,16 @@ DATA_FILE_PATH = os.getenv('DATA_FILE_PATH') if 'DATA_FILE_PATH' in os.environ e
 DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 
 
-def read_questions(filename):
+def read_data(filename):
     with open(filename, newline='') as questions:
-        questions = list(csv.DictReader(questions, delimiter=","))
-    return questions
+    return list(csv.DictReader(questions, delimiter=","))
 
 
-def write_questions():
-    with open('filename', 'a', newline='') as writer:
-        writer = csv.DictWriter(writer,DATA_HEADER)
-        writer.writerows()
+def write_data(filename, data):
+    with open('filename', 'a', newline='') as f:
+        writer = csv.DictWriter(f, DATA_HEADER)
+        writer.writerows(data)
+
+
+
+

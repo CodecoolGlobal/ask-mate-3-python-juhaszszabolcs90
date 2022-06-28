@@ -34,7 +34,6 @@ def add_question():
     if request.method == "GET":
         return render_template("add_question.html")
     data_manager.write_to_file(questions, request.form)
-
     return redirect(url_for("display_question")) #---> a saját, most generált ID-ja kell a kérdésnek
 
 
