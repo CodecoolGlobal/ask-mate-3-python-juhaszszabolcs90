@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-import connnection
+import connection
 
 app = Flask(__name__)
 
@@ -9,14 +9,16 @@ def hello():
     return render_template("index.html") #inheritence template
 
 
-@app.route("/list", methods=["GET"])
+@app.route("/list")
 def display_questions():
-    return render_template(
-        "questions.html",
-        questions=connection.read_data(questions)
-    )
+    questions = connection.read_questions()
+    headers = connection.DATA_HEADER
+    return render_template('questions.html', questions=questions, headers=headers)
+
+    #return render_template("questions.html") #,questions=connection.read_data(questions))
 
 
+"""
 @app.route("/question/<question_id>", methods=["GET"])
 def display_question():
     return render_template(
@@ -24,8 +26,10 @@ def display_question():
         questions=connection.read_data(questions),
         answers=connection.read_data(answers)
     )
+"""
 
 
+"""
 @app.route("/add-question", methods=["GET", "POST"]
 def add_question():
     if request.method == "GET":
@@ -34,10 +38,11 @@ def add_question():
         )
 
     return redirect(url_for("display_question"))
+"""
 
 
 if __name__ == "__main__":
     app.run(
-        debug=True
-        port=5000,
+        debug=True,
+        port=5000
     )

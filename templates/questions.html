@@ -2,9 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>List of questions</title>
 </head>
 <body>
+        <table style="width:70%">
+            {% for header in headers %}
+                <th style="color:cadetblue">{{ header }}</th>
+            {% endfor %}
 
+            {% for data in questions %}
+                <tr>
+                    <td> {{ data['id'] }}</td>
+                    <td> {{ data['submission_time'] }}</td>
+                    <td> {{ data['view_number'] }}</td>
+                    <td> {{ data['vote_number'] }}</td>
+                    <td> {{ data['title'] }}</td>
+                    <td> {{ data['message'] }}</td>
+                    <td> <img src="{{ data['image'] }}" width="100" alt="{{ data['image'] }}"></td>
+                </tr>
+
+            {% endfor %}
+        </table>
 </body>
 </html>
