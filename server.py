@@ -11,7 +11,7 @@ def hello():
 
 @app.route("/list")
 def display_questions():
-    questions = connection.read_questions()
+    questions = connection.read_questions(filename="sample_data/question.csv")
     headers = connection.DATA_HEADER
     return render_template('questions.html', questions=questions, headers=headers)
 

@@ -10,3 +10,6 @@ QUESTION
 
 /answers/<answer_id>/vote-up and /answer/<answer_id>/vote-down
 
+változónév a meghíváskor
+headerek változókkal
+ha
