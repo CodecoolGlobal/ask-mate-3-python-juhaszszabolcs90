@@ -33,9 +33,8 @@ def display_question():
 def add_question():
     if request.method == "GET":
         return render_template("add_question.html")
-    data_manager.write_to_file(questions, [request.form.get("title"), request.form.get("message")])
-    #kell egy fv. data_handlerbe, ami legenerálja a diktet és beírja csv-be, érdemes egy lista paraméter, hogy
-    #potenciálisan több form fieldet is kezelni tudjon (pl ha tesz bele képet)
+    data_manager.write_to_file(questions, request.form)
+
     return redirect(url_for("display_question")) #---> a saját, most generált ID-ja kell a kérdésnek
 
 
@@ -43,7 +42,7 @@ def add_question():
 def add_answer():
     if request.method == "GET".
         return render_template("add_answer.html")
-    data_manager.write_to_file(answers, [request.form.get("message")])
+    data_manager.write_to_file(answers, request.form)
     return redirect(url_for("display_question"))
 
 
