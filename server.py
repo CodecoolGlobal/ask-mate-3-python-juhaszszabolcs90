@@ -18,7 +18,7 @@ def display_questions():
     #return render_template("questions.html") #,questions=connection.read_data(questions))
 
 
-"""
+
 @app.route("/question/<question_id>", methods=["GET"])
 def display_question():
     return render_template(
@@ -26,19 +26,17 @@ def display_question():
         questions=connection.read_data(questions),
         answers=connection.read_data(answers)
     )
-"""
 
 
-"""
-@app.route("/add-question", methods=["GET", "POST"]
+
+@app.route("/add-question", methods=["GET", "POST"])
 def add_question():
     if request.method == "GET":
-        return render_template(
-            "add_question.html",
-        )
-
+        return render_template("add_question.html")
+    data_manager.write_questions([request.form.get("title"), request.form.get("message")])
+    #kell egy fv. data_handlerbe, ami legenerálja a diktet és beírja csv-be, érdemes egy lista paraméter, hogy
+    #potenciálisan több form fieldet is kezelni tudjon (pl ha tesz bele képet)
     return redirect(url_for("display_question"))
-"""
 
 
 if __name__ == "__main__":
