@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import connection
+import util
 
 app = Flask(__name__)
 
@@ -11,6 +12,8 @@ def hello():
 
 @app.route("/list")
 def display_questions():
+    if request.method == 'POST':
+        return redirect(url_for('add_question'))
     questions = connection.read_questions(filename="sample_data/question.csv")
     headers = connection.DATA_HEADER
     return render_template('questions.html', questions=questions, headers=headers)
@@ -27,27 +30,25 @@ def display_question():
     )
 
 
-@app.route('/add_question/<id>', methods=['GET','POST'])
-def story():
-    if request.method == 'POST':
-        user_story = {}
-        user_story['id'] = data_handler.generate_id()
-        user_story['title'] = request.form['title']
-        user_story['user_story'] = request.form['story']
-        user_story['acceptance_criteria'] = request.form['acceptance-criteria']
-        user_story['business_value'] = request.form['value']
-        user_story['estimation'] = request.form['estimation']
-        user_story['status'] = 'planning'
-
-        data_handler.add_user_story(user_story)
-        return redirect('/')
-    return render_template('story.html')
-
-@app.route("/add-question", methods=["GET", "POST"])
+@app.route('/add_question', methods=['GET', 'POST'])
 def add_question():
-    return render_template("add_question.html")
+    filename = "sample_data/question.csv"
+    if request.method == 'POST':
+        data = {}
+        data['id'] = util.generate_id(filename)
+        data['submission_time'] = "2"
+        data['view_number'] = '10'
+        data['vote_number'] = '5'
+        data['title'] = request.form['title']
+        data['message'] = request.form['message']
+        data['image'] = request.form['image']
 
-"""
+        connection.write_questions(filename, data)
+        return redirect(url_for('display_questions'))
+    return render_template('add_question.html')
+
+
+"""""
 @app.route("/add-question", methods=["GET", "POST"])
 def add_question():
     if request.method == "GET":
@@ -55,7 +56,6 @@ def add_question():
     data_manager.write_to_file(questions, request.form)
     return redirect(url_for("display_question")) #---> a saját, most generált ID-ja kell a kérdésnek
 """
-
 
 
 """
@@ -66,7 +66,6 @@ def add_answer():
     data_manager.write_to_file(answers, request.form)
     return redirect(url_for("display_question"))
 """
-
 
 
 if __name__ == "__main__":
