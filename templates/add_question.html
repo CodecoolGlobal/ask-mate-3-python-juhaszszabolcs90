@@ -2,9 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Display a question</title>
 </head>
 <body>
+<h1>Add question</h1>
+<form action='{{ url_for('add_question') }}' method="post">
+    <label for="title">Title</label><br>
+    <input id='title' name='title' type="text" minlength="5" required><br><br>
+
+    <label for="message">Message</label><br>
+    <textarea id="message" name="message" required></textarea><br><br>
+
+    <input type="file" id="myFile" name="filename"><br>
+    <label for="image">Click on the "Choose File" button to upload a file:</label><br><br>
+
+    <button type="submit">Display a question</button>
+</form>
 
 </body>
 </html>

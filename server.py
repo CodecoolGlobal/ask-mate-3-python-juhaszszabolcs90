@@ -18,7 +18,6 @@ def display_questions():
     #return render_template("questions.html") #,questions=connection.read_data(questions))
 
 
-
 @app.route("/question/<question_id>", methods=["GET"])
 def display_question():
     return render_template(
@@ -28,7 +27,27 @@ def display_question():
     )
 
 
+@app.route('/add_question/<id>', methods=['GET','POST'])
+def story():
+    if request.method == 'POST':
+        user_story = {}
+        user_story['id'] = data_handler.generate_id()
+        user_story['title'] = request.form['title']
+        user_story['user_story'] = request.form['story']
+        user_story['acceptance_criteria'] = request.form['acceptance-criteria']
+        user_story['business_value'] = request.form['value']
+        user_story['estimation'] = request.form['estimation']
+        user_story['status'] = 'planning'
 
+        data_handler.add_user_story(user_story)
+        return redirect('/')
+    return render_template('story.html')
+
+@app.route("/add-question", methods=["GET", "POST"])
+def add_question():
+    return render_template("add_question.html")
+
+"""
 @app.route("/add-question", methods=["GET", "POST"])
 def add_question():
     if request.method == "GET":
@@ -37,14 +56,19 @@ def add_question():
     #kell egy fv. data_handlerbe, ami legenerálja a diktet és beírja csv-be, érdemes egy lista paraméter, hogy
     #potenciálisan több form fieldet is kezelni tudjon (pl ha tesz bele képet)
     return redirect(url_for("display_question")) #---> a saját, most generált ID-ja kell a kérdésnek
+"""
 
 
+
+"""
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def add_answer():
-    if request.method == "GET".
+    if request.method == "GET"
         return render_template("add_answer.html")
     data_manager.write_to_file(answers, [request.form.get("message")])
     return redirect(url_for("display_question"))
+"""
+
 
 
 if __name__ == "__main__":
