@@ -60,8 +60,9 @@ def add_question():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         connection.write_question(file_name, data)
-        id = data.get('id')
-        return redirect(url_for(f'display_question({id})'))
+        return redirect(url_for('display_questions'))
+        # id = data.get('id')
+        # return redirect(url_for(f'display_question({id})'))
     return render_template('add_question.html')
 
 
@@ -73,13 +74,13 @@ def add_answer():
     data_manager.write_to_file(answers, request.form)
     return redirect(url_for("display_question"))
 """
-
-@app.route("/answer/<answer_id/>vote-up", methods=['GET'])
+"""
+@app.route("/answer/<answer_id>/vote-up", methods=['GET'])
 def vote_answer_up(id):
     util.vote("sample_data/answer.csv")
     return redirect(url_for(f'display_question({id})'))
 
-@app.route("/answer/<answer_id/>vote-down", methods=['GET'])
+@app.route("/answer/<answer_id>/vote-down", methods=['GET'])
 def vote_answer_down(id):
     util.vote("sample_data/answer.csv", False)
     return redirect(url_for(f'display_question({id})'))
@@ -94,7 +95,7 @@ def vote_question_up(id):
 def vote_question_down(id):
     util.vote("sample_data/question.csv", False)
     return redirect("/list")
-
+"""
 
 if __name__ == "__main__":
     app.run(
