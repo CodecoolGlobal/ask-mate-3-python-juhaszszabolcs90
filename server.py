@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 
 import connection
+import data_manager
 import util
 
 import os
@@ -26,6 +27,8 @@ def hello():
 
 @app.route("/list")
 def display_questions():
+    if request.method == 'POST':
+        return redirect(url_for('add_question'))
     questions = connection.read_data(filename="sample_data/question.csv")
     headers = connection.DATA_HEADER
     return render_template('questions.html', questions=questions, headers=headers)
@@ -33,8 +36,9 @@ def display_questions():
     #return render_template("questions.html") #,questions=connection.read_data(questions))
 
 
+#@app.route("/question/<question_id>", methods=["GET"])
 @app.route("/question/<question_id>", methods=["GET"])
-def display_question(id):
+def display_question():
     return render_template(
         "display_question.html",
         questions=connection.read_data("sample_data/question.csv"),
@@ -42,7 +46,7 @@ def display_question(id):
     )
 
 
-@app.route('/add_question/', methods=['GET','POST'])
+@app.route('/add_question', methods=['GET', 'POST'])
 def add_question():
     file_name = "sample_data/question.csv"
     if request.method == 'POST':
@@ -60,9 +64,8 @@ def add_question():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         connection.write_question(file_name, data)
-        return redirect(url_for('display_questions'))
-        # id = data.get('id')
-        # return redirect(url_for(f'display_question({id})'))
+        id = data.get('id')
+        return redirect(url_for(f'display_question({id})'))
     return render_template('add_question.html')
 
 
@@ -74,13 +77,13 @@ def add_answer():
     data_manager.write_to_file(answers, request.form)
     return redirect(url_for("display_question"))
 """
-"""
-@app.route("/answer/<answer_id>/vote-up", methods=['GET'])
+
+@app.route("/answer/<answer_id/>vote-up", methods=['GET'])
 def vote_answer_up(id):
     util.vote("sample_data/answer.csv")
     return redirect(url_for(f'display_question({id})'))
 
-@app.route("/answer/<answer_id>/vote-down", methods=['GET'])
+@app.route("/answer/<answer_id/>vote-down", methods=['GET'])
 def vote_answer_down(id):
     util.vote("sample_data/answer.csv", False)
     return redirect(url_for(f'display_question({id})'))
@@ -95,7 +98,7 @@ def vote_question_up(id):
 def vote_question_down(id):
     util.vote("sample_data/question.csv", False)
     return redirect("/list")
-"""
+
 
 if __name__ == "__main__":
     app.run(

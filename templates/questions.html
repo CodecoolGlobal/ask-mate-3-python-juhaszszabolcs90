@@ -18,11 +18,11 @@
                     <td> {{ data['vote_number'] }}</td>
                     <td> {{ data['title'] }}</td>
                     <td> {{ data['message'] }}</td>
-                    {% if data['image'] == 'images/' or data['image'] == None or data['image'] == '' %}
-                    <td></td>
-                    {% else %}
-                    <td><img src="{{ url_for('static', filename=data['image']) }}" alt='{{ data['image'] }}' width="100" ></td>
-                    {% endif %}
+                    <td> <img src="file:/home/juhaszszabolcs90/Codecool/Web/01/ask-mate-1-python-czlazlo/images/{{ data['image'] }}" width="100" </td>
+                    <td><form action="/question/{{ data['id'] }}/delete" method = 'POST'><button type="submit", class="deletebtn">Delete
+                    </button></form>
+
+                    </td>
                 </tr>
             {% endfor %}
         </table>
