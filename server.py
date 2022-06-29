@@ -1,14 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
-from werkzeug.utils import secure_filename
-
 import connection
+from werkzeug.utils import secure_filename
 import data_manager
 import util
-
 import os
+
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-
-
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 UPLOAD_FOLDER = 'static/images'
 
@@ -20,6 +17,8 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
+
 @app.route("/")
 def hello():
     return render_template("index.html") #inheritence template
@@ -29,20 +28,18 @@ def hello():
 def display_questions():
     if request.method == 'POST':
         return redirect(url_for('add_question'))
-    questions = connection.read_data(filename="sample_data/question.csv")
+    questions = connection.read_data("sample_data/question.csv")
     headers = connection.DATA_HEADER
     return render_template('questions.html', questions=questions, headers=headers)
 
-    #return render_template("questions.html") #,questions=connection.read_data(questions))
 
 
-#@app.route("/question/<question_id>", methods=["GET"])
 @app.route("/question/<question_id>", methods=["GET"])
 def display_question():
     return render_template(
         "display_question.html",
-        questions=connection.read_data("sample_data/question.csv"),
-        answers=connection.read_data("sample_data/answer.csv")
+        questions=connection.read_data('sample_data/question.csv'),
+        answers=connection.read_data('sample_data/answer.csv')
     )
 
 
@@ -63,13 +60,28 @@ def add_question():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        connection.write_question(file_name, data)
-        id = data.get('id')
-        return redirect(url_for(f'display_question({id})'))
+        connection.append_data(file_name, data)
+        return redirect(url_for('display_questions'))
+
+        # id = data.get('id')
+        # return redirect(url_for(f'display_question({id})'))
     return render_template('add_question.html')
 
 
+
+@app.route("/question/<question_id>/delete", methods=["GET", "POST"])
+def delete_question(question_id):
+    filename = "sample_data/question.csv"
+    if request.method == 'POST':
+        data_manager.delete_question(question_id)
+
+
+
+    return redirect(url_for('display_questions'))
+
+
 """
+
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def add_answer():
     if request.method == "GET"
@@ -78,12 +90,12 @@ def add_answer():
     return redirect(url_for("display_question"))
 """
 
-@app.route("/answer/<answer_id/>vote-up", methods=['GET'])
+@app.route("/answer/<answer_id>/vote-up", methods=['GET'])
 def vote_answer_up(id):
     util.vote("sample_data/answer.csv")
     return redirect(url_for(f'display_question({id})'))
 
-@app.route("/answer/<answer_id/>vote-down", methods=['GET'])
+@app.route("/answer/<answer_id>/vote-down", methods=['GET'])
 def vote_answer_down(id):
     util.vote("sample_data/answer.csv", False)
     return redirect(url_for(f'display_question({id})'))
