@@ -2,6 +2,8 @@ import connection
 import datetime
 
 
+headers = connection.DATA_HEADER
+
 def generate_id(filename):
     datas = connection.read_data(filename)
     id = max([int(data['id']) for data in datas]) + 1
@@ -28,3 +30,7 @@ def vote(filename, up=True):
                 datas[data['vote_number']] = str(vote_num)
 
     data_manager.update_data(datas)
+
+
+def convert_headers(headers):
+    return [header.upper().replace('_', ' ') for header in headers]
