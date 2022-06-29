@@ -16,7 +16,8 @@
                     <td> {{ data['submission_time'] }}</td>
                     <td> {{ data['view_number'] }}</td>
                     <td> {{ data['vote_number'] }}</td>
-                    <td> {{ data['title'] }}</td>
+                    <td> <a href={{ url_for('display_question', question_id=data['id']) }} > {{ data['title'] }} </a>
+                    </td>
                     <td> {{ data['message'] }}</td>
                     {% if data['image'] == 'images/' or data['image'] == None or data['image'] == '' %}
                         <td></td>

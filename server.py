@@ -36,14 +36,14 @@ def display_questions():
     #return render_template("questions.html") #,questions=connection.read_data(questions))
 
 
-#@app.route("/question/<question_id>", methods=["GET"])
 @app.route("/question/<question_id>", methods=["GET"])
-def display_question():
-    return render_template(
-        "display_question.html",
-        questions=connection.read_data("sample_data/question.csv"),
-        answers=connection.read_data("sample_data/answer.csv")
-    )
+def display_question(question_id):
+    questions = connection.read_data('sample_data/question.csv')
+    for row in questions:
+        if row['id'] == question_id:
+            question_to_be_displayed = row
+
+    return render_template("display_question.html", question=question_to_be_displayed, question_id=question_id)
 
 
 @app.route('/add-question', methods=['GET', 'POST'])

@@ -15,7 +15,7 @@ def update_user_story(filename):
 def delete_question(id_question):
     questions = connection.read_data('sample_data/question.csv')
     filtered_questions = filter(lambda question: question['id'] != id_question, questions)
-    connection.write_data('sample_data/question.csv',list(filtered_questions))
+    connection.write_data('sample_data/question.csv', list(filtered_questions))
 
 
 def should_delete_question(id_question):

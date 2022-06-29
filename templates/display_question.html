@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title><question_id></title>
+    </head>
+    <body>
+        <h2> {{ question['title'] }} </h2>
+        <p> </p>
+        <p> {{ question['message'] }}</p>
+        {% if question['image'] == 'images/' or question['image'] == None or question['image'] == '' %}
+            <td></td>
+        {% else %}
+            <td><img src="{{ url_for('static', filename=question['image']) }}" alt='{{ question['image'] }}' width="100" ></td>
+        {% endif %} <br>
+    <button> <a href="{{ url_for('display_questions') }}">Back to list of questions</a> </button>
+    </body>
+</html>
