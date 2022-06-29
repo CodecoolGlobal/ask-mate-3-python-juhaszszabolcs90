@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import connection
+import util
 
 app = Flask(__name__)
 
@@ -11,7 +12,7 @@ def hello():
 
 @app.route("/list")
 def display_questions():
-    questions = connection.read_questions(filename="sample_data/question.csv")
+    questions = connection.read_data(filename="sample_data/question.csv")
     headers = connection.DATA_HEADER
     return render_template('questions.html', questions=questions, headers=headers)
 
@@ -19,16 +20,16 @@ def display_questions():
 
 
 @app.route("/question/<question_id>", methods=["GET"])
-def display_question():
+def display_question(id):
     return render_template(
-        "question.html",
+        "display_question.html",
         questions=connection.read_data("sample_data/question.csv"),
         answers=connection.read_data("sample_data/answer.csv")
     )
 
 
-@app.route('/add_question/<id>', methods=['GET','POST'])
-def story():
+@app.route('/add_question/', methods=['GET','POST'])
+def add_question():
     if request.method == 'POST':
         filename = "sample_data/question.csv"
         data = {}
@@ -40,22 +41,10 @@ def story():
         data['message'] = request.form['message']
         data['image'] = request.form['image']
 
-        connection.write_questions(filename, data)
-        return redirect(url_for('display_questions'))
+        connection.write_data(filename, data)
+        id = data.get('id')
+        return redirect(url_for(f'display_question({id})'))
     return render_template('add_question.html')
-
-@app.route("/add-question", methods=["GET", "POST"])
-def add_question():
-    return render_template("add_question.html")
-
-"""
-@app.route("/add-question", methods=["GET", "POST"])
-def add_question():
-    if request.method == "GET":
-        return render_template("add_question.html")
-    data_manager.write_to_file(questions, request.form)
-    return redirect(url_for("display_question")) #---> a saját, most generált ID-ja kell a kérdésnek
-"""
 
 
 
@@ -68,7 +57,16 @@ def add_answer():
     return redirect(url_for("display_question"))
 """
 
+@app.route("/answer/<answer_id>/vote-up", methods=['GET'])
+def vote_up_answer(id):
+    user_stories = data_handler.get_all_user_story()
 
+    for row in user_stories:
+        if row['id'] == str(user_story['id']):
+            user_stories[user_stories.index(row)] = user_story
+
+    data_handler.update_user_story(user_stories)
+    return redirect('/')
 
 if __name__ == "__main__":
     app.run(
