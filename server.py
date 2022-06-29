@@ -1,11 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for
-import connection
 from werkzeug.utils import secure_filename
+
+import connection
 import data_manager
 import util
-import os
 
+import os
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 UPLOAD_FOLDER = 'static/images'
 
@@ -17,8 +20,6 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
-
 @app.route("/")
 def hello():
     return render_template("index.html") #inheritence template
@@ -28,22 +29,24 @@ def hello():
 def display_questions():
     if request.method == 'POST':
         return redirect(url_for('add_question'))
-    questions = connection.read_data("sample_data/question.csv")
+    questions = connection.read_data(filename="sample_data/question.csv")
     headers = connection.DATA_HEADER
     return render_template('questions.html', questions=questions, headers=headers)
 
+    #return render_template("questions.html") #,questions=connection.read_data(questions))
 
 
+#@app.route("/question/<question_id>", methods=["GET"])
 @app.route("/question/<question_id>", methods=["GET"])
 def display_question():
     return render_template(
         "display_question.html",
-        questions=connection.read_data('sample_data/question.csv'),
-        answers=connection.read_data('sample_data/answer.csv')
+        questions=connection.read_data("sample_data/question.csv"),
+        answers=connection.read_data("sample_data/answer.csv")
     )
 
 
-@app.route('/add_question', methods=['GET', 'POST'])
+@app.route('/add-question', methods=['GET', 'POST'])
 def add_question():
     file_name = "sample_data/question.csv"
     if request.method == 'POST':
@@ -68,20 +71,7 @@ def add_question():
     return render_template('add_question.html')
 
 
-
-@app.route("/question/<question_id>/delete", methods=["GET", "POST"])
-def delete_question(question_id):
-    filename = "sample_data/question.csv"
-    if request.method == 'POST':
-        data_manager.delete_question(question_id)
-
-
-
-    return redirect(url_for('display_questions'))
-
-
 """
-
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def add_answer():
     if request.method == "GET"
@@ -89,6 +79,7 @@ def add_answer():
     data_manager.write_to_file(answers, request.form)
     return redirect(url_for("display_question"))
 """
+
 
 @app.route("/answer/<answer_id>/vote-up", methods=['GET'])
 def vote_answer_up(id):
