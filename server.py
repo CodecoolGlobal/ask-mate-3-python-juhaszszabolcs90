@@ -58,23 +58,23 @@ def add_answer():
 
 @app.route("/answer/<answer_id/>vote-up", methods=['GET'])
 def vote_answer_up(id):
-    util.vote(True, "sample_data/answer.csv")
+    util.vote("sample_data/answer.csv")
     return redirect(url_for(f'display_question({id})'))
 
 @app.route("/answer/<answer_id/>vote-down", methods=['GET'])
 def vote_answer_down(id):
-    util.vote(False, "sample_data/answer.csv")
+    util.vote("sample_data/answer.csv", False)
     return redirect(url_for(f'display_question({id})'))
 
 
 @app.route("/question/<question_id>/vote-up", methods=['GET'])
 def vote_question_up(id):
-    util.vote(True, "sample_data/question.csv")
+    util.vote("sample_data/question.csv")
     return redirect("/list")
 
 @app.route("/question/<question_id>/vote-down", methods=['GET'])
 def vote_question_down(id):
-    util.vote(False, "sample_data/question.csv")
+    util.vote("sample_data/question.csv", False)
     return redirect("/list")
 
 

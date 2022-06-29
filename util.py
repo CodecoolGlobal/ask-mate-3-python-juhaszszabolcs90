@@ -13,7 +13,7 @@ def convert_timestamp(timestamp):
 def generate_timestamp():
     return int(datetime.datetime.timestamp(datetime.datetime.now()))
 
-def vote(up, filename):
+def vote(filename, up=True):
     datas = connection.read_data(filename)
 
     for data in datas:
