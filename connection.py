@@ -5,7 +5,7 @@ DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', '
 
 def read_data(filename):
     with open(filename, newline='') as questions:
-    return list(csv.DictReader(questions, delimiter=","))
+        return list(csv.DictReader(questions, delimiter=","))
 
 
 def write_data(filename, data):

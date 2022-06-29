@@ -22,26 +22,27 @@ def display_questions():
 def display_question():
     return render_template(
         "question.html",
-        questions=connection.read_data(questions),
-        answers=connection.read_data(answers)
+        questions=connection.read_data("sample_data/question.csv"),
+        answers=connection.read_data("sample_data/answer.csv")
     )
 
 
 @app.route('/add_question/<id>', methods=['GET','POST'])
 def story():
     if request.method == 'POST':
-        user_story = {}
-        user_story['id'] = data_handler.generate_id()
-        user_story['title'] = request.form['title']
-        user_story['user_story'] = request.form['story']
-        user_story['acceptance_criteria'] = request.form['acceptance-criteria']
-        user_story['business_value'] = request.form['value']
-        user_story['estimation'] = request.form['estimation']
-        user_story['status'] = 'planning'
+        filename = "sample_data/question.csv"
+        data = {}
+        data['id'] = util.generate_id(filename)
+        data['submission_time'] = "2"
+        data['view_number'] = '10'
+        data['vote_number'] = '5'
+        data['title'] = request.form['title']
+        data['message'] = request.form['message']
+        data['image'] = request.form['image']
 
-        data_handler.add_user_story(user_story)
-        return redirect('/')
-    return render_template('story.html')
+        connection.write_questions(filename, data)
+        return redirect(url_for('display_questions'))
+    return render_template('add_question.html')
 
 @app.route("/add-question", methods=["GET", "POST"])
 def add_question():
