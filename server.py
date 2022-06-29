@@ -57,7 +57,7 @@ def add_answer():
     return redirect(url_for("display_question"))
 """
 
-@app.route("/answer/<answer_id>/vote", methods=['GET', 'POST'])
+@app.route("/answer/<answer_id>/vote>", methods=['GET', 'POST'])
 def vote_answer(id):
     filename = "sample_data/answer.csv"
     answers = connection.read_data(filename)
@@ -74,8 +74,30 @@ def vote_answer(id):
                 vote_num += 1
                 answers[answer['vote_number']] = str(vote_num)
 
-    data_manager.update_answers(answers)
+    data_manager.update_data(answers)
     return redirect(url_for(f'display_question({id})'))
+
+
+@app.route("/question/<question_id>", methods=['GET', 'POST'])
+def vote_answer(id):
+    filename = "sample_data/question.csv"
+    questions = connection.read_data(filename)
+
+    for question in questions:
+        if question['id'] == id:
+            if request.method == 'GET' and int(question['id']) > 0:
+                vote_num = int(questions[question['vote_number']])
+                vote_num -= 1
+                questions[question['vote_number']] = str(vote_num)
+
+            else:
+                vote_num = int(questions[question['vote_number']])
+                vote_num += 1
+                questions[question['vote_number']] = str(vote_num)
+
+    data_manager.update_data(questions)
+    return redirect("/list")
+
 
 if __name__ == "__main__":
     app.run(
