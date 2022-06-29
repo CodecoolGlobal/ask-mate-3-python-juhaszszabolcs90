@@ -71,6 +71,14 @@ def add_question():
     return render_template('add_question.html')
 
 
+@app.route("/question/<question_id>/delete", methods=["GET", "POST"])
+def delete_question(question_id):
+    if request.method == 'POST':
+        data_manager.delete_question(question_id)
+
+    return redirect(url_for('display_questions'))
+
+
 """
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def add_answer():
