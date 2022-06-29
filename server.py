@@ -57,16 +57,25 @@ def add_answer():
     return redirect(url_for("display_question"))
 """
 
-@app.route("/answer/<answer_id>/vote-up", methods=['GET'])
-def vote_up_answer(id):
-    user_stories = data_handler.get_all_user_story()
+@app.route("/answer/<answer_id>/vote", methods=['GET', 'POST'])
+def vote_answer(id):
+    filename = "sample_data/answer.csv"
+    answers = connection.read_data(filename)
 
-    for row in user_stories:
-        if row['id'] == str(user_story['id']):
-            user_stories[user_stories.index(row)] = user_story
+    for answer in answers:
+        if answer['id'] == id:
+            if request.method == 'GET' and int(answer['id']) > 0:
+                vote_num = int(answers[answer['vote_number']])
+                vote_num -= 1
+                answers[answer['vote_number']] = str(vote_num)
 
-    data_handler.update_user_story(user_stories)
-    return redirect('/')
+            else:
+                vote_num = int(answers[answer['vote_number']])
+                vote_num += 1
+                answers[answer['vote_number']] = str(vote_num)
+
+    data_manager.update_answers(answers)
+    return redirect(url_for(f'display_question({id})'))
 
 if __name__ == "__main__":
     app.run(
