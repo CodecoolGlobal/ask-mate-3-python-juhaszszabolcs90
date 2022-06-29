@@ -4,7 +4,6 @@ import util
 
 app = Flask(__name__)
 
-
 @app.route("/")
 def hello():
     return render_template("index.html") #inheritence template
@@ -57,45 +56,25 @@ def add_answer():
     return redirect(url_for("display_question"))
 """
 
-@app.route("/answer/<answer_id>/vote>", methods=['GET', 'POST'])
-def vote_answer(id):
-    filename = "sample_data/answer.csv"
-    answers = connection.read_data(filename)
+@app.route("/answer/<answer_id/>vote-up", methods=['GET'])
+def vote_answer_up(id):
+    util.vote(True, "sample_data/answer.csv")
+    return redirect(url_for(f'display_question({id})'))
 
-    for answer in answers:
-        if answer['id'] == id:
-            if request.method == 'GET' and int(answer['id']) > 0:
-                vote_num = int(answers[answer['vote_number']])
-                vote_num -= 1
-                answers[answer['vote_number']] = str(vote_num)
-
-            else:
-                vote_num = int(answers[answer['vote_number']])
-                vote_num += 1
-                answers[answer['vote_number']] = str(vote_num)
-
-    data_manager.update_data(answers)
+@app.route("/answer/<answer_id/>vote-down", methods=['GET'])
+def vote_answer_down(id):
+    util.vote(False, "sample_data/answer.csv")
     return redirect(url_for(f'display_question({id})'))
 
 
-@app.route("/question/<question_id>", methods=['GET', 'POST'])
-def vote_answer(id):
-    filename = "sample_data/question.csv"
-    questions = connection.read_data(filename)
+@app.route("/question/<question_id>/vote-up", methods=['GET'])
+def vote_question_up(id):
+    util.vote(True, "sample_data/question.csv")
+    return redirect("/list")
 
-    for question in questions:
-        if question['id'] == id:
-            if request.method == 'GET' and int(question['id']) > 0:
-                vote_num = int(questions[question['vote_number']])
-                vote_num -= 1
-                questions[question['vote_number']] = str(vote_num)
-
-            else:
-                vote_num = int(questions[question['vote_number']])
-                vote_num += 1
-                questions[question['vote_number']] = str(vote_num)
-
-    data_manager.update_data(questions)
+@app.route("/question/<question_id>/vote-down", methods=['GET'])
+def vote_question_down(id):
+    util.vote(False, "sample_data/question.csv")
     return redirect("/list")
 
 
