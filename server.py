@@ -1,8 +1,23 @@
 from flask import Flask, render_template, request, redirect, url_for
+from werkzeug.utils import secure_filename
+
 import connection
 import util
 
-app = Flask(__name__)
+import os
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+UPLOAD_FOLDER = 'static/images'
+
+app = Flask(__name__, template_folder='templates', static_folder='static')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route("/")
@@ -32,18 +47,22 @@ def display_question():
 
 @app.route('/add_question', methods=['GET', 'POST'])
 def add_question():
-    filename = "sample_data/question.csv"
+    file_name = "sample_data/question.csv"
     if request.method == 'POST':
-        data = {}
-        data['id'] = util.generate_id(filename)
-        data['submission_time'] = "2"
-        data['view_number'] = '10'
-        data['vote_number'] = '5'
-        data['title'] = request.form['title']
-        data['message'] = request.form['message']
-        data['image'] = request.form['image']
-
-        connection.write_questions(filename, data)
+        data = {
+            'id': util.generate_id(file_name),
+            'submission_time': "2",
+            'view_number': '10',
+            'vote_number': '5',
+            'title': request.form.get('title', ''),
+            'message': request.form.get('message', ''),
+            'image': 'images/%s' % request.files.get('image', '').filename
+        }
+        file = request.files['image']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        connection.write_question(file_name, data)
         return redirect(url_for('display_questions'))
     return render_template('add_question.html')
 

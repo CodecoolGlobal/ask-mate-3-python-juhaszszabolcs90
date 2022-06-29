@@ -10,7 +10,7 @@ def read_questions(filename):
     return questions
 
 
-def write_questions(filename, data: dict):
+def write_question(filename, data: dict):
     with open(filename, 'a', newline='') as datas:
         writer = csv.DictWriter(datas, DATA_HEADER)
         writer.writerow(data)
