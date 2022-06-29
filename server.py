@@ -48,9 +48,9 @@ def add_question():
     if request.method == 'POST':
         data = {
             'id': util.generate_id(file_name),
-            'submission_time': "2",
+            'submission_time': util.generate_timestamp()
             'view_number': '10',
-            'vote_number': '5',
+            'vote_number': '0',
             'title': request.form.get('title', ''),
             'message': request.form.get('message', ''),
             'image': 'images/%s' % request.files.get('image', '').filename
@@ -61,7 +61,7 @@ def add_question():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         connection.write_question(file_name, data)
         id = data.get('id')
-        return redirect(url_for(f'display_question({id})'))
+        return redirect(url_for('display_question', id=id))
     return render_template('add_question.html')
 
 
@@ -74,15 +74,15 @@ def add_answer():
     return redirect(url_for("display_question"))
 """
 
-@app.route("/answer/<answer_id/>vote-up", methods=['GET'])
+@app.route("/answer/<answer_id>/vote-up", methods=['GET'])
 def vote_answer_up(id):
     util.vote("sample_data/answer.csv")
-    return redirect(url_for(f'display_question({id})'))
+    return redirect(url_for('display_question', id=id))
 
-@app.route("/answer/<answer_id/>vote-down", methods=['GET'])
+@app.route("/answer/<answer_id>/vote-down", methods=['GET'])
 def vote_answer_down(id):
     util.vote("sample_data/answer.csv", False)
-    return redirect(url_for(f'display_question({id})'))
+    return redirect(url_for('display_question', id=id))
 
 
 @app.route("/question/<question_id>/vote-up", methods=['GET'])
