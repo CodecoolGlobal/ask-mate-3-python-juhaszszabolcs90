@@ -44,7 +44,6 @@ def display_question(id):
 
 @app.route('/add_question/', methods=['GET','POST'])
 def add_question():
-<<<<<<< HEAD
     file_name = "sample_data/question.csv"
     if request.method == 'POST':
         data = {
