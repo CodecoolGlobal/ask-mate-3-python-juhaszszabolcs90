@@ -93,24 +93,25 @@ def add_answer():
 
 
 @app.route("/answer/<answer_id>/vote-up", methods=['GET'])
-def vote_answer_up(id):
-    util.vote(ANSWER_FILE_PATH)
-    return redirect(url_for(f'display_question({id})'))
+def vote_answer_up(answer_id):
+    util.vote(ANSWER_FILE_PATH, answer_id)
+    return redirect(url_for('display_question', question_id=id))
+
 
 @app.route("/answer/<answer_id>/vote-down", methods=['GET'])
-def vote_answer_down(id):
-    util.vote(ANSWER_FILE_PATH, False)
-    return redirect(url_for(f'display_question({id})'))
+def vote_answer_down(answer_id):
+    util.vote(ANSWER_FILE_PATH, answer_id, False)
+    return redirect(url_for('display_question', question_id=id))
 
 
 @app.route("/question/<question_id>/vote-up", methods=['GET'])
-def vote_question_up(id):
-    util.vote(QUESTION_FILE_PATH)
+def vote_question_up(question_id):
+    util.vote(QUESTION_FILE_PATH, question_id)
     return redirect("/list")
 
 @app.route("/question/<question_id>/vote-down", methods=['GET'])
-def vote_question_down(id):
-    util.vote(QUESTION_FILE_PATH, False)
+def vote_question_down(question_id):
+    util.vote(QUESTION_FILE_PATH, question_id, False)
     return redirect("/list")
 
 

@@ -24,6 +24,11 @@
                     {% else %}
                     <td><img src="{{ url_for('static', filename=data['image']) }}" alt='{{ data['image'] }}' width="100" ></td>
                     {% endif %}
+                    <td>
+                        <a href="/question/{{ data['id'] }}/vote-up">
+                            <button type="submit">Vote up</button>
+                        </a>
+                    </td>
                     <td><form action="/question/{{ data['id'] }}/delete" method = 'POST'><button type='submit' , class="delete-btn">Delete
                     </button></form>
 

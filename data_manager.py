@@ -1,15 +1,13 @@
 import connection
 import csv
 
-import server
 
+def update_data(filename, data):
 
-def update_user_story(filename):
-
-    with open(filename, 'w', newline='') as datas:
-        writer = csv.DictWriter(datas,)
+    with open(filename, 'w', newline='') as f:
+        writer = csv.DictWriter(f, connection.DATA_HEADER)
         writer.writeheader()
-        writer.writerows(row)
+        writer.writerows(data)
 
 
 def delete_question(id_question):
