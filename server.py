@@ -33,7 +33,7 @@ def display_questions():
     if request.method == 'POST':
         return redirect(url_for('add_question'))
     questions = connection.read_data(filename=QUESTION_FILE_PATH)
-    headers = connection.DATA_HEADER
+    headers = util.convert_headers()
     return render_template('questions.html', questions=questions, headers=headers)
 
 
