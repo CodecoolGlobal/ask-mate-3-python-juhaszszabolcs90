@@ -47,15 +47,16 @@ def display_question(question_id):
     return render_template("display_question.html", question=question_to_be_displayed, question_id=question_id)
 
 
-@app.route('/add-question', methods=['GET', 'POST'])
+
+@app.route('/add_question/', methods=['GET','POST'])
 def add_question():
-    file_name = QUESTION_FILE_PATH
+    file_name = "sample_data/question.csv"
     if request.method == 'POST':
         data = {
             'id': util.generate_id(file_name),
-            'submission_time': "2",
+            'submission_time': util.generate_timestamp()
             'view_number': '10',
-            'vote_number': '5',
+            'vote_number': '0',
             'title': request.form.get('title', ''),
             'message': request.form.get('message', ''),
             'image': 'images/%s' % request.files.get('image', '').filename
@@ -65,9 +66,10 @@ def add_question():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         connection.append_data(file_name, data)
-        return redirect(url_for('display_questions'))
-
+        id = data.get('id')
+        return redirect(url_for('display_question', id=id))
     return render_template('add_question.html')
+
 
 
 @app.route("/question/<question_id>/delete", methods=["GET", "POST"])
