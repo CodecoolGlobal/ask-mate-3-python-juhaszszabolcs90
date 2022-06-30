@@ -97,8 +97,7 @@ def delete_question(question_id):
     if request.method == 'POST':
         data_manager.delete_question(question_id)
 
-    return redirect(url_for('display_question', question_id=id))
-
+    return redirect(url_for('display_questions'))
 """
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def add_answer():
