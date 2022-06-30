@@ -3,12 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>List of questions</title>
+       <style>
+        table, th, td {
+            border: 1px solid blueviolet;
+            border-collapse: collapse;
+        }
+
+        table {
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
         <table style="width:70%">
             {% for header in headers %}
                 <th style="color:cadetblue">{{ header }}</th>
             {% endfor %}
+                <th style="color:cadetblue">VOTE</th>
 
             {% for data in questions %}
                 <tr>
@@ -26,7 +37,10 @@
                     {% endif %}
                     <td>
                         <a href="/question/{{ data['id'] }}/vote-up">
-                            <button type="submit">Vote up</button>
+                            <button type="submit">==></button>
+                        </a>
+                        <a href="/question/{{ data['id'] }}/vote-down">
+                            <button type="submit"><==</button>
                         </a>
                     </td>
                     <td><form action="/question/{{ data['id'] }}/delete" method = 'POST'><button type='submit' , class="delete-btn">Delete
