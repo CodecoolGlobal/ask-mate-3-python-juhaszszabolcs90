@@ -30,13 +30,20 @@ def hello():
 
 @app.route("/list")
 def display_questions():
+    order_by = request.args.get('order_by')
+    order = request.args.get('order')
     if request.method == 'POST':
         return redirect(url_for('add_question'))
     questions = connection.read_data(filename=QUESTION_FILE_PATH)
     for question in questions:
         question['submission_time'] = util.convert_timestamp(float(question.get('submission_time')))
+    if not order_by:
+        data_manager.sort_data(questions)
+    else:
+        questions = data_manager.sort_data(questions, order_by, bool(int(order)))
     headers = util.convert_headers(connection.DATA_HEADER)
-    return render_template('questions.html', questions=questions, headers=headers)
+    order_by_headers = connection.DATA_HEADER
+    return render_template('questions.html', questions=questions, headers=headers[1:], order_by_headers=order_by_headers[1:6])
 
 
 @app.route("/question/<question_id>", methods=["GET"])
@@ -127,16 +134,16 @@ def vote_question_down(question_id):
 
 @app.route("/answer/<answer_id>/delete", methods=["GET", "POST"])
 def delete_answer(answer_id):
-    print(answer_id)
     answers = connection.read_data('sample_data/answer.csv')
     for row in answers:
         if row['id'] == answer_id:
             displayed_question = row
     if request.method == 'POST':
         data_manager.delete_answer(answer_id)
+        return redirect(url_for('/list'))
 
 
-    return redirect(url_for('display_question', question_id=displayed_question['question_id']))
+    return redirect(url_for('/list'))
 
 
 if __name__ == "__main__":

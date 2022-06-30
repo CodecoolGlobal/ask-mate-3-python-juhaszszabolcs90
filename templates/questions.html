@@ -15,15 +15,23 @@
     </style>
 </head>
 <body>
-        <table style="width:70%">
+        <table style="width:100%">
             {% for header in headers %}
-                <th style="color:cadetblue">{{ header }}</th>
+                <th
+                        style="color:cadetblue">{{ header }}
+                </th>
             {% endfor %}
                 <th style="color:cadetblue">VOTE</th>
-
+            <tr>
+                {% for header in order_by_headers %}
+                <th>
+                    <a href="/list?order_by={{ header }}&order=0"><button type="button">↑</button> <br></a>
+                    <a href="/list?order_by={{ header }}&order=1"><button type="button">↓</button> <br></a>
+                </th>
+                {% endfor %}
+            </tr>
             {% for data in questions %}
                 <tr>
-                    <td> {{ data['id'] }}</td>
                     <td> {{ data['submission_time'] }}</td>
                     <td> {{ data['view_number'] }}</td>
                     <td> {{ data['vote_number'] }}</td>
@@ -37,10 +45,10 @@
                     {% endif %}
                     <td>
                         <a href="/question/{{ data['id'] }}/vote-up">
-                            <button type="submit">==></button>
+                            <button type="button">==></button>
                         </a>
                         <a href="/question/{{ data['id'] }}/vote-down">
-                            <button type="submit"><==</button>
+                            <button type="button"><==</button>
                         </a>
                     </td>
                     <td><form action="/question/{{ data['id'] }}/delete" method = 'POST'><button type='submit' , class="delete-btn">Delete
