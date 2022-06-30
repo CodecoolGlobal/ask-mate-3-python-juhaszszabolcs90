@@ -2,6 +2,7 @@ import csv
 import os
 
 DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
+ANSWER_HEADER= ['Id', 'Submission time', 'Vote number', 'Question Id', 'Message', 'Image']
 
 
 def read_data(filename):

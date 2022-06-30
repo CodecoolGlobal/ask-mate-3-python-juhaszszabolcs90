@@ -22,4 +22,7 @@ def should_delete_question(id_question):
     questions = connection.read_data('sample_data/question.csv')
 
 
-
+def delete_answer(id_answer):
+    answers = connection.read_data('sample_data/answer.csv')
+    filtered_answers = filter(lambda answer: answer['id'] != id_answer, answers)
+    connection.write_data('sample_data/answer.csv', list(filtered_answers))

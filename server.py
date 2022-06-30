@@ -39,11 +39,18 @@ def display_questions():
 @app.route("/question/<question_id>", methods=["GET"])
 def display_question(question_id):
     questions = connection.read_data('sample_data/question.csv')
+    answers = connection.read_data('sample_data/answer.csv')
+    headers = connection.ANSWER_HEADER
+    answers_to_be_displayed = []
+    question_to_be_displayed = ""
     for row in questions:
         if row['id'] == question_id:
             question_to_be_displayed = row
+    for column in answers:
+        if column['question_id'] == question_id:
+            answers_to_be_displayed.append(column)
 
-    return render_template("display_question.html", question=question_to_be_displayed, question_id=question_id)
+    return render_template("display_question.html", question=question_to_be_displayed, question_id=question_id, answers=answers_to_be_displayed, headers=headers)
 
 
 @app.route('/add-question', methods=['GET', 'POST'])
@@ -76,8 +83,7 @@ def delete_question(question_id):
     if request.method == 'POST':
         data_manager.delete_question(question_id)
 
-    return redirect(url_for('display_questions'))
-
+    return redirect(url_for('display_question'))
 
 """
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
@@ -109,6 +115,20 @@ def vote_question_up(id):
 def vote_question_down(id):
     util.vote("sample_data/question.csv", False)
     return redirect("/list")
+
+
+@app.route("/answer/<answer_id>/delete", methods=["GET", "POST"])
+def delete_answer(answer_id):
+    print(answer_id)
+    answers = connection.read_data('sample_data/answer.csv')
+    for row in answers:
+        if row['id'] == answer_id:
+            displayed_question = row
+    if request.method == 'POST':
+        data_manager.delete_answer(answer_id)
+
+
+    return redirect(url_for('display_question', question_id=displayed_question['question_id']))
 
 
 if __name__ == "__main__":
