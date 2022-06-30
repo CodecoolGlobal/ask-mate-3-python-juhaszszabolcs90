@@ -139,10 +139,7 @@ def delete_answer(answer_id):
             displayed_question = row
     if request.method == 'POST':
         data_manager.delete_answer(answer_id)
-        return redirect(url_for('/list'))
-
-
-    return redirect(url_for('/list'))
+    return redirect(url_for('display_question', question_id=displayed_question['question_id']))
 
 
 if __name__ == "__main__":
