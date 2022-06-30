@@ -2,12 +2,7 @@ id,submission_time,view_number,vote_number,title,message,image
 3,1493015432,1364,65,Drawing canvas with an image picked with Cordova Camera Plugin,"I'm getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I'm on IOS, it throws errors such as cross origin issue, or that I'm trying to use an unknown format.
 
 This is the code I'm using to draw the image (that works on web/desktop but not cordova built ios app)",
-9,2,10,5,fffffff,kkkkkkkk,images/codecool_logo.jpg
-10,2,10,5,xdaccyxc,sadasdasda,images/codecool_logo.jpg
-11,1656579387.03198,10,2,houdhods,jlkfdjld,images/
+9,2,10,4,fffffff,kkkkkkkk,images/codecool_logo.jpg
+10,2,10,4,xdaccyxc,sadasdasda,images/codecool_logo.jpg
+11,1656579387.03198,10,3,houdhods,jlkfdjld,images/
 12,1656579560.854306,10,1,Check if timestamp conversion works,lets seeee,images/
-13,1656581794.070384,12,2,Tesztecke,Megette a kecske,images/
-id,submission_time,view_number,vote_number,title,message,image,
-1,1493015432,1364,57,Drawing canvas with an," ""I'm getting an image", a canvas with filters using Pixi JS. It works all well using computer to get an image,['']
-10,2,10,5,xdaccyxc,sadasdasda,images/codecool_logo.jpg,
-11,2,10,5,this is a question,QUESTION,images/code_in_codecool.jpeg,
