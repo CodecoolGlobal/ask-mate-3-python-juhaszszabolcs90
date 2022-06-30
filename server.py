@@ -23,11 +23,11 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
+# def hello():
+#     return render_template("index.html")
+
 @app.route("/")
-def hello():
-    return render_template("index.html")
-
-
 @app.route("/list")
 def display_questions():
     order_by = request.args.get('order_by')
