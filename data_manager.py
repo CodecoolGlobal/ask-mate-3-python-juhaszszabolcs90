@@ -1,15 +1,13 @@
 import connection
 import csv
+import pandas as pandasForSortingCSV
 
-import server
+def update_data(filename, data):
 
-
-def update_user_story(filename):
-
-    with open(filename, 'w', newline='') as datas:
-        writer = csv.DictWriter(datas,)
+    with open(filename, 'w', newline='') as f:
+        writer = csv.DictWriter(f, connection.DATA_HEADER)
         writer.writeheader()
-        writer.writerows(row)
+        writer.writerows(data)
 
 
 def delete_question(id_question):
@@ -21,6 +19,16 @@ def delete_question(id_question):
 def should_delete_question(id_question):
     questions = connection.read_data('sample_data/question.csv')
 
+
+def sort_data(sort_by='submission_time', direction=False):
+    csvData = pandasForSortingCSV.read_csv('sample_data/question.csv')
+    csvData.sort_values([sort_by],
+                        axis=0,
+                        ascending=[direction],
+                        inplace=True)
+    return csvData.to_dict()
+
+print(sort_data())
 
 def delete_answer(id_answer):
     answers = connection.read_data('sample_data/answer.csv')

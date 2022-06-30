@@ -49,6 +49,10 @@ def display_question(question_id):
     for row in questions:
         if row['id'] == question_id:
             question_to_be_displayed = row
+            view_num = int(row['view_number'])
+            view_num += 1
+            row['view_number'] = str(view_num)
+            data_manager.update_data(QUESTION_FILE_PATH, questions)
     for column in answers:
         if column['question_id'] == question_id:
             answers_to_be_displayed.append(column)
@@ -64,7 +68,7 @@ def add_question():
         data = {
             'id': util.generate_id(file_name),
             'submission_time': util.generate_timestamp(),
-            'view_number': '10',
+            'view_number': '0',
             'vote_number': '0',
             'title': request.form.get('title', ''),
             'message': request.form.get('message', ''),
@@ -99,24 +103,25 @@ def add_answer():
 
 
 @app.route("/answer/<answer_id>/vote-up", methods=['GET'])
-def vote_answer_up(id):
-    util.vote(ANSWER_FILE_PATH)
-    return redirect(url_for(f'display_question({id})'))
+def vote_answer_up(answer_id):
+    util.vote(ANSWER_FILE_PATH, answer_id)
+    return redirect(url_for('display_question', question_id=id))
+
 
 @app.route("/answer/<answer_id>/vote-down", methods=['GET'])
-def vote_answer_down(id):
-    util.vote(ANSWER_FILE_PATH, False)
-    return redirect(url_for(f'display_question({id})'))
+def vote_answer_down(answer_id):
+    util.vote(ANSWER_FILE_PATH, answer_id, False)
+    return redirect(url_for('display_question', question_id=id))
 
 
 @app.route("/question/<question_id>/vote-up", methods=['GET'])
-def vote_question_up(id):
-    util.vote(QUESTION_FILE_PATH)
+def vote_question_up(question_id):
+    util.vote(QUESTION_FILE_PATH, question_id)
     return redirect("/list")
 
 @app.route("/question/<question_id>/vote-down", methods=['GET'])
-def vote_question_down(id):
-    util.vote(QUESTION_FILE_PATH, False)
+def vote_question_down(question_id):
+    util.vote(QUESTION_FILE_PATH, question_id, False)
     return redirect("/list")
 
 
