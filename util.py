@@ -20,12 +20,11 @@ def vote(filename, id, up=True):
 
     for data in datas:
         if data['id'] == id:
-            if not up and int(data['id']) > 0:
+            if not up and int(data['vote_number']) > 0:
                 vote_num = int(data['vote_number'])
-                print(vote_num)
                 vote_num -= 1
                 data['vote_number'] = str(vote_num)
-            else:
+            elif up:
                 vote_num = int(data['vote_number'])
                 vote_num += 1
                 data['vote_number'] = str(vote_num)
