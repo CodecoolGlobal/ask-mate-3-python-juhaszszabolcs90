@@ -50,7 +50,7 @@ def display_questions():
 def display_question(question_id):
     questions = connection.read_data(QUESTION_FILE_PATH)
     answers = connection.read_data('sample_data/answer.csv')
-    headers = connection.ANSWER_HEADER
+    headers = util.convert_headers(connection.ANSWER_HEADER)
     answers_to_be_displayed = []
     question_to_be_displayed = ""
     for row in questions:
@@ -59,10 +59,12 @@ def display_question(question_id):
             view_num = int(row['view_number'])
             view_num += 1
             row['view_number'] = str(view_num)
-            data_manager.update_data(QUESTION_FILE_PATH, questions)
+            data_manager.update_data(QUESTION_FILE_PATH, questions, connection.DATA_HEADER)
     for column in answers:
         if column['question_id'] == question_id:
             answers_to_be_displayed.append(column)
+    for answer in answers_to_be_displayed:
+        answer['submission_time'] = util.convert_timestamp(float(answer.get('submission_time')))
 
     return render_template("display_question.html", question=question_to_be_displayed, question_id=question_id, answers=answers_to_be_displayed, headers=headers)
 
@@ -100,34 +102,42 @@ def delete_question(question_id):
     return redirect(url_for('display_questions'))
 """
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
-def add_answer():
+def add_answer(question_id):
     if request.method == "GET"
         return render_template("add_answer.html")
     data_manager.write_to_file(answers, request.form)
-    return redirect(url_for("display_question"))
+    return redirect(url_for("display_question", question_id=id))
 """
 
 
 @app.route("/answer/<answer_id>/vote-up", methods=['GET'])
 def vote_answer_up(answer_id):
-    util.vote(ANSWER_FILE_PATH, answer_id)
-    return redirect(url_for('display_question', question_id=id))
+    util.vote(ANSWER_FILE_PATH, connection.ANSWER_HEADER, answer_id)
+    data = connection.read_data(ANSWER_FILE_PATH)
+    for d in data:
+        if d['id'] == answer_id:
+            question_id = d['question_id']
+    return redirect(url_for('display_question', question_id=question_id))
 
 
 @app.route("/answer/<answer_id>/vote-down", methods=['GET'])
 def vote_answer_down(answer_id):
-    util.vote(ANSWER_FILE_PATH, answer_id, False)
-    return redirect(url_for('display_question', question_id=id))
+    util.vote(ANSWER_FILE_PATH, connection.ANSWER_HEADER, answer_id, False)
+    data = connection.read_data(ANSWER_FILE_PATH)
+    for d in data:
+        if d['id'] == answer_id:
+            question_id = d['question_id']
+    return redirect(url_for('display_question', question_id=question_id))
 
 
 @app.route("/question/<question_id>/vote-up", methods=['GET'])
 def vote_question_up(question_id):
-    util.vote(QUESTION_FILE_PATH, question_id)
+    util.vote(QUESTION_FILE_PATH, connection.DATA_HEADER, question_id)
     return redirect("/list")
 
 @app.route("/question/<question_id>/vote-down", methods=['GET'])
 def vote_question_down(question_id):
-    util.vote(QUESTION_FILE_PATH, question_id, False)
+    util.vote(QUESTION_FILE_PATH, connection.DATA_HEADER, question_id, False)
     return redirect("/list")
 
 
@@ -139,10 +149,9 @@ def delete_answer(answer_id):
             displayed_question = row
     if request.method == 'POST':
         data_manager.delete_answer(answer_id)
-        return redirect(url_for('/list'))
+        # return redirect(url_for('/list'))
 
-
-    return redirect(url_for('/list'))
+    return redirect(url_for('display_question', question_id=displayed_question['question_id']))
 
 
 if __name__ == "__main__":

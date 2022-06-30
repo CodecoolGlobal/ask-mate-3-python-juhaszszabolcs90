@@ -2,9 +2,9 @@ import connection
 import csv
 import operator
 
-def update_data(filename, data):
+def update_data(filename, data, headers):
     with open(filename, 'w', newline='') as f:
-        writer = csv.DictWriter(f, connection.DATA_HEADER)
+        writer = csv.DictWriter(f, headers)
         writer.writeheader()
         writer.writerows(data)
 
