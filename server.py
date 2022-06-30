@@ -46,7 +46,7 @@ def display_questions():
     return render_template('questions.html', questions=questions, headers=headers[1:], order_by_headers=order_by_headers[1:6])
 
 
-@app.route("/question/<question_id>", methods=["GET"])
+@app.route("/question/<question_id>", methods=["GET", 'POST'])
 def display_question(question_id):
     questions = connection.read_data(QUESTION_FILE_PATH)
     answers = connection.read_data('sample_data/answer.csv')
@@ -100,13 +100,35 @@ def delete_question(question_id):
         data_manager.delete_question(question_id)
 
     return redirect(url_for('display_questions'))
+
+@app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
+def edit_question(question_id):
+    questions = connection.read_data(QUESTION_FILE_PATH)
+    for question in questions:
+        if question['id'] == question_id:
+            row = question
+    if request.method == 'POST':
+        for question in questions:
+            if question['id'] == question_id:
+                question['title'] = request.form['title']
+                question['message'] = request.form['message']
+                question['image'] = 'images/%s' % request.files.get('image', '').filename
+                file = request.files['image']
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                data_manager.update_data(QUESTION_FILE_PATH, questions, connection.DATA_HEADER)
+                question_id = question['id']
+                return redirect(url_for('display_question', question_id=question_id))
+    return render_template('edit_question.html', question=row)
+
 """
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def add_answer(question_id):
     if request.method == "GET"
         return render_template("add_answer.html")
     data_manager.write_to_file(answers, request.form)
-    return redirect(url_for("display_question", question_id=id))
+    return redirect(url_for("display_question", question_id=question_id))
 """
 
 
