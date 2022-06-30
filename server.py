@@ -69,7 +69,7 @@ def add_question():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         connection.append_data(file_name, data)
         id = data.get('id')
-        return redirect(url_for('display_question', id=id))
+        return redirect(url_for('display_question', question_id=id))
     return render_template('add_question.html')
 
 
