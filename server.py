@@ -45,6 +45,10 @@ def display_question(question_id):
     for row in questions:
         if row['id'] == question_id:
             question_to_be_displayed = row
+            view_num = int(row['view_number'])
+            view_num += 1
+            row['view_number'] = str(view_num)
+            data_manager.update_data(QUESTION_FILE_PATH, questions)
 
     return render_template("display_question.html", question=question_to_be_displayed, question_id=question_id)
 
@@ -57,7 +61,7 @@ def add_question():
         data = {
             'id': util.generate_id(file_name),
             'submission_time': util.generate_timestamp(),
-            'view_number': '10',
+            'view_number': '0',
             'vote_number': '0',
             'title': request.form.get('title', ''),
             'message': request.form.get('message', ''),
