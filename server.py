@@ -122,14 +122,21 @@ def edit_question(question_id):
                 return redirect(url_for('display_question', question_id=question_id))
     return render_template('edit_question.html', question=row)
 
-"""
+
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def add_answer(question_id):
-    if request.method == "GET"
-        return render_template("add_answer.html")
-    data_manager.write_to_file(answers, request.form)
+    if request.method == "GET":
+        return render_template("add_answer.html", question_id=question_id)
+    data = {
+        'id': util.generate_id(ANSWER_FILE_PATH),
+        'submission_time': util.generate_timestamp(),
+        'vote_number': '0',
+        'question_id': question_id,
+        'message': request.form.get('message', ''),
+        'image': 'images/%s' % request.files.get('image', '').filename
+    }
+    connection.append_data(ANSWER_FILE_PATH, data)
     return redirect(url_for("display_question", question_id=question_id))
-"""
 
 
 @app.route("/answer/<answer_id>/vote-up", methods=['GET'])

@@ -58,6 +58,13 @@
 
                     </td></tr>
             {% endfor %}
+            <tr>
+                <td>
+                    <a href="/question/{{ question['id'] }}/new-answer">
+                            <button type="button">Post answer</button>
+                        </a>
+                </td>
+            </tr>
             </table><br><br>
         <button> <a href="{{ url_for('display_questions') }}">Back to list of questions</a> </button><br>
     </body>
