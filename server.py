@@ -33,7 +33,7 @@ def display_questions():
     if request.method == 'POST':
         return redirect(url_for('add_question'))
     questions = connection.read_data(filename=QUESTION_FILE_PATH)
-    headers = util.convert_headers()
+    headers = util.convert_headers(connection.DATA_HEADER)
     return render_template('questions.html', questions=questions, headers=headers)
 
 
@@ -54,7 +54,7 @@ def add_question():
     if request.method == 'POST':
         data = {
             'id': util.generate_id(file_name),
-            'submission_time': util.generate_timestamp()
+            'submission_time': util.generate_timestamp(),
             'view_number': '10',
             'vote_number': '0',
             'title': request.form.get('title', ''),
