@@ -1,6 +1,6 @@
 import connection
 import csv
-
+import pandas as pandasForSortingCSV
 
 def update_data(filename, data):
 
@@ -20,4 +20,12 @@ def should_delete_question(id_question):
     questions = connection.read_data('sample_data/question.csv')
 
 
+def sort_data(sort_by='submission_time', direction=False):
+    csvData = pandasForSortingCSV.read_csv('sample_data/question.csv')
+    csvData.sort_values([sort_by],
+                        axis=0,
+                        ascending=[direction],
+                        inplace=True)
+    return csvData.to_dict()
 
+print(sort_data())
