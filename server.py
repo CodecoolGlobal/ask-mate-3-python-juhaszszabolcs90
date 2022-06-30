@@ -33,6 +33,8 @@ def display_questions():
     if request.method == 'POST':
         return redirect(url_for('add_question'))
     questions = connection.read_data(filename=QUESTION_FILE_PATH)
+    for question in questions:
+        question['submission_time'] = util.convert_timestamp(float(question.get('submission_time')))
     headers = util.convert_headers(connection.DATA_HEADER)
     return render_template('questions.html', questions=questions, headers=headers)
 

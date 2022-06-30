@@ -13,7 +13,7 @@ def convert_timestamp(timestamp):
     return datetime.datetime.fromtimestamp(timestamp).strftime("%Y %B, %d")
 
 def generate_timestamp():
-    return int(datetime.datetime.timestamp(datetime.datetime.now()))
+    return datetime.datetime.timestamp(datetime.datetime.now())
 
 def vote(filename, up=True):
     datas = connection.read_data(filename)
