@@ -35,12 +35,13 @@
 
 
         {% for data in answers %}
-                <tr><td> {{ data['message'] }}</td></tr>
+                <tr><td> {{ data['message'] }}</td>
                 {% if data['image'] == 'images/' or data['image'] == None or data['image'] == '' %}
-                        <tr><td></td></tr>
+                        <td></td>
                     {% else %}
-                        <tr><td><img src="{{ url_for('static', filename=data['image']) }}" alt='{{ data['image'] }}' width="100" ></td></tr>
+                        <td><img src="{{ url_for('static', filename=data['image']) }}" alt='{{ data['image'] }}' width="100" ></td>
                     {% endif %}
+                </tr>
                 <tr><td> {{ data['submission_time'] }}</td>
                 <td> {{ data['vote_number'] }}
                  <td>

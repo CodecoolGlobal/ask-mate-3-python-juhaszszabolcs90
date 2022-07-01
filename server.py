@@ -135,6 +135,10 @@ def add_answer(question_id):
         'message': request.form.get('message', ''),
         'image': 'images/%s' % request.files.get('image', '').filename
     }
+    file = request.files['image']
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     connection.append_data(ANSWER_FILE_PATH, data)
     return redirect(url_for("display_question", question_id=question_id))
 
