@@ -32,22 +32,22 @@
             </tr>
             {% for data in questions %}
                 <tr>
-                    <td> {{ data['submission_time'] }}</td>
-                    <td> {{ data['view_number'] }}</td>
-                    <td> {{ data['vote_number'] }}</td>
-                    <td> <a href={{ url_for('display_question', question_id=data['id']) }} > {{ data['title'] }} </a>
+                    <td> {{ data.date }}</td>
+                    <td> {{ data.views }}</td>
+                    <td> {{ data.votes }}</td>
+{#                    <td> <a href={{ url_for('display_question', question_id=data.id) }} > {{ data.title }} </a>#}
                     </td>
-                    <td> {{ data['message'] }}</td>
-                    {% if data['image'] == 'images/' or data['image'] == None or data['image'] == '' %}
+                    <td> {{ data.message }}</td>
+                    {% if data.image == 'images/' or data.image == None or data.image == '' %}
                         <td></td>
                     {% else %}
-                    <td><img src="{{ url_for('static', filename=data['image']) }}" alt='{{ data['image'] }}' width="100" ></td>
+                    <td><img src="{{ url_for('static', filename=data.image) }}" alt='{{ data.image }}' width="100" ></td>
                     {% endif %}
                     <td>
-                        <a href="/question/{{ data['id'] }}/vote-up">
+                        <a href="/question/{{ data.id }}/vote-up">
                             <button type="button">==></button>
                         </a>
-                        <a href="/question/{{ data['id'] }}/vote-down">
+                        <a href="/question/{{ data.id }}/vote-down">
                             <button type="button"><==</button>
                         </a>
                     </td>
@@ -57,6 +57,6 @@
                 </tr>
             {% endfor %}
         </table>
-<button> <a href="{{ url_for('add_question') }}">Add question</a> </button>
+{#<button> <a href="{{ url_for('add_question') }}">Add question</a> </button>#}
 </body>
 </html>
