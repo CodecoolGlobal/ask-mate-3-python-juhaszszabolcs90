@@ -15,7 +15,7 @@ def convert_timestamp(timestamp):
 def generate_timestamp():
     return datetime.datetime.timestamp(datetime.datetime.now())
 
-def vote(filename, id, up=True):
+def vote(filename, headers, id, up=True):
     datas = connection.read_data(filename)
 
     for data in datas:
@@ -29,7 +29,7 @@ def vote(filename, id, up=True):
                 vote_num += 1
                 data['vote_number'] = str(vote_num)
 
-    data_manager.update_data(filename, datas)
+    data_manager.update_data(filename, datas, headers)
 
 
 def convert_headers(headers):

@@ -2,9 +2,9 @@ import connection
 import csv
 import operator
 
-def update_data(filename, data):
+def update_data(filename, data, headers):
     with open(filename, 'w', newline='') as f:
-        writer = csv.DictWriter(f, connection.DATA_HEADER)
+        writer = csv.DictWriter(f, headers)
         writer.writeheader()
         writer.writerows(data)
 
@@ -20,6 +20,14 @@ def should_delete_question(id_question):
 
 
 def sort_data(data, sort_by='submission_time', reverse=False):
+    # for d in data:
+    #     try:
+    #         for k, v in d.items():
+    #             d[k] = int(v)
+    #     except ValueError:
+    #         for k, v in d.items():
+    #             d[k] = str(v).lower()
+    # print(data)
     return sorted(data, key=operator.itemgetter(sort_by), reverse=reverse)
 
 def delete_answer(id_answer):
