@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title><question_id></title>
+    </head>
+    <body>
+        <h2> {{ question['title'] }} </h2>
+        <p> </p>
+        {% if question['image'] == 'images/' or question['image'] == None or question['image'] == '' %}
+            <td></td>
+        {% else %}
+            <td><img src="{{ url_for('static', filename=question['image']) }}" alt='{{ question['image'] }}' width="200" ></td>
+        {% endif %} <br>
+        <p> {{ question['message'] }}</p><br>
+
+        <h3>Answers</h3>
+        <table style="width:70%">
+        {% for header in headers %}
+            <th style="color:cadetblue">{{ header }}</th>
+        {% endfor %}<br><br>
+
+
+        {% for data in answers %}
+                <tr>
+                    <td> {{ data['id'] }}</td>
+                    <td> {{ data['submission_time'] }}</td>
+                    <td> {{ data['vote_number'] }}</td>
+                    <td> {{ data['question_id'] }}</td>
+                    <td> {{ data['message'] }}</td>
+                    {% if data['image'] == 'images/' or data['image'] == None or data['image'] == '' %}
+                        <td></td>
+                    {% else %}
+                    <td><img src="{{ url_for('static', filename=data['image']) }}" alt='{{ data['image'] }}' width="100" ></td>
+                    {% endif %}
+
+                    <td><form action={{ url_for( 'delete_answer', answer_id = data['id']) }} method = 'POST'>
+                        <button type='submit' class="delete-btn">Delete
+                    </button></form>
+
+                    </td>
+                </tr>
+            {% endfor %}
+            </table><br><br>
+        <button> <a href="{{ url_for('display_questions') }}">Back to list of questions</a> </button><br>
+    </body>
+</html>
