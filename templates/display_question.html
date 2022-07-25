@@ -18,15 +18,16 @@
         <h2> {{ question['title'] }} </h2>
         <p> </p>
         <p> {{ question['message'] }}<br></p>
-        <p><a href="/question/{{ question['id'] }}/edit">
-                            <button type="button">Edit</button>
-                        </a></p>
+
         <p>{% if question['image'] == 'images/' or question['image'] == None or question['image'] == '' %}
             <td></td>
         {% else %}
             <td><img src="{{ url_for('static', filename=question['image']) }}" alt='{{ question['image'] }}' width="200" ></td>
         {% endif %} <br>
         </p>
+        <p><a href="/question/{{ question['id'] }}/edit">
+                    <button type="button">Edit</button>
+                </a></p>
         <h3>Answers</h3>
         <table style="width:70%">
 {#        {% for header in headers %}#}

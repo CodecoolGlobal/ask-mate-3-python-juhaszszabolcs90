@@ -20,6 +20,14 @@ def should_delete_question(id_question):
 
 
 def sort_data(data, sort_by='submission_time', reverse=False):
+    # for d in data:
+    #     try:
+    #         for k, v in d.items():
+    #             d[k] = int(v)
+    #     except ValueError:
+    #         for k, v in d.items():
+    #             d[k] = str(v).lower()
+    # print(data)
     return sorted(data, key=operator.itemgetter(sort_by), reverse=reverse)
 
 def delete_answer(id_answer):
