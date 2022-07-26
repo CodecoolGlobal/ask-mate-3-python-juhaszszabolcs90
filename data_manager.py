@@ -62,39 +62,39 @@ def sort_questions(cursor, order_by, order):
 
 
 @Database_connection.connection_handler
-def vote_answer_up(cursor, answer_id):
+def vote_answer_up(cursor, id):
     query = """
         UPDATE answer
         SET vote_number = vote_number + 1
-        WHERE id = %(answer_id)s;"""
-    cursor.execute(query, {'answer_id': answer_id})
+        WHERE id = %(id)s;"""
+    cursor.execute(query, {'id': id})
 
 
 @Database_connection.connection_handler
-def vote_answer_down(cursor, answer_id):
+def vote_answer_down(cursor, id):
     query = """
         UPDATE answer
         SET vote_number = vote_number - 1
-        WHERE id = %(answer_id)s;"""
-    cursor.execute(query, {'answer_id': answer_id})
+        WHERE id = %(id)s;"""
+    cursor.execute(query, {'answer_id': id})
 
 
 @Database_connection.connection_handler
-def vote_question_up(cursor, question_id):
+def vote_question_up(cursor, id):
     query = """
         UPDATE question
         SET vote_number = vote_number + 1
-        WHERE id = %(queston_id)s;"""
-    cursor.execute(query, {'question_id': question_id})
+        WHERE id = %(id)s;"""
+    cursor.execute(query, {'id': id})
 
 
 @Database_connection.connection_handler
-def vote_question_down(cursor, question_id):
+def vote_question_down(cursor, id):
     query = """
         UPDATE question
         SET vote_number = vote_number - 1
-        WHERE id = %(queston_id)s;"""
-    cursor.execute(query, {'question_id': question_id})
+        WHERE id = %(id)s;"""
+    cursor.execute(query, {'id': id})
 
 
 @Database_connection.connection_handler

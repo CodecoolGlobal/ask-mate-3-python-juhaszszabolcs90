@@ -16,7 +16,7 @@
 </head>
 <body>
         <table style="width:100%">
-            {% for cell in data[1].keys() %}
+            {% for cell in questions[1].keys() %}
                 {% if cell != 'id' %}
                 <th
                         style="color:cadetblue">{{ cell|capitalize|replace("_", " ") }}
@@ -37,7 +37,7 @@
                     <td> {{ data.date }}</td>
                     <td> {{ data.views }}</td>
                     <td> {{ data.votes }}</td>
-                    <td> <a href={{ url_for('display_question', question_id=data.id) }} > {{ data.title }} </a>
+{#                    <td> <a href={{ url_for('display_question', question_id=data.id) }} > {{ data.title }} </a>#}
                     </td>
                     <td> {{ data.message }}</td>
                     {% if data.image == 'images/' or data.image == None or data.image == '' %}
@@ -59,6 +59,6 @@
                 </tr>
             {% endfor %}
         </table>
-<button> <a href="{{ url_for('add_question') }}">Add question</a> </button>
+{#<button> <a href="{{ url_for('add_question') }}">Add question</a> </button>#}
 </body>
 </html>

@@ -38,7 +38,7 @@ def display_questions():
             'message': 'message'
         }
         questions = data_manager.sort_questions(column_names[order_by], order)
-    return render_template('questions.html', questions=questions, columns=columns.keys()
+    return render_template('questions.html', questions=questions, columns=columns.keys())
 
 
 # @app.route("/question/<question_id>", methods=["GET", 'POST'])
@@ -85,16 +85,14 @@ def display_questions():
 #         id = TODO
 #         return redirect(url_for('display_question', question_id=id))
 #     return render_template('add_question.html')
-#
-#
-#
+
+
 @app.route("/question/<question_id>/delete", methods=["GET", "POST"])
 def delete_question(question_id):
     if request.method == 'POST':
         data_manager.delete_question(question_id)
-#
-#     return redirect(url_for('display_questions'))
-#
+    return redirect(url_for('display_questions'))
+
 # @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
 # def edit_question(question_id):
 #     # questions = connection.read_data(QUESTION_FILE_PATH)
@@ -135,8 +133,6 @@ def delete_question(question_id):
 #         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 #     connection.append_data(ANSWER_FILE_PATH, data)
 #     return redirect(url_for("display_question", question_id=question_id))
-#
-# ESZTER
 
 @app.route("/answer/<answer_id>/vote-up", methods=['GET'])
 def vote_answer_up(answer_id):
@@ -157,9 +153,10 @@ def vote_question_up(question_id):
     data_manager.vote_question_up(question_id)
     return redirect("/list")
 
+
 @app.route("/question/<question_id>/vote-down", methods=['GET'])
 def vote_question_down(question_id):
-    data_manager.vote_question_down(question_id))
+    data_manager.vote_question_down(question_id)
     return redirect("/list")
 
 
