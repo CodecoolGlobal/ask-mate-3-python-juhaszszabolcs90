@@ -28,7 +28,7 @@ def display_questions():
     if request.method == 'POST':
         return redirect(url_for('add_question'))
     if not order_by:
-        questions = data_manager.get_questions()
+        questions = data_manager.get_and_sort_questions()
     else:
         column_names = {
             'date': 'submission_time',
@@ -37,31 +37,16 @@ def display_questions():
             'title': 'title',
             'message': 'message'
         }
-        questions = data_manager.sort_questions(column_names[order_by], order)
+        questions = data_manager.get_and_sort_questions(column_names[order_by], order)
     return render_template('questions.html', questions=questions, columns=columns.keys())
 
 
-# @app.route("/question/<question_id>", methods=["GET", 'POST'])
-# def display_question(question_id):
-#     question = data_manager.get_question
-#
-#     # answers_to_be_displayed = []
-#     # question_to_be_displayed = ""
-#     # for row in questions:
-#     #     if row['id'] == question_id:
-#     #         question_to_be_displayed = row
-#     #         view_num = int(row['view_number'])
-#     #         view_num += 1
-#     #         row['view_number'] = str(view_num)
-#     #         data_manager.update_data(QUESTION_FILE_PATH, questions, connection.DATA_HEADER)
-#     # for column in answers:
-#     #     if column['question_id'] == question_id:
-#     #         answers_to_be_displayed.append(column)
-#     # for answer in answers_to_be_displayed:
-#     #     answer['submission_time'] = util.convert_timestamp(float(answer.get('submission_time')))
-#
-#     return render_template("display_question.html", question=question_to_be_displayed, question_id=question_id, answers=answers_to_be_displayed, headers=headers)
-#
+@app.route("/question/<question_id>", methods=["GET", 'POST'])
+def display_question(question_id):
+    question = data_manager.get_question(question_id)
+    answers = data_manager.get_answers_to_question(question.get('id'))
+    return render_template("display_question.html", question=question, answers=answers)
+
 #
 #
 # @app.route('/add_question/', methods=['GET','POST'])
@@ -134,18 +119,19 @@ def delete_question(question_id):
 #     connection.append_data(ANSWER_FILE_PATH, data)
 #     return redirect(url_for("display_question", question_id=question_id))
 
+
 @app.route("/answer/<answer_id>/vote-up", methods=['GET'])
 def vote_answer_up(answer_id):
     data_manager.vote_answer_up(answer_id)
     data = data_manager.get_answer(answer_id)
-    return redirect(url_for('display_question', question_id=data.question_id))
+    return redirect(url_for('display_question', question_id=data.get('question_id')))
 
 
 @app.route("/answer/<answer_id>/vote-down", methods=['GET'])
 def vote_answer_down(answer_id):
     data_manager.vote_answer_down(answer_id)
     data = data_manager.get_answer(answer_id)
-    return redirect(url_for('display_question', question_id=data.question_id))
+    return redirect(url_for('display_question', question_id=data.get('question_id')))
 
 
 @app.route("/question/<question_id>/vote-up", methods=['GET'])

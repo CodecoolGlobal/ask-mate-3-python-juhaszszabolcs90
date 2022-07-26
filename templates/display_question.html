@@ -17,7 +17,7 @@
     <body>
         <h2> {{ question.title }} </h2>
         <p> </p>
-        <p> {{ question.message. }}<br></p>
+        <p> {{ question.message }}<br></p>
 
         <p>{% if question.image == 'images/' or question.image == None or question.image == '' %}
             <td></td>
@@ -30,10 +30,13 @@
                 </a></p>
         <h3>Answers</h3>
         <table style="width:70%">
-{#        {% for header in headers %}#}
-{#            <th style="color:cadetblue">{{ header }}</th>#}
-{#        {% endfor %}<br><br>#}
-
+{#            {% for cell in answers[0].keys() %}#}
+{#                {% if cell != 'id' %}#}
+{#                <th#}
+{#                        style="color:cadetblue">{{ cell|capitalize|replace("_", " ") }}#}
+{#                </th>#}
+{#                {% endif %}#}
+{#            {% endfor %}#}
 
         {% for data in answers %}
                 <tr><td> {{ data.message }}</td>
