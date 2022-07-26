@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 
 import data_manager
-# import util
 
 import os
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -10,9 +9,6 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 UPLOAD_FOLDER = 'static/images'
-
-# QUESTION_FILE_PATH = "sample_data/question.csv"
-# ANSWER_FILE_PATH = "sample_data/answer.csv"
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -23,17 +19,26 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-# def hello():
-#     return render_template("index.html")
-
 @app.route("/")
 @app.route("/list")
 def display_questions():
-    questions = data_manager.get_questions()
-    print(questions)
-    # if request.method == 'POST':
-    #     return redirect(url_for('add_question'))
-    return render_template('questions.html', questions=questions)
+    order_by = request.args.get('order_by')
+    order = request.args.get('order')
+    columns = data_manager.get_columns()
+    if request.method == 'POST':
+        return redirect(url_for('add_question'))
+    if not order_by:
+        questions = data_manager.get_questions()
+    else:
+        column_names = {
+            'date': 'submission_time',
+            'views': 'view_number',
+            'votes': 'vote_number',
+            'title': 'title',
+            'message': 'message'
+        }
+        questions = data_manager.sort_questions(column_names[order_by], order)
+    return render_template('questions.html', questions=questions, columns=columns.keys()
 
 
 # @app.route("/question/<question_id>", methods=["GET", 'POST'])
@@ -83,10 +88,10 @@ def display_questions():
 #
 #
 #
-# @app.route("/question/<question_id>/delete", methods=["GET", "POST"])
-# def delete_question(question_id):
-#     if request.method == 'POST':
-#         # data_manager.delete_question(question_id)
+@app.route("/question/<question_id>/delete", methods=["GET", "POST"])
+def delete_question(question_id):
+    if request.method == 'POST':
+        data_manager.delete_question(question_id)
 #
 #     return redirect(url_for('display_questions'))
 #
@@ -133,46 +138,37 @@ def display_questions():
 #
 # ESZTER
 
-# @app.route("/answer/<answer_id>/vote-up", methods=['GET'])
-# def vote_answer_up(answer_id):
-#     util.vote(ANSWER_FILE_PATH, connection.ANSWER_HEADER, answer_id)
-#     data = connection.read_data(ANSWER_FILE_PATH)
-#     for d in data:
-#         if d['id'] == answer_id:
-#             question_id = d['question_id']
-#     return redirect(url_for('display_question', question_id=question_id))
-#
-#
-# @app.route("/answer/<answer_id>/vote-down", methods=['GET'])
-# def vote_answer_down(answer_id):
-#     util.vote(ANSWER_FILE_PATH, connection.ANSWER_HEADER, answer_id, False)
-#     data = connection.read_data(ANSWER_FILE_PATH)
-#     for d in data:
-#         if d['id'] == answer_id:
-#             question_id = d['question_id']
-#     return redirect(url_for('display_question', question_id=question_id))
-#
-#
-# @app.route("/question/<question_id>/vote-up", methods=['GET'])
-# def vote_question_up(question_id):
-#     util.vote(QUESTION_FILE_PATH, connection.DATA_HEADER, question_id)
-#     return redirect("/list")
-#
-# @app.route("/question/<question_id>/vote-down", methods=['GET'])
-# def vote_question_down(question_id):
-#     util.vote(QUESTION_FILE_PATH, connection.DATA_HEADER, question_id, False)
-#     return redirect("/list")
-#
-#
-# @app.route("/answer/<answer_id>/delete", methods=["GET", "POST"])
-# def delete_answer(answer_id):
-#     answers = connection.read_data('sample_data/answer.csv')
-#     for row in answers:
-#         if row['id'] == answer_id:
-#             displayed_question = row
-#     if request.method == 'POST':
-#         data_manager.delete_answer(answer_id)
-#         # return redirect(url_for('/list'))
+@app.route("/answer/<answer_id>/vote-up", methods=['GET'])
+def vote_answer_up(answer_id):
+    data_manager.vote_answer_up(answer_id)
+    data = data_manager.get_answer(answer_id)
+    return redirect(url_for('display_question', question_id=data.question_id))
+
+
+@app.route("/answer/<answer_id>/vote-down", methods=['GET'])
+def vote_answer_down(answer_id):
+    data_manager.vote_answer_down(answer_id)
+    data = data_manager.get_answer(answer_id)
+    return redirect(url_for('display_question', question_id=data.question_id))
+
+
+@app.route("/question/<question_id>/vote-up", methods=['GET'])
+def vote_question_up(question_id):
+    data_manager.vote_question_up(question_id)
+    return redirect("/list")
+
+@app.route("/question/<question_id>/vote-down", methods=['GET'])
+def vote_question_down(question_id):
+    data_manager.vote_question_down(question_id))
+    return redirect("/list")
+
+
+@app.route("/answer/<answer_id>/delete", methods=["GET", "POST"])
+def delete_answer(answer_id):
+    answer = data_manager.get_answer(answer_id)
+    if request.method == 'POST':
+        data_manager.delete_answer(answer_id)
+    return redirect(url_for('display_question', question_id=answer.question_id))
 
 
 if __name__ == "__main__":

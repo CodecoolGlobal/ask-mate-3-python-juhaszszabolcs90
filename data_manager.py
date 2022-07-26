@@ -4,20 +4,115 @@ from psycopg2.extras import RealDictCursor
 
 import Database_connection
 
+
 @Database_connection.connection_handler
 def get_questions(cursor):
     query = """
         SELECT
+        id,
         submission_time AS date,
         view_number AS views,
         vote_number As votes,
         title,
         message,
         image
-        FROM question;"""
+        FROM question
+        ORDER BY submission_time DESC;"""
     cursor.execute(query)
     return cursor.fetchall()
 
+
+@Database_connection.connection_handler
+def get_columns(cursor):
+    query = """
+        SELECT submission_time AS date, view_number AS views, vote_number AS votes, title, message
+        FROM question;
+    """
+    cursor.execute(query)
+    return cursor.fetchone()
+
+
+@Database_connection.connection_handler
+def get_answer(cursor, answer_id):
+    query = """
+        SELECT * FROM answer WHERE answer_id = %(answer_id)s;
+    """
+    cursor.execute(query, {'answer_id': answer_id})
+    return cursor.fetchall()
+
+
+@Database_connection.connection_handler
+def sort_questions(cursor, order_by, order):
+    if order in ['ASC', 'DESC']:
+        query = sql.SQL("""
+            SELECT
+            id,
+            submission_time AS date,
+            view_number AS views,
+            vote_number As votes,
+            title,
+            message,
+            image
+            FROM question
+            ORDER BY {order_by} {order};""").format(order_by=sql.Identifier(order_by), order=sql.SQL(order))
+    else:
+        raise Exception('Order is not one of values ASC/DESC')
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@Database_connection.connection_handler
+def vote_answer_up(cursor, answer_id):
+    query = """
+        UPDATE answer
+        SET vote_number = vote_number + 1
+        WHERE id = %(answer_id)s;"""
+    cursor.execute(query, {'answer_id': answer_id})
+
+
+@Database_connection.connection_handler
+def vote_answer_down(cursor, answer_id):
+    query = """
+        UPDATE answer
+        SET vote_number = vote_number - 1
+        WHERE id = %(answer_id)s;"""
+    cursor.execute(query, {'answer_id': answer_id})
+
+
+@Database_connection.connection_handler
+def vote_question_up(cursor, question_id):
+    query = """
+        UPDATE question
+        SET vote_number = vote_number + 1
+        WHERE id = %(queston_id)s;"""
+    cursor.execute(query, {'question_id': question_id})
+
+
+@Database_connection.connection_handler
+def vote_question_down(cursor, question_id):
+    query = """
+        UPDATE question
+        SET vote_number = vote_number - 1
+        WHERE id = %(queston_id)s;"""
+    cursor.execute(query, {'question_id': question_id})
+
+
+@Database_connection.connection_handler
+def delete_answer(cursor, answer_id):
+    query = """
+        DELETE FROM answer
+        WHERE id = %(answer_id)s;"""
+    cursor.execute(query, {'answer_id': answer_id})
+
+
+@Database_connection.connection_handler
+def delete_question(cursor, question_id):
+    query = f"""
+        DELETE FROM question
+        WHERE id = '{question_id}'
+        """
+    cursor.execute(query)
+    return "Succesfully deleted"
 # select // from question DISPLAY QUESTIONS
 # select // from question where id join answer question id question id
 # insert into question ADD Q

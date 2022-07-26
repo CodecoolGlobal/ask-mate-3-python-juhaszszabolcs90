@@ -16,17 +16,19 @@
 </head>
 <body>
         <table style="width:100%">
-            {% for header in headers %}
+            {% for cell in data[1].keys() %}
+                {% if cell != 'id' %}
                 <th
-                        style="color:cadetblue">{{ header }}
+                        style="color:cadetblue">{{ cell|capitalize|replace("_", " ") }}
                 </th>
+                {% endif %}
             {% endfor %}
                 <th style="color:cadetblue">VOTE</th>
             <tr>
-                {% for header in order_by_headers %}
+                {% for column in columns %}
                 <th>
-                    <a href="/list?order_by={{ header }}&order=0"><button type="button">↑</button> <br></a>
-                    <a href="/list?order_by={{ header }}&order=1"><button type="button">↓</button> <br></a>
+                    <a href="/list?order_by={{ column }}&order=ASC"><button type="button">↑</button> <br></a>
+                    <a href="/list?order_by={{ column }}&order=DESC"><button type="button">↓</button> <br></a>
                 </th>
                 {% endfor %}
             </tr>
@@ -35,7 +37,7 @@
                     <td> {{ data.date }}</td>
                     <td> {{ data.views }}</td>
                     <td> {{ data.votes }}</td>
-{#                    <td> <a href={{ url_for('display_question', question_id=data.id) }} > {{ data.title }} </a>#}
+                    <td> <a href={{ url_for('display_question', question_id=data.id) }} > {{ data.title }} </a>
                     </td>
                     <td> {{ data.message }}</td>
                     {% if data.image == 'images/' or data.image == None or data.image == '' %}
@@ -57,6 +59,6 @@
                 </tr>
             {% endfor %}
         </table>
-{#<button> <a href="{{ url_for('add_question') }}">Add question</a> </button>#}
+<button> <a href="{{ url_for('add_question') }}">Add question</a> </button>
 </body>
 </html>
