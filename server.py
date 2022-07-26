@@ -47,29 +47,16 @@ def display_question(question_id):
     answers = data_manager.get_answers_to_question(question.get('id'))
     return render_template("display_question.html", question=question, answers=answers)
 
-#
-#
-# @app.route('/add_question/', methods=['GET','POST'])
-# def add_question():
-#     # file_name = "sample_data/question.csv"
-#     if request.method == 'POST':
-#         data = {
-#             # 'id': util.generate_id(file_name),
-#             TODO 'submission_time': util.generate_timestamp(),
-#             'view_number': '0',
-#             'vote_number': '0',
-#             'title': request.form.get('title', ''),
-#             'message': request.form.get('message', ''),
-#             'image': 'images/%s' % request.files.get('image', '').filename
-#         }
-#         file = request.files['image']
-#         if file and allowed_file(file.filename):
-#             filename = secure_filename(file.filename)
-#             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-#         # connection.append_data(file_name, data)
-#         id = TODO
-#         return redirect(url_for('display_question', question_id=id))
-#     return render_template('add_question.html')
+
+@app.route('/add_question/', methods=['GET','POST'])
+def add_question():
+    if request.method == 'POST':
+        title = request.form.get('title')
+        message = request.form.get('message')
+        id = data_manager.add_question(title, message)
+        print(data_manager.get_question(id.get('id')))
+        return redirect(url_for('display_question', question_id=id.get('id')))
+    return render_template('add_question.html')
 
 
 @app.route("/question/<question_id>/delete", methods=["GET", "POST"])
@@ -78,27 +65,18 @@ def delete_question(question_id):
         data_manager.delete_question(question_id)
     return redirect(url_for('display_questions'))
 
-# @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
-# def edit_question(question_id):
-#     # questions = connection.read_data(QUESTION_FILE_PATH)
-#     # for question in questions:
-#     #     if question['id'] == question_id:
-#     #         row = question
-#     if request.method == 'POST':
-#         for question in questions:
-#             if question['id'] == question_id:
-#                 question['title'] = request.form['title']
-#                 question['message'] = request.form['message']
-#                 question['image'] = 'images/%s' % request.files.get('image', '').filename
-#                 file = request.files['image']
-#                 if file and allowed_file(file.filename):
-#                     filename = secure_filename(file.filename)
-#                     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-#                 data_manager.update_data(QUESTION_FILE_PATH, questions, connection.DATA_HEADER)
-#                 question_id = question['id']
-#                 return redirect(url_for('display_question', question_id=question_id))
-#     return render_template('edit_question.html', question=row)
-#
+
+@app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
+def edit_question(question_id):
+    if request.method == 'POST':
+        title = request.form.get('title')
+        message = request.form.get('message')
+        data_manager.update_question(question_id, title, message)
+        return redirect(url_for("display_questions"))
+    else:
+        question = data_manager.get_question(question_id)
+        return render_template("edit_question.html", question=question)
+    #
 #
 # @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 # def add_answer(question_id):
@@ -151,7 +129,7 @@ def delete_answer(answer_id):
     answer = data_manager.get_answer(answer_id)
     if request.method == 'POST':
         data_manager.delete_answer(answer_id)
-    return redirect(url_for('display_question', question_id=answer.question_id))
+    return redirect(url_for('display_question', question_id=answer.get('question_id')))
 
 
 if __name__ == "__main__":

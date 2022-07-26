@@ -1,6 +1,7 @@
 from typing import List, Dict
 from psycopg2 import sql
 from psycopg2.extras import RealDictCursor
+from datetime import datetime
 
 import Database_connection
 
@@ -66,13 +67,15 @@ def get_question(cursor, id):
 
 @Database_connection.connection_handler
 def add_question(cursor, title, message):
-    query = f"""
-            INSERT INTO question(title, message, question_id)
-             VALUES
-            ('{title}', '{message}', 55825);
+    dt = datetime.now()
+    query = """
+            INSERT INTO question(title, submission_time, message, view_number, vote_number)
+            VALUES
+            (%(title)s, %(dt)s, %(message)s, 0, 0)
+            RETURNING id
             """
-    cursor.execute(query)
-    return cursor.fetchall()
+    cursor.execute(query, {'title': title, 'dt': dt, 'message': message})
+    return cursor.fetchone()
 
 
 @Database_connection.connection_handler
@@ -127,50 +130,23 @@ def delete_question(cursor, question_id):
         """
     cursor.execute(query)
     return "Succesfully deleted"
-# select // from question DISPLAY QUESTIONS
-# select // from question where id join answer question id question id
-# insert into question ADD Q
-# select id from question order by id desc limit 1 ADD QUESTION
-# DELETE from question WHERE question_id LIKE '%{delete_id}%'
-# UPDATE question SET question = '{updated_question}' WHERE question_id = '{question_id}'
 
 
-# @Database_connection.connection_handler
-# def get_question(cursor)
-#query = """
-        #SELECT
+@Database_connection.connection_handler
+def delete_comment(cursor, question_id):
+    query = f"""
+        DELETE FROM comment
+        WHERE question_id = '{question_id}';
+        """
+    cursor.execute(query)
 
-# cursor.execute(query
-# #return cursor.fetchone()
 
-
-# def update_data(filename, data, headers):
-#     with open(filename, 'w', newline='') as f:
-#
-#
-#
-# def delete_question(id_question):
-#     questions = connection.read_data('sample_data/question.csv')
-#     filtered_questions = filter(lambda question: question['id'] != id_question, questions)
-#     connection.write_data('sample_data/question.csv', list(filtered_questions))
-#
-#
-# def should_delete_question(id_question):
-#     questions = connection.read_data('sample_data/question.csv')
-#
-#
-# def sort_data(data, sort_by='submission_time', reverse=False):
-#     # for d in data:
-#     #     try:
-#     #         for k, v in d.items():
-#     #             d[k] = int(v)
-#     #     except ValueError:
-#     #         for k, v in d.items():
-#     #             d[k] = str(v).lower()
-#     # print(data)
-#     return sorted(data, key=operator.itemgetter(sort_by), reverse=reverse)
-#
-# def delete_answer(id_answer):
-#     answers = connection.read_data('sample_data/answer.csv')
-#     filtered_answers = filter(lambda answer: answer['id'] != id_answer, answers)
-#     connection.write_data('sample_data/answer.csv', list(filtered_answers))
+@Database_connection.connection_handler
+def update_question(cursor, id, title, message):
+    query = f"""
+        UPDATE question
+        SET title = '{title}',
+            message = '{message}'
+        WHERE id = '{id}';
+        """
+    cursor.execute(query)
