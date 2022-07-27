@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
-
+from psycopg2.errors import UniqueViolation
 import data_manager
 
 import os
@@ -21,13 +21,14 @@ def allowed_file(filename):
 
 @app.route("/")
 def index():
+    data_manager.delete_empty_questions()
     questions = data_manager.get_five_latest_questions()
     return render_template('index.html', questions=questions)
 
 
-
 @app.route("/list")
 def display_questions():
+    data_manager.delete_empty_questions()
     if request.args.get('sort'):
         for_order_by = request.args.get('sort').split('|')
         order_by = for_order_by[0]
@@ -54,24 +55,46 @@ def display_question(question_id):
     data_manager.update_question_view_number(question_id)
     question = data_manager.get_question(question_id)
     answers = data_manager.get_answers_to_question(question.get('id'))
-    return render_template("display_question.html", question=question, answers=answers)
+    tags = data_manager.get_tags(question_id)
+    return render_template("display_question.html", question=question, answers=answers, tags=tags)
 
 
 @app.route('/add_question/', methods=['GET', 'POST'])
 def add_question():
+    title = ''
+    message = ''
+    image = None
+    if data_manager.get_question_by_title(title) is None:
+        new_question = data_manager.add_question(title, message, image)
+    else:
+        new_question = data_manager.get_question_by_title(title)
+    tags = data_manager.get_tags(new_question.get('id'))
     if request.method == 'POST':
         title = request.form.get('title')
         message = request.form.get('message')
-        image = None
         if request.files.get('image').filename != '':
             image = 'images/%s' % request.files.get('image', '').filename
             file = request.files['image']
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        added_question = data_manager.add_question(title, message, image)
-        return redirect(url_for('display_question', question_id=added_question.get('id')))
-    return render_template('add_question.html')
+        data_manager.update_question_with_time(new_question.get('id'), title, message, image)
+        return redirect(url_for('display_question', question_id=new_question.get('id')))
+    return render_template('add_question.html', question_id=new_question.get('id'), tags=tags)
+
+
+@app.route('/add_tags/<question_id>', methods=['POST'])
+def add_tags(question_id):
+    if request.method == 'POST':
+        try:
+            tag_id = data_manager.add_tag(request.form.get('tag'))
+            data_manager.add_question_tag(question_id, tag_id.get('id'))
+        except UniqueViolation:
+            tag_id = data_manager.get_tag((request.form.get('tag')))
+            data_manager.add_question_tag(question_id, tag_id)
+        tags = data_manager.get_tags(question_id)
+        print(tags)
+        return redirect(url_for('add_question', tags=tags))
 
 
 @app.route("/question/<question_id>/delete", methods=["GET", "POST"])
@@ -139,6 +162,13 @@ def delete_answer(answer_id):
     if request.method == 'POST':
         data_manager.delete_answer(answer_id)
     return redirect(url_for('display_question', question_id=answer.get('question_id')))
+
+
+@app.route('/delete_tag/<id>', methods=['GET', 'POST'])
+def delete_tag(id):
+    question_tag_id = data_manager.get_question_id_for_tag(id)
+    data_manager.delete_tag(id)
+    return redirect(url_for('display_question', question_id=question_tag_id.get('question_id')))
 
 
 if __name__ == "__main__":
