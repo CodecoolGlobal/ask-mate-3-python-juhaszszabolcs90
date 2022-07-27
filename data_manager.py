@@ -7,6 +7,23 @@ import Database_connection
 
 
 @Database_connection.connection_handler
+def get_five_latest_questions(cursor):
+    query = """
+        SELECT
+            id,
+            submission_time AS date,
+            view_number AS views,
+            vote_number As votes,
+            title,
+            message,
+            image
+        FROM question ORDER BY submission_time DESC LIMIT 5;
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@Database_connection.connection_handler
 def get_and_sort_questions(cursor, order_by='submission_time', order='DESC'):
     if order in ['ASC', 'DESC']:
         query = sql.SQL("""

@@ -1,13 +1,45 @@
-{#<!DOCTYPE html>#}
-{#<html lang="en">#}
-{#<head>#}
-{#    <meta charset="UTF-8">#}
-{#    <title>Ahoy Mate</title>#}
-{#</head>#}
-{#<body>#}
-{#<h1>Ahoy my friend!</h1>#}
-{#<p>Ha elég ügyes vagy megtalálhatsz néhány kalóz titkot. Merülj el a kérdés válasz szekcióban!#}
-{#If you're smart enough, you can find some pirate secrets. Immerse yourself in the question and answer section.</p>#}
-{#<form action="/" method="post">  <a href="list">Questions about pirates</a>  </form>#}
-{#</body>#}
-{#</html>#}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Friendster</title>
+     <style>
+        table, th, td {
+            border: 1px solid blueviolet;
+            border-collapse: collapse;
+        }
+
+        table {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<h1>FRIENDSTER</h1>
+<h3>New questions</h3>
+ <table style="width:100%">
+            {% for cell in questions[1].keys() %}
+                {% if cell != 'id' %}
+                <th
+                        style="color:cadetblue">{{ cell|capitalize|replace("_", " ") }}
+                </th>
+                {% endif %}
+            {% endfor %}
+            {% for data in questions %}
+                <tr>
+                    <td> {{ data.date.strftime("%d-%m-%Y %H:%M") }}</td>
+                    <td> {{ data.views }}</td>
+                    <td> {{ data.votes }}</td>
+                    <td> <a href={{ url_for('display_question', question_id=data.id) }} > {{ data.title }} </a>
+                    </td>
+                    <td> {{ data.message }}</td>
+                    {% if data.image == 'images/' or data.image == None or data.image == '' %}
+                        <td></td>
+                    {% else %}
+                        <td><img src="{{ url_for('static', filename=data.image) }}" alt='{{ data.image }}' width="100" ></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+ </table>
+<button> <a href="/list">To all questions</a> </button>
+</html>

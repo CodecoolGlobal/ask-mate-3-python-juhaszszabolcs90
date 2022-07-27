@@ -20,6 +20,12 @@ def allowed_file(filename):
 
 
 @app.route("/")
+def index():
+    questions = data_manager.get_five_latest_questions()
+    return render_template('index.html', questions=questions)
+
+
+
 @app.route("/list")
 def display_questions():
     if request.args.get('sort'):
