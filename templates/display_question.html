@@ -32,7 +32,11 @@
         <table style="width:70%">
 
         {% for data in answers %}
-                <tr><td> {{ data.message }}</td>
+                <tr>
+                    <td> {{ data.message }}
+                <button> <a href="{{ url_for('add_comment_to_answer', answer_id=data.id) }}">Add new comment</a> </button><br>
+                    </td>
+
                 {% if data['image'] == 'images/' or data.image == None or data.image == '' %}
                         <td></td>
                     {% else %}

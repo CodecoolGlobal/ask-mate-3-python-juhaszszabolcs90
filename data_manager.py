@@ -97,8 +97,18 @@ def add_comment(cursor, question_id, message):
                 (%(question_id)s,%(message)s,%(dt)s,0)
                 RETURNING id    
                 """
-    print(question_id)
     cursor.execute(query, {'question_id': question_id, 'message': message,'dt': datetime.now()})
+    return cursor.fetchone()
+
+@Database_connection.connection_handler
+def add_comment_to_answer(cursor, answer_id, message):
+    query = """
+                INSERT INTO comment(answer_id, message, submission_time, edited_count)
+                 VALUES
+                (%(answer_id)s,%(message)s,%(dt)s,0)
+                RETURNING id    
+                """
+    cursor.execute(query, {'answer_id': answer_id, 'message': message,'dt': datetime.now()})
     return cursor.fetchone()
 
 @Database_connection.connection_handler
@@ -182,3 +192,13 @@ def update_question(cursor, id, title, message, image):
         WHERE id = %(id)s;
         """
     cursor.execute(query, {'id': id, 'title': title, 'message': message, 'image': image})
+
+@Database_connection.connection_handler
+def get_comments_about_question(cursor, question_id):
+    query = """
+            SELECT *
+            FROM comment
+            WHERE question_id = %(question_id)s;
+        """
+    cursor.execute(query, {'question_id':question_id})
+    return cursor.fetchall()
