@@ -16,7 +16,7 @@
 </head>
 <body>
         <table style="width:100%">
-            {% for cell in questions[1].keys() %}
+            {% for cell in questions[0].keys() %}
                 {% if cell != 'id' %}
                 <th
                         style="color:cadetblue">{{ cell|capitalize|replace("_", " ") }}

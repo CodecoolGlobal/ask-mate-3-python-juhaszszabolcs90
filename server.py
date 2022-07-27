@@ -54,7 +54,8 @@ def display_question(question_id):
     data_manager.update_question_view_number(question_id)
     question = data_manager.get_question(question_id)
     answers = data_manager.get_answers_to_question(question.get('id'))
-    return render_template("display_question.html", question=question, answers=answers)
+    comment_messages = data_manager.get_comments_about_question(question_id)
+    return render_template("display_question.html", question=question, answers=answers, comments=comment_messages, question_id=question_id)
 
 
 @app.route('/add_question/', methods=['GET', 'POST'])
@@ -139,6 +140,35 @@ def delete_answer(answer_id):
     if request.method == 'POST':
         data_manager.delete_answer(answer_id)
     return redirect(url_for('display_question', question_id=answer.get('question_id')))
+
+
+@app.route("/question/<question_id>/new-comment", methods=["GET", "POST"])
+def add_comment(question_id):
+    if request.method == 'POST':
+        comment_message = request.form.get('message')
+        data_manager.add_comment(question_id, comment_message)
+        data_manager.display_comment()
+        return redirect(url_for('display_question', question_id=question_id))
+    return render_template('add_comment.html', question_id=question_id)
+
+
+@app.route("/comments/<comment_id>/delete", methods=["GET", "POST"])
+def delete_comment(comment_id):
+    if request.method == 'POST':
+        data_manager.delete_comment(comment_id)
+        question_id = request.form.get('questionID')
+        print(question_id)
+    return redirect(url_for('display_question', question_id=question_id))
+
+
+@app.route("/answer/<answer_id>/new-comment", methods=["GET", "POST"])
+def add_comment_to_answer(answer_id):
+    if request.method == 'POST':
+        answer_comment_message = request.form.get('comment')
+        data_manager.add_comment_to_answer(answer_id, answer_comment_message)
+        data = data_manager.get_answer(answer_id)
+        return redirect(url_for('display_question', question_id=data.get('question_id')))
+    return render_template('add_comment_to_answer.html', answer_id=answer_id)
 
 
 if __name__ == "__main__":
