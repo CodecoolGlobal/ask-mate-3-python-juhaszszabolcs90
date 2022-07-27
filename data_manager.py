@@ -115,20 +115,20 @@ def vote_question_down(cursor, id):
 
 
 @Database_connection.connection_handler
-def delete_answer(cursor, answer_id):
+def delete_answer(cursor, id):
     query = """
         DELETE FROM answer
-        WHERE id = %(answer_id)s;"""
-    cursor.execute(query, {'answer_id': answer_id})
+        WHERE id = %(id)s;"""
+    cursor.execute(query, {'id': id})
 
 
 @Database_connection.connection_handler
 def delete_question(cursor, question_id):
     query = f"""
         DELETE FROM question
-        WHERE id = '{question_id}'
+        WHERE id = %(question_id)s
         """
-    cursor.execute(query)
+    cursor.execute(query, {'id': question_id})
     return "Succesfully deleted"
 
 
@@ -136,17 +136,17 @@ def delete_question(cursor, question_id):
 def delete_comment(cursor, question_id):
     query = f"""
         DELETE FROM comment
-        WHERE question_id = '{question_id}';
+        WHERE question_id = %(question_id)s;
         """
-    cursor.execute(query)
+    cursor.execute(query, {'question_id': question_id})
 
 
 @Database_connection.connection_handler
 def update_question(cursor, id, title, message):
     query = f"""
         UPDATE question
-        SET title = '{title}',
-            message = '{message}'
-        WHERE id = '{id}';
+        SET title = %(title)s,
+            message = %(message)s
+        WHERE id = %(id)s;
         """
-    cursor.execute(query)
+    cursor.execute(query, {'id': id, 'title': title,'message': message})
