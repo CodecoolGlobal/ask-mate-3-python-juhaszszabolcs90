@@ -1,67 +1,164 @@
 from typing import List, Dict
 from psycopg2 import sql
 from psycopg2.extras import RealDictCursor
+from datetime import datetime
 
 import Database_connection
 
+
 @Database_connection.connection_handler
-def get_questions(cursor):
-    query = """
-        SELECT
-        submission_time AS date,
-        view_number AS views,
-        vote_number As votes,
-        title,
-        message,
-        image
-        FROM question;"""
+def get_and_sort_questions(cursor, order_by='submission_time', order='DESC'):
+    if order in ['ASC', 'DESC']:
+        query = sql.SQL("""
+            SELECT
+            id,
+            submission_time AS date,
+            view_number AS views,
+            vote_number As votes,
+            title,
+            message,
+            image
+            FROM question
+            ORDER BY {order_by} {order};""").format(order_by=sql.Identifier(order_by), order=sql.SQL(order))
+    else:
+        raise Exception('Order is not one of values ASC/DESC')
     cursor.execute(query)
     return cursor.fetchall()
 
-# select // from question DISPLAY QUESTIONS
-# select // from question where id join answer question id question id
-# insert into question ADD Q
-# select id from question order by id desc limit 1 ADD QUESTION
-# DELETE from question WHERE question_id LIKE '%{delete_id}%'
-# UPDATE question SET question = '{updated_question}' WHERE question_id = '{question_id}'
+
+@Database_connection.connection_handler
+def get_columns(cursor):
+    query = """
+        SELECT submission_time AS date, view_number AS views, vote_number AS votes, title, message
+        FROM question;
+    """
+    cursor.execute(query)
+    return cursor.fetchone()
 
 
-# @Database_connection.connection_handler
-# def get_question(cursor)
-#query = """
-        #SELECT
+@Database_connection.connection_handler
+def get_answer(cursor, id):
+    query = """
+        SELECT * FROM answer WHERE id = %(id)s;
+    """
+    cursor.execute(query, {'id': id})
+    return cursor.fetchone()
 
-# cursor.execute(query
-# #return cursor.fetchone()
+
+@Database_connection.connection_handler
+def get_answers_to_question(cursor, question_id):
+    query = """
+        SELECT * FROM answer WHERE question_id = %(question_id)s ORDER BY submission_time DESC;
+    """
+    cursor.execute(query, {'question_id': question_id})
+    return cursor.fetchall()
 
 
-# def update_data(filename, data, headers):
-#     with open(filename, 'w', newline='') as f:
-#
-#
-#
-# def delete_question(id_question):
-#     questions = connection.read_data('sample_data/question.csv')
-#     filtered_questions = filter(lambda question: question['id'] != id_question, questions)
-#     connection.write_data('sample_data/question.csv', list(filtered_questions))
-#
-#
-# def should_delete_question(id_question):
-#     questions = connection.read_data('sample_data/question.csv')
-#
-#
-# def sort_data(data, sort_by='submission_time', reverse=False):
-#     # for d in data:
-#     #     try:
-#     #         for k, v in d.items():
-#     #             d[k] = int(v)
-#     #     except ValueError:
-#     #         for k, v in d.items():
-#     #             d[k] = str(v).lower()
-#     # print(data)
-#     return sorted(data, key=operator.itemgetter(sort_by), reverse=reverse)
-#
-# def delete_answer(id_answer):
-#     answers = connection.read_data('sample_data/answer.csv')
-#     filtered_answers = filter(lambda answer: answer['id'] != id_answer, answers)
-#     connection.write_data('sample_data/answer.csv', list(filtered_answers))
+@Database_connection.connection_handler
+def get_question(cursor, id):
+    query = f"""
+        SELECT *
+        FROM question
+        WHERE id = '{id}'
+        """
+    cursor.execute(query)
+    return cursor.fetchone()
+
+
+@Database_connection.connection_handler
+def add_question(cursor, title, message, image):
+    dt = datetime.now()
+    query = """
+            INSERT INTO question(title, submission_time, message, view_number, vote_number, image)
+            VALUES
+            (%(title)s, %(dt)s, %(message)s, 0, 0, %(image)s)
+            RETURNING id
+            """
+    cursor.execute(query, {'title': title, 'dt': dt, 'message': message, 'image': image})
+    return cursor.fetchone()
+
+
+@Database_connection.connection_handler
+def add_answer(cursor, message, question_id):
+    query = """
+            INSERT INTO answer(submission_time, vote_number, message, question_id)
+             VALUES
+            (%(dt)s, 0, %(message)s, %(question_id)s)
+            RETURNING id
+            """
+    cursor.execute(query, {'dt': datetime.now(), 'message': message, 'question_id': question_id})
+    return cursor.fetchone()
+
+
+@Database_connection.connection_handler
+def vote_answer_up(cursor, id):
+    query = """
+        UPDATE answer
+        SET vote_number = vote_number + 1
+        WHERE id = %(id)s;"""
+    cursor.execute(query, {'id': id})
+
+
+@Database_connection.connection_handler
+def vote_answer_down(cursor, id):
+    query = """
+        UPDATE answer
+        SET vote_number = vote_number - 1
+        WHERE id = %(id)s;"""
+    cursor.execute(query, {'id': id})
+
+
+@Database_connection.connection_handler
+def vote_question_up(cursor, id):
+    query = """
+        UPDATE question
+        SET vote_number = vote_number + 1
+        WHERE id = %(id)s;"""
+    cursor.execute(query, {'id': id})
+
+
+@Database_connection.connection_handler
+def vote_question_down(cursor, id):
+    query = """
+        UPDATE question
+        SET vote_number = vote_number - 1
+        WHERE id = %(id)s;"""
+    cursor.execute(query, {'id': id})
+
+
+@Database_connection.connection_handler
+def delete_answer(cursor, id):
+    query = """
+        DELETE FROM answer
+        WHERE id = %(id)s;"""
+    cursor.execute(query, {'id': id})
+
+
+@Database_connection.connection_handler
+def delete_question(cursor, id):
+    query = f"""
+        DELETE FROM question
+        WHERE id = %(id)s
+        """
+    cursor.execute(query, {'id': id})
+
+
+@Database_connection.connection_handler
+def delete_comment(cursor, question_id):
+    query = f"""
+        DELETE FROM comment
+        WHERE question_id = %(question_id)s;
+        """
+    cursor.execute(query, {'question_id': question_id})
+
+
+@Database_connection.connection_handler
+def update_question(cursor, id, title, message, image):
+    query = f"""
+        UPDATE question
+        SET title = %(title)s,
+            message = %(message)s,
+            image = %(image)s
+        WHERE id = %(id)s;
+        """
+    cursor.execute(query, {'id': id, 'title': title, 'message': message, 'image': image})
