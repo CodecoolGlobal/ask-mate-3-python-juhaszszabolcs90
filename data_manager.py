@@ -89,6 +89,26 @@ def add_answer(cursor, message, question_id):
     cursor.execute(query, {'dt': datetime.now(), 'message': message, 'question_id': question_id})
     return cursor.fetchone()
 
+@Database_connection.connection_handler
+def add_comment(cursor, question_id, message):
+    query = """
+                INSERT INTO comment(question_id, message, submission_time, edited_count)
+                 VALUES
+                (%(question_id)s,%(message)s,%(dt)s,0)
+                RETURNING id    
+                """
+    print(question_id)
+    cursor.execute(query, {'question_id': question_id, 'message': message,'dt': datetime.now()})
+    return cursor.fetchone()
+
+@Database_connection.connection_handler
+def display_comment(cursor):
+    query = """
+            SELECT message, submission_time, edited_count
+            FROM comment
+        """
+    cursor.execute(query)
+    return cursor.fetchall()
 
 @Database_connection.connection_handler
 def vote_answer_up(cursor, id):
