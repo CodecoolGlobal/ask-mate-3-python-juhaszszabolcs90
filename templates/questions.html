@@ -23,15 +23,34 @@
                 </th>
                 {% endif %}
             {% endfor %}
-                <th style="color:cadetblue">VOTE</th>
-            <tr>
-                {% for column in columns %}
+                <th style="color:cadetblue">Vote</th>
                 <th>
-                    <a href="/list?order_by={{ column }}&order=ASC"><button type="button">↑</button> <br></a>
-                    <a href="/list?order_by={{ column }}&order=DESC"><button type="button">↓</button> <br></a>
+                    <div>
+                        <form action="/list">
+                            <label for="sort"></label>
+                            <select id="sort" type="text" name="sort">
+                            {% for column in columns %}
+                                {% for o in order %}
+                                    {% if sort == column+'|'+o %}
+                                    <option value="{{ column }}|{{ o }}" selected>{{ column|capitalize }} | {{ o }}</option>
+                                    {% else %}
+                                     <option value="{{ column }}|{{ o }}">{{ column|capitalize }} | {{ o }}</option>
+                                    {% endif %}
+                                 {% endfor %}
+                            {% endfor %}
+                            </select>
+                             <button type="submit">Sort</button>
+                        </form>
+                    </div>
                 </th>
-                {% endfor %}
-            </tr>
+{#            <tr>#}
+{#                {% for column in columns %}#}
+{#                <th>#}
+{#                    <a href="/list?order_by={{ column }}&order=ASC"><button type="button">↑</button> <br></a>#}
+{#                    <a href="/list?order_by={{ column }}&order=DESC"><button type="button">↓</button> <br></a>#}
+{#                </th>#}
+{#                {% endfor %}#}
+{#            </tr>#}
             {% for data in questions %}
                 <tr>
                     <td> {{ data.date.strftime("%m/%d/%Y, %H:%M") }}</td>

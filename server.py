@@ -22,12 +22,14 @@ def allowed_file(filename):
 @app.route("/")
 @app.route("/list")
 def display_questions():
-    order_by = request.args.get('order_by')
-    order = request.args.get('order')
+    if request.args.get('sort'):
+        for_order_by = request.args.get('sort').split('|')
+        order_by = for_order_by[0]
+        order = for_order_by[1]
     columns = data_manager.get_columns()
     if request.method == 'POST':
         return redirect(url_for('add_question'))
-    if not order_by:
+    if not request.args.get('sort'):
         questions = data_manager.get_and_sort_questions()
     else:
         column_names = {
@@ -38,7 +40,7 @@ def display_questions():
             'message': 'message'
         }
         questions = data_manager.get_and_sort_questions(column_names[order_by], order)
-    return render_template('questions.html', questions=questions, columns=columns.keys())
+    return render_template('questions.html', questions=questions, columns=columns.keys(), order=['ASC', 'DESC'], sort=request.args.get('sort'))
 
 
 @app.route("/question/<question_id>", methods=["GET", 'POST'])
@@ -48,14 +50,20 @@ def display_question(question_id):
     return render_template("display_question.html", question=question, answers=answers)
 
 
-@app.route('/add_question/', methods=['GET','POST'])
+@app.route('/add_question/', methods=['GET', 'POST'])
 def add_question():
     if request.method == 'POST':
         title = request.form.get('title')
         message = request.form.get('message')
-        id = data_manager.add_question(title, message)
-        print(data_manager.get_question(id.get('id')))
-        return redirect(url_for('display_question', question_id=id.get('id')))
+        image = None
+        if request.files.get('image').filename != '':
+            image = 'images/%s' % request.files.get('image', '').filename
+            file = request.files['image']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        added_question = data_manager.add_question(title, message, image)
+        return redirect(url_for('display_question', question_id=added_question.get('id')))
     return render_template('add_question.html')
 
 
@@ -71,7 +79,12 @@ def edit_question(question_id):
     if request.method == 'POST':
         title = request.form.get('title')
         message = request.form.get('message')
-        data_manager.update_question(question_id, title, message)
+        image = 'images/%s' % request.files.get('image', '').filename
+        file = request.files['image']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        data_manager.update_question(question_id, title, message, image)
         return redirect(url_for("display_questions"))
     else:
         question = data_manager.get_question(question_id)

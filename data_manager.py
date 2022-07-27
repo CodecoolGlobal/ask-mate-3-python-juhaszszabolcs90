@@ -66,15 +66,15 @@ def get_question(cursor, id):
 
 
 @Database_connection.connection_handler
-def add_question(cursor, title, message):
+def add_question(cursor, title, message, image):
     dt = datetime.now()
     query = """
-            INSERT INTO question(title, submission_time, message, view_number, vote_number)
+            INSERT INTO question(title, submission_time, message, view_number, vote_number, image)
             VALUES
-            (%(title)s, %(dt)s, %(message)s, 0, 0)
+            (%(title)s, %(dt)s, %(message)s, 0, 0, %(image)s)
             RETURNING id
             """
-    cursor.execute(query, {'title': title, 'dt': dt, 'message': message})
+    cursor.execute(query, {'title': title, 'dt': dt, 'message': message, 'image': image})
     return cursor.fetchone()
 
 
@@ -142,11 +142,12 @@ def delete_comment(cursor, question_id):
 
 
 @Database_connection.connection_handler
-def update_question(cursor, id, title, message):
+def update_question(cursor, id, title, message, image):
     query = f"""
         UPDATE question
         SET title = %(title)s,
-            message = %(message)s
+            message = %(message)s,
+            image = %(image)s
         WHERE id = %(id)s;
         """
-    cursor.execute(query, {'id': id, 'title': title,'message': message})
+    cursor.execute(query, {'id': id, 'title': title, 'message': message, 'image': image})
