@@ -79,6 +79,18 @@ def add_question(cursor, title, message, image):
 
 
 @Database_connection.connection_handler
+def add_answer(cursor, message, question_id):
+    query = """
+            INSERT INTO answer(submission_time, vote_number, message, question_id)
+             VALUES
+            (%(dt)s, 0, %(message)s, %(question_id)s)
+            RETURNING id
+            """
+    cursor.execute(query, {'dt': datetime.now(), 'message': message, 'question_id': question_id})
+    return cursor.fetchone()
+
+
+@Database_connection.connection_handler
 def vote_answer_up(cursor, id):
     query = """
         UPDATE answer
@@ -123,13 +135,12 @@ def delete_answer(cursor, id):
 
 
 @Database_connection.connection_handler
-def delete_question(cursor, question_id):
+def delete_question(cursor, id):
     query = f"""
         DELETE FROM question
-        WHERE id = %(question_id)s
+        WHERE id = %(id)s
         """
-    cursor.execute(query, {'id': question_id})
-    return "Succesfully deleted"
+    cursor.execute(query, {'id': id})
 
 
 @Database_connection.connection_handler

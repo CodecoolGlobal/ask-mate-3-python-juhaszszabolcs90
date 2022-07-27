@@ -30,13 +30,6 @@
                 </a></p>
         <h3>Answers</h3>
         <table style="width:70%">
-{#            {% for cell in answers[0].keys() %}#}
-{#                {% if cell != 'id' %}#}
-{#                <th#}
-{#                        style="color:cadetblue">{{ cell|capitalize|replace("_", " ") }}#}
-{#                </th>#}
-{#                {% endif %}#}
-{#            {% endfor %}#}
 
         {% for data in answers %}
                 <tr><td> {{ data.message }}</td>
@@ -46,7 +39,7 @@
                         <td><img src="{{ url_for('static', filename=data.image) }}" alt='{{ data.image }}' width="100" ></td>
                     {% endif %}
                 </tr>
-                <tr><td> {{ data.submission_time }}</td>
+                <tr><td> {{ data.submission_time.strftime("%d-%m-%Y %H:%M") }}</td>
                 <td> {{ data.vote_number }}
                  <td>
                         <a href="/answer/{{ data.id }}/vote-up">

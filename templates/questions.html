@@ -43,17 +43,10 @@
                         </form>
                     </div>
                 </th>
-{#            <tr>#}
-{#                {% for column in columns %}#}
-{#                <th>#}
-{#                    <a href="/list?order_by={{ column }}&order=ASC"><button type="button">↑</button> <br></a>#}
-{#                    <a href="/list?order_by={{ column }}&order=DESC"><button type="button">↓</button> <br></a>#}
-{#                </th>#}
-{#                {% endfor %}#}
-{#            </tr>#}
+
             {% for data in questions %}
                 <tr>
-                    <td> {{ data.date.strftime("%m/%d/%Y, %H:%M") }}</td>
+                    <td> {{ data.date.strftime("%d-%m-%Y %H:%M") }}</td>
                     <td> {{ data.views }}</td>
                     <td> {{ data.votes }}</td>
                     <td> <a href={{ url_for('display_question', question_id=data.id) }} > {{ data.title }} </a>
