@@ -45,6 +45,7 @@ def display_questions():
 
 @app.route("/question/<question_id>", methods=["GET", 'POST'])
 def display_question(question_id):
+    data_manager.update_question_view_number(question_id)
     question = data_manager.get_question(question_id)
     answers = data_manager.get_answers_to_question(question.get('id'))
     return render_template("display_question.html", question=question, answers=answers)

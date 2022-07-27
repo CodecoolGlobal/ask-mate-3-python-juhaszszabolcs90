@@ -162,3 +162,13 @@ def update_question(cursor, id, title, message, image):
         WHERE id = %(id)s;
         """
     cursor.execute(query, {'id': id, 'title': title, 'message': message, 'image': image})
+
+
+@Database_connection.connection_handler
+def update_question_view_number(cursor, id):
+    query = """
+        UPDATE question
+        SET view_number = view_number + 1
+        WHERE id = %(id)s;
+    """
+    cursor.execute(query, {'id': id})
