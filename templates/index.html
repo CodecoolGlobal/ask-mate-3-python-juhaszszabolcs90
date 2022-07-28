@@ -1,27 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Friendster</title>
-     <style>
-        table, th, td {
-            border: 1px solid blueviolet;
-            border-collapse: collapse;
-        }
+{% extends 'layout.html' %}
+{% block title %}Friendster{% endblock %}
 
-        table {
-            width: 100%;
-        }
-    </style>
-</head>
-<body>
+{% block content %}
 <h1>FRIENDSTER</h1>
+<h3>New questions</h3>
 <form action="/search" method="GET">
             <label for="search">Search:</label>
             <input id="search" type="search" name="search">
             <button type="submit">Search</button>
 </form>
-<h3>New questions</h3>
  <table style="width:100%">
             {% for cell in questions[1].keys() %}
                 {% if cell != 'id' %}
@@ -47,4 +34,4 @@
             {% endfor %}
  </table>
 <button> <a href="/list">To all questions</a> </button>
-</html>
+{% endblock %}

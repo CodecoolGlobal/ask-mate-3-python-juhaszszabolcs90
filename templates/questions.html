@@ -1,21 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>List of questions</title>
-       <style>
-        table, th, td {
-            border: 1px solid blueviolet;
-            border-collapse: collapse;
-        }
+{% extends 'layout.html' %}
+{% block title %}List of questions{% endblock %}
+{% block content %}
 
-        table {
-            width: 100%;
-        }
-    </style>
-</head>
-<body>
-        <table style="width:100%">
+        <table class="table" style="width:100%">
             {% for cell in questions[0].keys() %}
                 {% if cell != 'id' %}
                 <th
@@ -73,5 +60,6 @@
         </table>
         <p><button> <a href="{{ url_for('add_question') }}">Add question</a> </button> </p>
         <p><button> <a href="/">Take me back</a> </button></p>
-</body>
-</html>
+
+
+{% endblock %}

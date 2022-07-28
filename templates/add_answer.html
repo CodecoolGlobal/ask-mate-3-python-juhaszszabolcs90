@@ -1,20 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Post answer</title>
-</head>
-<body>
-<form action='{{ url_for('add_answer', question_id=question_id) }}' method="post" enctype="multipart/form-data">
+{% extends 'layout.html' %}
+{% block title %}Post answer{% endblock %}
+
+{% block content %}
+<div class="container">
+
+<h2>Give an answer</h2><br>
+<form action='{{ url_for('add_answer', question_id=question_id) }}' method="POST" enctype="multipart/form-data">
 
     <label for="message">Message</label><br>
     <textarea id="message" name="message"  rows="10" cols="50" required></textarea><br><br>
 
-{#    <label for="image">Click on the "Choose File" button to upload a file:</label><br><br>#}
-{#    <input type="file" id="image" name="image"><br>#}
-
 
     <button type="submit">Post</button>
 </form>
-</body>
-</html>
+</div>
+{% endblock %}
