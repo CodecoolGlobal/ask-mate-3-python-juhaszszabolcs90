@@ -208,6 +208,7 @@ def edit_answer(cursor, id, message):
 
 # COMMENTS
 
+
 @Database_connection.connection_handler
 def add_comment(cursor, question_id, message):
     query = """
