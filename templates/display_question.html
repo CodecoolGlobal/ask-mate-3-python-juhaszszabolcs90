@@ -26,6 +26,18 @@
             <td><img src="{{ url_for('static', filename=question.image) }}" alt='{{ question.image }}' width="200" ></td>
         {% endif %} <br>
         </p>
+        <table>
+            <tr>
+                 {% for tag in tags %}
+                <td>
+                    <a href={{ url_for('delete_tag', id=tag.id) }}> #{{ tag.name }} </a>
+                </td>
+                {% endfor %}
+                {% if tags|length != 0 %}
+                    <td>Click to delete #tag</td>
+                {% endif %}
+            </tr>
+        </table>
         <p><a href="/question/{{ question.id }}/edit">
                     <button type="button">Edit</button>
                 </a></p>
