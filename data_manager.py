@@ -236,6 +236,8 @@ def add_comment(cursor, question_id, message):
     print(question_id)
     cursor.execute(query, {'question_id': question_id, 'message': message,'dt': datetime.now()})
 
+
+@Database_connection.connection_handler
 def add_tag(cursor, name):
     query = """
         INSERT INTO tag (name) VALUES (%(name)s)
@@ -286,7 +288,9 @@ def delete_comment(cursor, comment_id):
         WHERE id = %(comment_id)s
         """
     cursor.execute(query, {'comment_id': comment_id})
-=======
+
+
+@Database_connection.connection_handler
 def get_tag(cursor, name):
     query = """
         SELECT id FROM tag WHERE name = %(name)s;

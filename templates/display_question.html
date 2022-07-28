@@ -20,7 +20,7 @@
         <p> </p>
         <p> {{ question.message }}<br></p>
 
-        <p>{% if question.image == 'images/' or question.image == None or question.image == '' %}
+        <p>{% if question.image == None %}
             <td></td>
         {% else %}
             <td><img src="{{ url_for('static', filename=question.image) }}" alt='{{ question.image }}' width="200" ></td>

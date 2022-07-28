@@ -91,10 +91,9 @@ def add_tags(question_id):
             tag_id = data_manager.add_tag(request.form.get('tag'))
             data_manager.add_question_tag(question_id, tag_id.get('id'))
         except UniqueViolation:
-            tag_id = data_manager.get_tag((request.form.get('tag')))
-            data_manager.add_question_tag(question_id, tag_id)
+            tag_id = data_manager.get_tag(request.form.get('tag'))
+            data_manager.add_question_tag(question_id, tag_id.get('id'))
         tags = data_manager.get_tags(question_id)
-        print(tags)
         return redirect(url_for('add_question', tags=tags))
 
 
