@@ -90,7 +90,7 @@
                 </tr>
             </table><br><br>
 <h3>Comment section</h3>
-        {#Ide megy majd a comment tabla#}
+
         <table>
         <th>Message</th>
         <th>Time</th>
@@ -101,7 +101,7 @@
         <div>
             <tr>
                 <td>{{ comment.message }}</td>
-                <td>{{ comment.submission_time }}</td>
+                <td>{{ comment.submission_time.strftime("%d-%m-%Y %H:%M") }}</td>
                 <td>{{ comment.edited_count }}</td>
 
                 <td>

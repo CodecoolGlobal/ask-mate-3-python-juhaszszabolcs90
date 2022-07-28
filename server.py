@@ -130,13 +130,6 @@ def add_answer(question_id):
         return redirect(url_for('display_question', question_id=question_id))
     return render_template('add_answer.html', question_id=question_id)
 
-@app.route("/question/<question_id>/new-comment", methods=["GET", "POST"])
-def add_comment(question_id):
-    if request.method == 'POST':
-        comment_message = request.form.get('message')
-        data_manager.add_comment(question_id, comment_message)
-        return redirect(url_for('display_question', question_id=question_id))
-    return render_template('add_comment.html', question_id=question_id)
 
 @app.route("/answer/<answer_id>/new-comment", methods=["GET", "POST"])
 def add_comment_to_answer(answer_id):
@@ -145,7 +138,7 @@ def add_comment_to_answer(answer_id):
         data_manager.add_comment_to_answer(answer_id, answer_comment_message)
         data = data_manager.get_answer(answer_id)
         return redirect(url_for('display_question', question_id=data.get('question_id')))
-    return render_template('add_comment_to_anwer.html', answer_id=answer_id)
+    return render_template('add_comment_to_answer.html', answer_id=answer_id)
 
 
 @app.route("/answer/<answer_id>/vote-up", methods=['GET'])
@@ -187,7 +180,6 @@ def add_comment(question_id):
     if request.method == 'POST':
         comment_message = request.form.get('message')
         data_manager.add_comment(question_id, comment_message)
-        data_manager.display_comment()
         return redirect(url_for('display_question', question_id=question_id))
     return render_template('add_comment.html', question_id=question_id)
 
@@ -197,18 +189,7 @@ def delete_comment(comment_id):
     if request.method == 'POST':
         data_manager.delete_comment(comment_id)
         question_id = request.form.get('questionID')
-        print(question_id)
     return redirect(url_for('display_question', question_id=question_id))
-
-
-@app.route("/answer/<answer_id>/new-comment", methods=["GET", "POST"])
-def add_comment_to_answer(answer_id):
-    if request.method == 'POST':
-        answer_comment_message = request.form.get('comment')
-        data_manager.add_comment_to_answer(answer_id, answer_comment_message)
-        data = data_manager.get_answer(answer_id)
-        return redirect(url_for('display_question', question_id=data.get('question_id')))
-    return render_template('add_comment_to_answer.html', answer_id=answer_id)
 
 
 @app.route('/delete_tag/<id>', methods=['GET', 'POST'])
@@ -216,7 +197,6 @@ def delete_tag(id):
     question_tag_id = data_manager.get_question_id_for_tag(id)
     data_manager.delete_tag(id)
     return redirect(url_for('display_question', question_id=question_tag_id.get('question_id')))
-
 
 
 if __name__ == "__main__":
