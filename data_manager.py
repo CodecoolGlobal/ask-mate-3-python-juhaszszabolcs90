@@ -132,7 +132,7 @@ def vote_answer_down(cursor, id):
     query = """
         UPDATE answer
         SET vote_number = vote_number - 1
-        WHERE id = %(id)s;"""
+        WHERE id = %(id)s AND vote_number > 0;"""
     cursor.execute(query, {'id': id})
 
 
@@ -150,7 +150,7 @@ def vote_question_down(cursor, id):
     query = """
         UPDATE question
         SET vote_number = vote_number - 1
-        WHERE id = %(id)s;"""
+        WHERE id = %(id)s AND vote_number > 0;"""
     cursor.execute(query, {'id': id})
 
 
