@@ -420,3 +420,19 @@ def delete_tag(cursor, id):
         DELETE FROM tag WHERE id = %(id)s;
     """
     cursor.execute(query, {'id': id})
+
+
+# SEARCH
+
+@Database_connection.connection_handler
+def search(cursor, phrase):
+    query = """
+        SELECT DISTINCT question.title, question.message FROM question
+        LEFT JOIN answer ON question.id = answer.question_id
+        WHERE 
+            question.title LIKE '%%' || %(phrase)s || '%%' OR
+            question.message LIKE '%%' || %(phrase)s || '%%' OR
+            answer.message LIKE '%%' || %(phrase)s || '%%';
+    """
+    cursor.execute(query, {'phrase': phrase})
+    return cursor.fetchall()

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search results</title>
+</head>
+<body>
+
+{% for result in search_results %}
+    <p>{{ result.title }}</p>
+    <p>{{ result.message }}</p>
+{% endfor %}
+<p><button> <a href="/list">Take me back</a> </button></p>
+</body>
+</html>

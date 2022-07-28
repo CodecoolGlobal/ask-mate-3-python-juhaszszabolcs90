@@ -29,16 +29,13 @@ def index():
 @app.route("/list")
 def display_questions():
     data_manager.delete_empty_questions()
+    if request.method == 'POST':
+        return redirect(url_for('add_question'))
+    columns = data_manager.get_columns()
     if request.args.get('sort'):
         for_order_by = request.args.get('sort').split('|')
         order_by = for_order_by[0]
         order = for_order_by[1]
-    columns = data_manager.get_columns()
-    if request.method == 'POST':
-        return redirect(url_for('add_question'))
-    if not request.args.get('sort'):
-        questions = data_manager.get_and_sort_questions()
-    else:
         column_names = {
             'date': 'submission_time',
             'views': 'view_number',
@@ -47,6 +44,8 @@ def display_questions():
             'message': 'message'
         }
         questions = data_manager.get_and_sort_questions(column_names[order_by], order)
+    else:
+        questions = data_manager.get_and_sort_questions()
     return render_template('questions.html', questions=questions, columns=columns.keys(), order=['ASC', 'DESC'], sort=request.args.get('sort'))
 
 
@@ -94,6 +93,12 @@ def edit_comment_question(comment_id):
         data_manager.update_comment_question(comment_id, message)
         return redirect(url_for("display_question", question_id=comment.get('question_id')))
     return render_template("edit_question_comment.html", comment=comment)
+
+
+@app.route('/search')
+def search():
+    search_results = data_manager.search(request.args.get('search'))
+    return render_template('search_results.html', search_results=search_results)
 
 
 @app.route('/add_tags/<question_id>', methods=['POST'])
