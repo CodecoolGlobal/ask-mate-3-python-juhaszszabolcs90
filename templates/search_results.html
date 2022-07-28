@@ -5,11 +5,14 @@
     <title>Search results</title>
 </head>
 <body>
-
-{% for result in search_results %}
-    <p>{{ result.title }}</p>
-    <p>{{ result.message }}</p>
-{% endfor %}
+{% if search_results|length != 0 %}
+    {% for result in search_results %}
+        <p>{{ result.title }}</p>
+        <p>{{ result.message }}</p>
+    {% endfor %}
+{% else %}
+    <p>No matches for your search</p>
+{% endif %}
 <p><button> <a href="/list">Take me back</a> </button></p>
 </body>
 </html>
