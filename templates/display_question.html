@@ -24,6 +24,7 @@
             <td></td>
         {% else %}
             <td><img src="{{ url_for('static', filename=question.image) }}" alt='{{ question.image }}' width="200" ></td>
+
         {% endif %} <br>
         </p>
         <table>
@@ -41,44 +42,52 @@
         <p><a href="/question/{{ question.id }}/edit">
                     <button type="button">Edit</button>
                 </a></p>
-        <h3>Answers</h3>
+<h3>Answers</h3>
         <table style="width:70%">
 
-        {% for data in answers %}
-                <tr>
-                    <td> {{ data.message }}
-                <button> <a href="{{ url_for('add_comment_to_answer', answer_id=data.id) }}">Add new comment</a> </button><br>
-                    </td>
-                {% if data['image'] == 'images/' or data.image == None or data.image == '' %}
+                {% for data in answers %}
+                    <tr>
+                        <td> {{ data.message }}
+                            <button> <a href="{{ url_for('add_comment_to_answer', answer_id=data.id) }}">Add new comment</a> </button><br>
+                        </td>
+                        {% for commentdata in answers_comment %}
+                            {% if commentdata.answer_id == data.id %}
+                            <tr><td>{{ commentdata.message }}</td></tr>
+
+                            {% endif %}
+                        {% endfor %}
+
+                    {% if data['image'] == 'images/' or data.image == None or data.image == '' %}
+
                         <td></td>
                     {% else %}
                         <td><img src="{{ url_for('static', filename=data.image) }}" alt='{{ data.image }}' width="100" ></td>
                     {% endif %}
-                </tr>
-                <tr><td> {{ data.submission_time.strftime("%d-%m-%Y %H:%M") }}</td>
-                <td> {{ data.vote_number }}
-                 <td>
-                        <a href="/answer/{{ data.id }}/vote-up">
-                            <button type="button">↑</button>
-                        </a>
-                        <a href="/answer/{{ data.id }}/vote-down">
-                            <button type="button">↓</button>
-                        </a>
-                    </td>
+                    </tr>
+                    <tr><td> {{ data.submission_time.strftime("%d-%m-%Y %H:%M") }}</td>
+                        <td> {{ data.vote_number }}
+                        <td>
+                            <a href="/answer/{{ data.id }}/vote-up">
+                                <button type="button">↑</button>
+                            </a>
+                            <a href="/answer/{{ data.id }}/vote-down">
+                                <button type="button">↓</button>
+                            </a>
+                        </td>
 
-                    <td><form action={{ url_for( 'delete_answer', answer_id = data.id) }} method = 'POST'>
-                        <button type='submit' class="delete-btn">Delete
-                    </button></form>
-
-                    </td></tr>
-            {% endfor %}
-            <tr>
-                <td>
-                    <a href="/question/{{ question.id }}/new-answer">
+                        <td><form action={{ url_for( 'delete_answer', answer_id = data.id) }} method = 'POST'>
+                            <button type='submit' class="delete-btn">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td>
+                        <a href="/question/{{ question.id }}/new-answer">
                             <button type="button">Post answer</button>
                         </a>
-                </td>
-            </tr>
+                    </td>
+                </tr>
             </table><br><br>
 <h3>Comment section</h3>
         {#Ide megy majd a comment tabla#}

@@ -63,6 +63,18 @@ def get_answer(cursor, id):
 
 
 @Database_connection.connection_handler
+def get_answers_comment_by_question_id(cursor, id):
+    query = """
+        SELECT answer.id AS answer_id,  comment.message, comment.submission_time, comment.edited_count
+        FROM answer 
+        INNER JOIN comment ON answer.id = comment.answer_id 
+        WHERE answer.question_id = %(id)s 
+    """
+    cursor.execute(query, {'id': id})
+    return cursor.fetchall()
+
+
+@Database_connection.connection_handler
 def get_answers_to_question(cursor, question_id):
     query = """
         SELECT * FROM answer WHERE question_id = %(question_id)s ORDER BY submission_time DESC;
@@ -117,6 +129,36 @@ def add_answer(cursor, message, question_id):
     cursor.execute(query, {'dt': datetime.now(), 'message': message, 'question_id': question_id})
     return cursor.fetchone()
 
+@Database_connection.connection_handler
+def add_comment(cursor, question_id, message):
+    query = """
+                INSERT INTO comment(question_id, message, submission_time, edited_count)
+                 VALUES
+                (%(question_id)s,%(message)s,%(dt)s,0)
+                RETURNING id    
+                """
+    cursor.execute(query, {'question_id': question_id, 'message': message,'dt': datetime.now()})
+    return cursor.fetchone()
+
+@Database_connection.connection_handler
+def add_comment_to_answer(cursor, answer_id, message):
+    query = """
+                INSERT INTO comment(answer_id, message, submission_time, edited_count)
+                 VALUES
+                (%(answer_id)s,%(message)s,%(dt)s,0)
+                RETURNING id    
+                """
+    cursor.execute(query, {'answer_id': answer_id, 'message': message,'dt': datetime.now()})
+    return cursor.fetchone()
+
+@Database_connection.connection_handler
+def display_comment(cursor):
+    query = """
+            SELECT message, submission_time, edited_count
+            FROM comment
+        """
+    cursor.execute(query)
+    return cursor.fetchall()
 
 @Database_connection.connection_handler
 def vote_answer_up(cursor, id):

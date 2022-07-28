@@ -55,9 +55,10 @@ def display_question(question_id):
     data_manager.update_question_view_number(question_id)
     question = data_manager.get_question(question_id)
     answers = data_manager.get_answers_to_question(question.get('id'))
+    answers_comment = data_manager.get_answers_comment_by_question_id(question.get('id'))
     comment_messages = data_manager.get_comments_about_question(question_id)
     tags = data_manager.get_tags(question_id)
-    return render_template("display_question.html", question=question, answers=answers, tags=tags, comments=comment_messages, question_id=question_id)
+    return render_template("display_question.html", question=question, answers=answers, tags=tags, comments=comment_messages, answers_comment=answers_comment, question_id=question_id)
    
 
 @app.route('/add_question/', methods=['GET', 'POST'])
@@ -128,6 +129,23 @@ def add_answer(question_id):
         data_manager.add_answer(message, question_id)
         return redirect(url_for('display_question', question_id=question_id))
     return render_template('add_answer.html', question_id=question_id)
+
+@app.route("/question/<question_id>/new-comment", methods=["GET", "POST"])
+def add_comment(question_id):
+    if request.method == 'POST':
+        comment_message = request.form.get('message')
+        data_manager.add_comment(question_id, comment_message)
+        return redirect(url_for('display_question', question_id=question_id))
+    return render_template('add_comment.html', question_id=question_id)
+
+@app.route("/answer/<answer_id>/new-comment", methods=["GET", "POST"])
+def add_comment_to_answer(answer_id):
+    if request.method == 'POST':
+        answer_comment_message = request.form.get('comment')
+        data_manager.add_comment_to_answer(answer_id, answer_comment_message)
+        data = data_manager.get_answer(answer_id)
+        return redirect(url_for('display_question', question_id=data.get('question_id')))
+    return render_template('add_comment_to_anwer.html', answer_id=answer_id)
 
 
 @app.route("/answer/<answer_id>/vote-up", methods=['GET'])
