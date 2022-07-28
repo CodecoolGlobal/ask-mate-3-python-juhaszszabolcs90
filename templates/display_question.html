@@ -60,14 +60,14 @@
                     </tr>
                     <tr>
                         <td><a href="/answer/{{ data.id }}/edit">
-                            <button type="button">Edit</button></a></td>
+                            <button type="button">Edit answer</button></a></td>
                         <td> {{ data.submission_time.strftime("%d-%m-%Y %H:%M") }}</td>
                         <td> <button> <a href="{{ url_for('add_comment_to_answer', answer_id=data.id) }}">Add new comment</a> </button></td>
                     </tr>
                         {% for commentdata in answers_comment %}
                             {% if commentdata.answer_id == data.id %}
                             <tr><td>{{ commentdata.message }}</td>
-                                {# edit comment td #}
+                                <td><a href="/comment/{{ commentdata.id }}/edit"><button type="button">Edit comment</button></a></td>
                                 <td><form action="/comments/{{ commentdata.id }}/delete" method='POST'>
                                     <input type="hidden" value="{{ question_id }}" name="questionID">
                                     <button type="submit"><i class="fa fa-trash-o"></i></button>
@@ -97,7 +97,7 @@
         <table>
         <th>Message</th>
         <th>Time</th>
-        <th>Edited count</th>
+        <th>Edit count</th>
         <th></th>
 
         {% for comment in comments %}
@@ -106,7 +106,7 @@
                 <td>{{ comment.message }}</td>
                 <td>{{ comment.submission_time.strftime("%d-%m-%Y %H:%M") }}</td>
                 <td>{{ comment.edited_count }}</td>
-
+                <td><a href="/comment/{{ comment.id }}/edit"><button type="button">Edit</button></a></td>
                 <td>
                 <form action="/comments/{{ comment['id'] }}/delete" method='POST'>
                     <input type="hidden" value="{{ question_id }}" name="questionID">

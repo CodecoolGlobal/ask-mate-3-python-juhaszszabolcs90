@@ -156,6 +156,7 @@ def get_answer(cursor, id):
     return cursor.fetchone()
 
 
+
 @Database_connection.connection_handler
 def get_answers_comment_by_question_id(cursor, id):
     query = """
@@ -218,6 +219,15 @@ def add_comment(cursor, question_id, message):
                 RETURNING id    
                 """
     cursor.execute(query, {'question_id': question_id, 'message': message,'dt': datetime.now()})
+    return cursor.fetchone()
+
+
+@Database_connection.connection_handler
+def get_comment(cursor, id):
+    query = """
+        SELECT * FROM comment WHERE id = %(id)s;
+    """
+    cursor.execute(query, {'id': id})
     return cursor.fetchone()
 
 
@@ -296,6 +306,23 @@ def get_comments_about_question(cursor, question_id):
     cursor.execute(query, {'question_id':question_id})
     return cursor.fetchall()
 
+
+@Database_connection.connection_handler
+def update_comment_question(cursor, id, message):
+    query = """
+        UPDATE comment
+        SET message = %(message)s
+        WHERE id = %(id)s;
+        """
+    cursor.execute(query, {'id': id, 'message': message})
+
+
+@Database_connection.connection_handler
+def update_edit_count_to_comment(cursor, id):
+    query = """
+        UPDATE comment SET edited_count = edited_count + 1 WHERE id = %(id)s;
+    """
+    cursor.execute(query, {'id': id})
 
 # VOTE
 

@@ -85,6 +85,17 @@ def add_question():
     return render_template('add_question.html', question_id=new_question.get('id'), tags=tags)
 
 
+@app.route('/comment/<comment_id>/edit', methods=['GET', 'POST'])
+def edit_comment_question(comment_id):
+    comment = data_manager.get_comment(comment_id)
+    if request.method == 'POST':
+        data_manager.update_edit_count_to_comment(comment_id)
+        message = request.form.get('message')
+        data_manager.update_comment_question(comment_id, message)
+        return redirect(url_for("display_question", question_id=comment.get('question_id')))
+    return render_template("edit_question_comment.html", comment=comment)
+
+
 @app.route('/add_tags/<question_id>', methods=['POST'])
 def add_tags(question_id):
     if request.method == 'POST':
