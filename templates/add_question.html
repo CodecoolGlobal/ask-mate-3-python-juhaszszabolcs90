@@ -2,25 +2,28 @@
 {% block title %}Add a question{% endblock %}
 
 {% block content %}
-<h1>Add question</h1>
-<form action="{{ url_for('add_tags', question_id=question_id) }}" method="POST">
-        <label for="tag">Add hashtags</label>
-        <input id="tag" name="tag" type="text">
+<div class="container"><br>
+    <h1>Add question</h1><br>
+    <form action="{{ url_for('add_tags', question_id=question_id) }}" method="POST">
+            <label for="tag">Add hashtags</label><br>
+            <input id="tag" name="tag" type="text">
+            <button type="submit">Submit</button>
+    </form>
+        {% for tag in tags %}
+            <p>#{{ tag.name }}</p>
+        {% endfor %}
+    <form action='{{ url_for('add_question') }}' method="post" enctype="multipart/form-data">
+        <label for="title">Title</label><br>
+        <input id='title' name='title' type="text" minlength="5" required><br><br>
+
+        <label for="message">Message</label><br>
+        <textarea id="message" name="message" required></textarea><br><br>
+
+        <label for="image"></label><br><br>
+        <input type="file" id="image" name="image"><br>
+
         <button type="submit">Submit</button>
-</form>
-    {% for tag in tags %}
-        <p>#{{ tag.name }}</p>
-    {% endfor %}
-<form action='{{ url_for('add_question') }}' method="post" enctype="multipart/form-data">
-    <label for="title">Title</label><br>
-    <input id='title' name='title' type="text" minlength="5" required><br><br>
-
-    <label for="message">Message</label><br>
-    <textarea id="message" name="message" required></textarea><br><br>
-
-    <label for="image"></label><br><br>
-    <input type="file" id="image" name="image"><br>
-
-    <button type="submit">Submit</button>
-</form>
+    </form>
+</div>
+    <script src="path/to/particles.min.js"></script>
 {% endblock %}
