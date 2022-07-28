@@ -46,6 +46,18 @@ def get_answer(cursor, id):
 
 
 @Database_connection.connection_handler
+def get_answers_comment_by_question_id(cursor, id):
+    query = """
+        SELECT answer.id AS answer_id,  comment.message, comment.submission_time, comment.edited_count
+        FROM answer 
+        INNER JOIN comment ON answer.id = comment.answer_id 
+        WHERE answer.question_id = %(id)s 
+    """
+    cursor.execute(query, {'id': id})
+    return cursor.fetchall()
+
+
+@Database_connection.connection_handler
 def get_answers_to_question(cursor, question_id):
     query = """
         SELECT * FROM answer WHERE question_id = %(question_id)s ORDER BY submission_time DESC;
@@ -202,3 +214,5 @@ def get_comments_about_question(cursor, question_id):
         """
     cursor.execute(query, {'question_id':question_id})
     return cursor.fetchall()
+
+
