@@ -13,19 +13,37 @@
             width: 100%;
         }
     </style>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     </head>
     <body>
         <h2> {{ question.title }} </h2>
         <p> </p>
         <p> {{ question.message }}<br></p>
 
-        <p>{% if question.image == 'images/' or question.image == None or question.image == '' %}
+        <p>{% if question.image == None %}
 
         {% else %}
             <td></td>
             <td><img src="{{ url_for('static', filename=question.image) }}" alt='{{ question.image }}' width="200" ></td>
             </p>
         {% endif %} <br>
+         </p>
+        <table>
+            <tr>
+                 {% for tag in tags %}
+                <td>
+                    <a href={{ url_for('delete_tag', id=tag.id) }}> #{{ tag.name }} </a>
+                </td>
+                {% endfor %}
+                {% if tags|length != 0 %}
+                    <td>Click to delete #tag</td>
+                {% endif %}
+            </tr>
+        </table>
+        <p><a href="/question/{{ question.id }}/edit">
+                    <button type="button">Edit</button>
+                </a></p>
+<h3>Answers</h3>
         <table style="width:70%">
 
                 {% for data in answers %}
@@ -41,6 +59,7 @@
                         {% endfor %}
 
                     {% if data['image'] == 'images/' or data.image == None or data.image == '' %}
+
                         <td></td>
                     {% else %}
                         <td><img src="{{ url_for('static', filename=data.image) }}" alt='{{ data.image }}' width="100" ></td>
@@ -86,13 +105,41 @@
         {% for comment in comments %}
         <div>
             <tr>
+
+<h3>Comment section</h3>
+        
+        <table>
+        <th>Message</th>
+        <th>Time</th>
+        <th>Edited count</th>
+        <th></th>
+
+        {% for comment in comments %}
+        <div>
+            <tr>
                 <td>{{ comment.message }}</td>
-                <td>{{ comment.comment_submission_time }}</td>
+                <td>{{ comment.submission_time }}</td>
                 <td>{{ comment.edited_count }}</td>
+
+                <td>
+                <form action="/comments/{{ comment['id'] }}/delete" method='POST'>
+                    <input type="hidden" value="{{ question_id }}" name="questionID">
+                    <button type="submit"><i class="fa fa-trash-o"></i></button>
+                </form>
+                </td>
+{#                <td><button style="font-size:15px;color:red">#}
+{#                    <a href="/comments/{{ comment['id'] }}/delete" method="POST">#}
+{#                        <i class="fa fa-trash-o"></i>#}
+{#                        <input type="hidden" id="custId" name="custId" value="{{ question.id }}">#}
+{#                    </a> </button>#}
+{#                </td>#}
+
+
             <tr>
          {% endfor %}
         </div>
         </table>
+
         <button> <a href="{{ url_for('add_comment', question_id=question.id) }}">Add new comment</a> </button><br>
         <button> <a href="{{ url_for('display_questions') }}">Back to list of questions</a> </button><br>
     </body>
