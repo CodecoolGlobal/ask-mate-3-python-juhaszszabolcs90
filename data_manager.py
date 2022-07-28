@@ -5,6 +5,8 @@ from datetime import datetime
 
 import Database_connection
 
+# QUESTIONS
+
 
 @Database_connection.connection_handler
 def get_five_latest_questions(cursor):
@@ -54,36 +56,6 @@ def get_columns(cursor):
 
 
 @Database_connection.connection_handler
-def get_answer(cursor, id):
-    query = """
-        SELECT * FROM answer WHERE id = %(id)s;
-    """
-    cursor.execute(query, {'id': id})
-    return cursor.fetchone()
-
-
-@Database_connection.connection_handler
-def get_answers_comment_by_question_id(cursor, id):
-    query = """
-        SELECT answer.id AS answer_id,  comment.message, comment.submission_time, comment.edited_count
-        FROM answer 
-        INNER JOIN comment ON answer.id = comment.answer_id 
-        WHERE answer.question_id = %(id)s 
-    """
-    cursor.execute(query, {'id': id})
-    return cursor.fetchall()
-
-
-@Database_connection.connection_handler
-def get_answers_to_question(cursor, question_id):
-    query = """
-        SELECT * FROM answer WHERE question_id = %(question_id)s ORDER BY submission_time DESC;
-    """
-    cursor.execute(query, {'question_id': question_id})
-    return cursor.fetchall()
-
-
-@Database_connection.connection_handler
 def get_question(cursor, id):
     query = f"""
         SELECT *
@@ -119,92 +91,6 @@ def add_question(cursor, title, message, image):
 
 
 @Database_connection.connection_handler
-def add_answer(cursor, message, question_id):
-    query = """
-            INSERT INTO answer(submission_time, vote_number, message, question_id)
-             VALUES
-            (%(dt)s, 0, %(message)s, %(question_id)s)
-            RETURNING id
-            """
-    cursor.execute(query, {'dt': datetime.now(), 'message': message, 'question_id': question_id})
-    return cursor.fetchone()
-
-@Database_connection.connection_handler
-def add_comment(cursor, question_id, message):
-    query = """
-                INSERT INTO comment(question_id, message, submission_time, edited_count)
-                 VALUES
-                (%(question_id)s,%(message)s,%(dt)s,0)
-                RETURNING id    
-                """
-    cursor.execute(query, {'question_id': question_id, 'message': message,'dt': datetime.now()})
-    return cursor.fetchone()
-
-@Database_connection.connection_handler
-def add_comment_to_answer(cursor, answer_id, message):
-    query = """
-                INSERT INTO comment(answer_id, message, submission_time, edited_count)
-                 VALUES
-                (%(answer_id)s,%(message)s,%(dt)s,0)
-                RETURNING id    
-                """
-    cursor.execute(query, {'answer_id': answer_id, 'message': message,'dt': datetime.now()})
-    return cursor.fetchone()
-
-@Database_connection.connection_handler
-def display_comment(cursor):
-    query = """
-            SELECT message, submission_time, edited_count
-            FROM comment
-        """
-    cursor.execute(query)
-    return cursor.fetchall()
-
-@Database_connection.connection_handler
-def vote_answer_up(cursor, id):
-    query = """
-        UPDATE answer
-        SET vote_number = vote_number + 1
-        WHERE id = %(id)s;"""
-    cursor.execute(query, {'id': id})
-
-
-@Database_connection.connection_handler
-def vote_answer_down(cursor, id):
-    query = """
-        UPDATE answer
-        SET vote_number = vote_number - 1
-        WHERE id = %(id)s AND vote_number > 0;"""
-    cursor.execute(query, {'id': id})
-
-
-@Database_connection.connection_handler
-def vote_question_up(cursor, id):
-    query = """
-        UPDATE question
-        SET vote_number = vote_number + 1
-        WHERE id = %(id)s;"""
-    cursor.execute(query, {'id': id})
-
-
-@Database_connection.connection_handler
-def vote_question_down(cursor, id):
-    query = """
-        UPDATE question
-        SET vote_number = vote_number - 1
-        WHERE id = %(id)s AND vote_number > 0;"""
-    cursor.execute(query, {'id': id})
-
-
-@Database_connection.connection_handler
-def delete_answer(cursor, id):
-    query = """
-        DELETE FROM answer
-        WHERE id = %(id)s;"""
-    cursor.execute(query, {'id': id})
-
-
-@Database_connection.connection_handler
 def delete_question(cursor, id):
     query = f"""
         DELETE FROM question
@@ -220,15 +106,6 @@ def delete_empty_questions(cursor):
         WHERE message = '';
     """
     cursor.execute(query)
-
-
-@Database_connection.connection_handler
-def delete_comment(cursor, question_id):
-    query = f"""
-        DELETE FROM comment
-        WHERE question_id = %(question_id)s;
-        """
-    cursor.execute(query, {'question_id': question_id})
 
 
 @Database_connection.connection_handler
@@ -267,6 +144,104 @@ def update_question_view_number(cursor, id):
     cursor.execute(query, {'id': id})
 
 
+# ANSWERS
+
+
+@Database_connection.connection_handler
+def get_answer(cursor, id):
+    query = """
+        SELECT * FROM answer WHERE id = %(id)s;
+    """
+    cursor.execute(query, {'id': id})
+    return cursor.fetchone()
+
+
+@Database_connection.connection_handler
+def get_answers_comment_by_question_id(cursor, id):
+    query = """
+        SELECT answer.id AS answer_id,  comment.id, comment.message, comment.submission_time, comment.edited_count
+        FROM answer 
+        INNER JOIN comment ON answer.id = comment.answer_id 
+        WHERE answer.question_id = %(id)s 
+    """
+    cursor.execute(query, {'id': id})
+    return cursor.fetchall()
+
+
+@Database_connection.connection_handler
+def get_answers_to_question(cursor, question_id):
+    query = """
+        SELECT * FROM answer WHERE question_id = %(question_id)s ORDER BY submission_time DESC;
+    """
+    cursor.execute(query, {'question_id': question_id})
+    return cursor.fetchall()
+
+
+@Database_connection.connection_handler
+def add_answer(cursor, message, question_id):
+    query = """
+            INSERT INTO answer(submission_time, vote_number, message, question_id)
+             VALUES
+            (%(dt)s, 0, %(message)s, %(question_id)s)
+            RETURNING id
+            """
+    cursor.execute(query, {'dt': datetime.now(), 'message': message, 'question_id': question_id})
+    return cursor.fetchone()
+
+
+@Database_connection.connection_handler
+def delete_answer(cursor, id):
+    query = """
+        DELETE FROM answer
+        WHERE id = %(id)s;"""
+    cursor.execute(query, {'id': id})
+
+
+# COMMENTS
+
+@Database_connection.connection_handler
+def add_comment(cursor, question_id, message):
+    query = """
+                INSERT INTO comment(question_id, message, submission_time, edited_count)
+                 VALUES
+                (%(question_id)s,%(message)s,%(dt)s,0)
+                RETURNING id    
+                """
+    cursor.execute(query, {'question_id': question_id, 'message': message,'dt': datetime.now()})
+    return cursor.fetchone()
+
+
+@Database_connection.connection_handler
+def add_comment_to_answer(cursor, answer_id, message):
+    query = """
+                INSERT INTO comment(answer_id, message, submission_time, edited_count)
+                 VALUES
+                (%(answer_id)s,%(message)s,%(dt)s,0)
+                RETURNING id    
+                """
+    cursor.execute(query, {'answer_id': answer_id, 'message': message,'dt': datetime.now()})
+    return cursor.fetchone()
+
+
+@Database_connection.connection_handler
+def display_comment(cursor):
+    query = """
+            SELECT message, submission_time, edited_count
+            FROM comment
+        """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@Database_connection.connection_handler
+def delete_comment(cursor, comment_id):
+    query = """
+        DELETE FROM comment
+        WHERE id = %(comment_id)s
+        """
+    cursor.execute(query, {'comment_id': comment_id})
+
+
 @Database_connection.connection_handler
 def add_comment(cursor, question_id, message):
     query = """
@@ -277,16 +252,6 @@ def add_comment(cursor, question_id, message):
                 """
     print(question_id)
     cursor.execute(query, {'question_id': question_id, 'message': message,'dt': datetime.now()})
-
-
-@Database_connection.connection_handler
-def add_tag(cursor, name):
-    query = """
-        INSERT INTO tag (name) VALUES (%(name)s)
-        RETURNING id;
-    """
-    cursor.execute(query, {'name': name})
-    return cursor.fetchone()
 
 
 @Database_connection.connection_handler
@@ -322,14 +287,56 @@ def get_comments_about_question(cursor, question_id):
     return cursor.fetchall()
 
 
-# SELECT question_id WHERE comment_id = %(comment_id)s
+# VOTE
+
+
 @Database_connection.connection_handler
-def delete_comment(cursor, comment_id):
+def vote_answer_up(cursor, id):
     query = """
-        DELETE FROM comment
-        WHERE id = %(comment_id)s
-        """
-    cursor.execute(query, {'comment_id': comment_id})
+        UPDATE answer
+        SET vote_number = vote_number + 1
+        WHERE id = %(id)s;"""
+    cursor.execute(query, {'id': id})
+
+
+@Database_connection.connection_handler
+def vote_answer_down(cursor, id):
+    query = """
+        UPDATE answer
+        SET vote_number = vote_number - 1
+        WHERE id = %(id)s AND vote_number > 0;"""
+    cursor.execute(query, {'id': id})
+
+
+@Database_connection.connection_handler
+def vote_question_up(cursor, id):
+    query = """
+        UPDATE question
+        SET vote_number = vote_number + 1
+        WHERE id = %(id)s;"""
+    cursor.execute(query, {'id': id})
+
+
+@Database_connection.connection_handler
+def vote_question_down(cursor, id):
+    query = """
+        UPDATE question
+        SET vote_number = vote_number - 1
+        WHERE id = %(id)s AND vote_number > 0;"""
+    cursor.execute(query, {'id': id})
+
+
+# TAGS
+
+
+@Database_connection.connection_handler
+def add_tag(cursor, name):
+    query = """
+        INSERT INTO tag (name) VALUES (%(name)s)
+        RETURNING id;
+    """
+    cursor.execute(query, {'name': name})
+    return cursor.fetchone()
 
 
 @Database_connection.connection_handler
