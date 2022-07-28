@@ -427,7 +427,7 @@ def delete_tag(cursor, id):
 @Database_connection.connection_handler
 def search(cursor, phrase):
     query = """
-        SELECT DISTINCT question.title, question.message FROM question
+        SELECT DISTINCT question.id, question.title, question.message FROM question
         LEFT JOIN answer ON question.id = answer.question_id
         WHERE 
             question.title LIKE '%%' || %(phrase)s || '%%' OR
