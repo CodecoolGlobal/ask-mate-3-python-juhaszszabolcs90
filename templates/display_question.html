@@ -13,6 +13,7 @@
             width: 100%;
         }
     </style>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     </head>
     <body>
         <h2> {{ question.title }} </h2>
@@ -44,7 +45,10 @@
         <table style="width:70%">
 
         {% for data in answers %}
-                <tr><td> {{ data.message }}</td>
+                <tr>
+                    <td> {{ data.message }}
+                <button> <a href="{{ url_for('add_comment_to_answer', answer_id=data.id) }}">Add new comment</a> </button><br>
+                    </td>
                 {% if data['image'] == 'images/' or data.image == None or data.image == '' %}
                         <td></td>
                     {% else %}
@@ -76,6 +80,40 @@
                 </td>
             </tr>
             </table><br><br>
+<h3>Comment section</h3>
+        {#Ide megy majd a comment tabla#}
+        <table>
+        <th>Message</th>
+        <th>Time</th>
+        <th>Edited count</th>
+        <th></th>
+
+        {% for comment in comments %}
+        <div>
+            <tr>
+                <td>{{ comment.message }}</td>
+                <td>{{ comment.submission_time }}</td>
+                <td>{{ comment.edited_count }}</td>
+
+                <td>
+                <form action="/comments/{{ comment['id'] }}/delete" method='POST'>
+                    <input type="hidden" value="{{ question_id }}" name="questionID">
+                    <button type="submit"><i class="fa fa-trash-o"></i></button>
+                </form>
+                </td>
+{#                <td><button style="font-size:15px;color:red">#}
+{#                    <a href="/comments/{{ comment['id'] }}/delete" method="POST">#}
+{#                        <i class="fa fa-trash-o"></i>#}
+{#                        <input type="hidden" id="custId" name="custId" value="{{ question.id }}">#}
+{#                    </a> </button>#}
+{#                </td>#}
+
+            <tr>
+         {% endfor %}
+        </div>
+        </table>
+
+        <button> <a href="{{ url_for('add_comment', question_id=question.id) }}">Add new comment</a> </button><br>
         <button> <a href="{{ url_for('display_questions') }}">Back to list of questions</a> </button><br>
     </body>
 </html>

@@ -226,6 +226,16 @@ def update_question_view_number(cursor, id):
 
 
 @Database_connection.connection_handler
+def add_comment(cursor, question_id, message):
+    query = """
+                INSERT INTO comment(question_id, message, submission_time, edited_count)
+                 VALUES
+                (%(question_id)s,%(message)s,%(dt)s,0)
+                RETURNING id
+                """
+    print(question_id)
+    cursor.execute(query, {'question_id': question_id, 'message': message,'dt': datetime.now()})
+
 def add_tag(cursor, name):
     query = """
         INSERT INTO tag (name) VALUES (%(name)s)
@@ -236,6 +246,47 @@ def add_tag(cursor, name):
 
 
 @Database_connection.connection_handler
+def display_comment(cursor):
+    query = """
+            SELECT message, submission_time, edited_count
+            FROM comment
+        """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@Database_connection.connection_handler
+def add_comment_to_answer(cursor, answer_id, message):
+    query = """
+                INSERT INTO comment(answer_id, message, submission_time, edited_count)
+                 VALUES
+                (%(answer_id)s,%(message)s,%(dt)s,0)
+                RETURNING id    
+                """
+    cursor.execute(query, {'answer_id': answer_id, 'message': message,'dt': datetime.now()})
+    return cursor.fetchone()
+
+
+@Database_connection.connection_handler
+def get_comments_about_question(cursor, question_id):
+    query = """
+            SELECT *
+            FROM comment
+            WHERE question_id = %(question_id)s;
+        """
+    cursor.execute(query, {'question_id':question_id})
+    return cursor.fetchall()
+
+
+# SELECT question_id WHERE comment_id = %(comment_id)s
+@Database_connection.connection_handler
+def delete_comment(cursor, comment_id):
+    query = """
+        DELETE FROM comment
+        WHERE id = %(comment_id)s
+        """
+    cursor.execute(query, {'comment_id': comment_id})
+=======
 def get_tag(cursor, name):
     query = """
         SELECT id FROM tag WHERE name = %(name)s;
