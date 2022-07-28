@@ -59,6 +59,8 @@
                         </td>
                     </tr>
                     <tr>
+                        <td><a href="/answer/{{ data.id }}/edit">
+                            <button type="button">Edit</button></a></td>
                         <td> {{ data.submission_time.strftime("%d-%m-%Y %H:%M") }}</td>
                         <td> <button> <a href="{{ url_for('add_comment_to_answer', answer_id=data.id) }}">Add new comment</a> </button></td>
                     </tr>

@@ -197,6 +197,15 @@ def delete_answer(cursor, id):
     cursor.execute(query, {'id': id})
 
 
+@Database_connection.connection_handler
+def edit_answer(cursor, id, message):
+    query = """
+        UPDATE answer
+        SET message = %(message)s
+        WHERE id = %(id)s;
+    """
+    cursor.execute(query, {'id': id, 'message': message})
+
 # COMMENTS
 
 @Database_connection.connection_handler

@@ -110,16 +110,30 @@ def edit_question(question_id):
     if request.method == 'POST':
         title = request.form.get('title')
         message = request.form.get('message')
-        image = 'images/%s' % request.files.get('image', '').filename
-        file = request.files['image']
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        image = None
+        if request.files.get('image').filename != '':
+            image = 'images/%s' % request.files.get('image', '').filename
+            file = request.files['image']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         data_manager.update_question(question_id, title, message, image)
-        return redirect(url_for("display_questions"))
+        return redirect(url_for("display_question", question_id=question_id))
     else:
         question = data_manager.get_question(question_id)
         return render_template("edit_question.html", question=question)
+
+
+@app.route('/answer/<answer_id>/edit', methods=['GET', 'POST'])
+def edit_answer(answer_id):
+    if request.method == 'POST':
+        message = request.form.get('message')
+        data_manager.edit_answer(answer_id, message)
+        answer = data_manager.get_answer(answer_id)
+        return redirect(url_for("display_question", question_id=answer.get('question_id')))
+    else:
+        answer = data_manager.get_answer(answer_id)
+        return render_template("edit_answer.html", answer=answer)
 
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
