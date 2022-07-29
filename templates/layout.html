@@ -8,14 +8,14 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
-    <style>
-        .bg-image {
-            background-image: url("/images/bg.png");
-            background-size: contain;
-            width: 400px;
-            height: 100vh;
-        }
-    </style>
+{#    <style>#}
+{#        .bg-image {#}
+{#            background-image: url("/images/bg.png");#}
+{#            background-size: contain;#}
+{#            width: 400px;#}
+{#            height: 100vh;#}
+{#        }#}
+{#    </style>#}
 
 </head>
 
@@ -23,7 +23,7 @@
 <div class="content-wrapper">
 {% block content %}
 
-<div class="bg-image"></div>
+{#<div class="bg-image"></div>#}
 {% endblock %}
 </div>
 </body>

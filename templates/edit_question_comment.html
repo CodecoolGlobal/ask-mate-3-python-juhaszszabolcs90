@@ -2,7 +2,8 @@
 {% block title %}Edit comment{% endblock %}
 
 {% block content %}
-<form action='{{ url_for('edit_comment_question', comment_id=comment.id) }}' method="POST" enctype="multipart/form-data">
+<div class="container">
+    <form action='{{ url_for('edit_comment_question', comment_id=comment.id) }}' method="POST" enctype="multipart/form-data">
 
     <label for="message">Message</label><br>
     <textarea id="message" name="message"  rows="20" cols="50" required>{{ comment.message }}</textarea><br><br>
@@ -11,5 +12,5 @@
     <form action="/comment/{{ comment.id }}/update" method = 'POST'>
     <button type='submit' class="update-btn">UPDATE</button>
     </form>
-
+</div>
 {% endblock %}

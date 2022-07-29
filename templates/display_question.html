@@ -8,7 +8,7 @@
 
             <p> {{ question.message }}</p>
         </div>
-    </div>
+    </div><br>
         <div class="container">
             {% if question.image == None %}
                <p></p>
@@ -35,7 +35,7 @@
 <div class="container">
     <h3>Answers</h3>
         <table class= "table table-hover table-condensed" style="width:100%">
-                <tr class="table-danger">>
+                <tr class="table-danger">
                     <th class="table-info"> Answer message</th>
                     <th> Vote number</th>
                     <th></th>
@@ -114,9 +114,11 @@
         {% endfor %}
         </div>
         </table>
-</div>
+</div><br>
+
 <div class="container">
         <button> <a class= "rainbow rainbow-1" href="{{ url_for('add_comment', question_id=question.id) }}">Add new comment</a> </button>
         <button> <a class= "rainbow rainbow-1" href="{{ url_for('display_questions') }}"><i class="fa fa-home"></i>Back to list of questions</a> </button><br>
 <br></div>
+
 {% endblock %}

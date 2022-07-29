@@ -2,7 +2,7 @@
 {% block title %}Friendster{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container"><br>
     <h1>FRIENDSTER</h1>
     <h4>New questions</h4>
     <form action="/search" method="GET">
@@ -26,7 +26,7 @@
                     <td> {{ data.date.strftime("%d-%m-%Y %H:%M") }}</td>
                     <td> {{ data.views }}</td>
                     <td> {{ data.votes }}</td>
-                    <td> <a href={{ url_for('display_question', question_id=data.id) }} > {{ data.title }} </a>
+                    <td> <a class= "rainbow rainbow-1" href={{ url_for('display_question', question_id=data.id) }} > {{ data.title }} </a>
                     </td>
                     <td> {{ data.message }}</td>
                     {% if data.image == 'images/' or data.image == None or data.image == '' %}
