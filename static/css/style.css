@@ -11,3 +11,22 @@
 /*    padding: 2px;*/
 /*    letter-spacing: 0.5em;*/
 /*}*/
+
+body {margin: 0;
+    background-image: url(../images/light_background.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 0;
+    height: 400px;}
+
+
+.hero{background-color: #074f570;
+    background-image: url(../images/colorful_aurora_bluish-wallpaper-1600x900.jpg);
+    color:white;
+    height: 150px;
+}
+
+.rainbow-1:hover{
+   background-image: linear-gradient(90deg, #00C0FF 0%, #FFCF00 49%, #FC4F4F 80%, #00C0FF 100%);
+   animation:slidebg 2s linear infinite;
+}

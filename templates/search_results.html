@@ -1,14 +1,16 @@
 {% extends 'layout.html' %}
 {% block title %}Search results{% endblock %}
 
-{% block content %}
-{% if search_results|length != 0 %}
-    {% for result in search_results %}
-        <p><a href={{ url_for('display_question', question_id=result.id) }} > {{ result.title }} </a></p>
-        <p>{{ result.message }}</p>
-    {% endfor %}
-{% else %}
-    <p>No matches for your search</p>
-{% endif %}
-<p><button> <a href="/list">Take me back</a> </button></p>
+{% block content %}<br>
+<div class="container">
+    {% if search_results|length != 0 %}
+        {% for result in search_results %}
+            <p><a href={{ url_for('display_question', question_id=result.id) }} > {{ result.title }} </a></p>
+            <p>{{ result.message }}</p>
+        {% endfor %}
+    {% else %}
+        <p>No matches for your search</p>
+    {% endif %}
+    <p><button> <a class= "rainbow rainbow-1" href="/list">Take me back</a> </button></p>
+</div>
 {% endblock %}

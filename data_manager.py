@@ -45,14 +45,14 @@ def get_and_sort_questions(cursor, order_by='submission_time', order='DESC'):
     return cursor.fetchall()
 
 
-@Database_connection.connection_handler
-def get_columns(cursor):
-    query = """
-        SELECT submission_time AS date, view_number AS views, vote_number AS votes, title, message
-        FROM question;
-    """
-    cursor.execute(query)
-    return cursor.fetchone()
+# @Database_connection.connection_handler
+# def get_columns(cursor):
+#     query = """
+#         SELECT submission_time AS date, view_number AS views, vote_number AS votes, title, message
+#         FROM question;
+#     """
+#     cursor.execute(query)
+#     return cursor.fetchone()
 
 
 @Database_connection.connection_handler
