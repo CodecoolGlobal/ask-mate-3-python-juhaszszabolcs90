@@ -1,0 +1,120 @@
+{% extends 'layout.html' %}
+{% block title %}View answers{% endblock %}
+
+{% block content %}
+    <br>
+    <div class="container">
+    <h2> {{ question.title }} </h2>
+    </div>
+
+    <div class="container">
+
+        <p> {{ question.message }}<br></p>
+
+        <p>{% if question.image == None %}
+           <p></p>
+        {% else %}
+            <p><img src="{{ url_for('static', filename=question.image) }}" alt='{{ question.image }}' width="200" ></p>
+
+        {% endif %} <br>
+        </p>
+
+                 {% for tag in tags %}
+                <p>
+                    <a href={{ url_for('delete_tag', id=tag.id) }}> #{{ tag.name }} </a>
+                </p>
+                {% endfor %}
+                {% if tags|length != 0 %}
+                    <p>Click to delete #tag</p>
+                {% endif %}
+                    <p><a href="/question/{{ question.id }}/edit">
+                    <button type="button">Edit</button></a>
+        </p>
+    </div>
+<div class="container">
+    <h3>Answers</h3>
+        <table class= "table table-hover table-condensed" style="width:100%">
+                <tr>
+                    <th> Answer message</th>
+                    <th> Vote number</th>
+                    <th></th>
+                    <th> Time</th>
+                    <th colspan="4"> Options</th>
+
+                </tr>
+
+                {% for data in answers %}
+                    <tr class="table-info">
+                        <td> {{ data.message }} </td>
+                        <td> {{ data.vote_number }}<td>
+                        <td> {{ data.submission_time.strftime("%d-%m-%Y %H:%M") }}</td>
+                        <td><a href="/answer/{{ data.id }}/vote-up">
+                                <button type="button">↑</button></a>
+                            <a href="/answer/{{ data.id }}/vote-down">
+                                <button type="button">↓</button></a>
+                        </td>
+                        <td><form action='{{ url_for( 'delete_answer', answer_id = data.id) }}' method = 'POST'>
+                            <button type='submit' class="delete-btn">Delete</button></form>
+                        </td>
+
+                        <td><a href="/answer/{{ data.id }}/edit">
+                            <button type="button">Edit answer</button></a></td>
+
+                        <td> <button> <a href="{{ url_for('add_comment_to_answer', answer_id=data.id) }}">Add new comment</a> </button></td>
+                    </tr>
+                        {% for commentdata in answers_comment %}
+                            {% if commentdata.answer_id == data.id %}
+                                <tr class="table-secondary">
+                                    <td>{{ commentdata.message }}</td>
+                                    <td colspan="5">
+                                    <td><a href="/comment/{{ commentdata.id }}/edit"><button type="button">Edit comment</button></a></td>
+                                    <td><form action="/comments/{{ commentdata.id }}/delete" method='POST'>
+                                    <input type="hidden" value="{{ question_id }}" name="questionID">
+                                    <button type="submit"><i class="fa fa-trash-o"></i></button>
+                                    </form></td>
+                                </tr>
+
+                            {% endif %}
+                        {% endfor %}
+
+                {% endfor %}
+        </table>
+
+    `   <a href="/question/{{ question.id }}/new-answer">
+            <button type="button">Post answer</button>
+        </a>
+</div>
+<br>
+
+<div class="container">
+<h3>Comment section</h3>
+
+        <table class="table table-hover table-condensed" style="width:60%">
+        <th>Message</th>
+        <th>Time</th>
+        <th>Edit count</th>
+        <th></th>
+
+        {% for comment in comments %}
+        <div>
+            <tr class="table-secondary">
+                <td>{{ comment.message }}</td>
+                <td>{{ comment.submission_time.strftime("%d-%m-%Y %H:%M") }}</td>
+                <td>{{ comment.edited_count }}</td>
+                <td><a href="/comment/{{ comment.id }}/edit"><button type="button">Edit</button></a></td>
+                <td>
+                <form action="/comments/{{ comment['id'] }}/delete" method='POST'>
+                    <input type="hidden" value="{{ question_id }}" name="questionID">
+                    <button type="submit"><i class="fa fa-trash-o"></i></button>
+                </form>
+                </td>
+
+            <tr>
+        {% endfor %}
+        </div>
+        </table>
+
+        <button> <a href="{{ url_for('add_comment', question_id=question.id) }}">Add new comment</a> </button><br>
+        <button> <a href="{{ url_for('display_questions') }}">Back to list of questions</a> </button><br>
+</div>
+{% endblock %}

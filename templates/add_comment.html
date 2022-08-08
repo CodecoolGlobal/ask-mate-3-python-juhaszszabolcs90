@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+{% block title %}Post comment{% endblock %}
+
+{% block content %}
+<h2>Add comment</h2>
+<h1>Add comment</h1>
+<form action='{{ url_for('add_comment', question_id=question_id) }}' method="post">
+
+    <label for="message">Message</label><br>
+    <textarea id="message" name="message"  rows="10" cols="50" required></textarea><br><br>
+    <button type="submit">Post</button>
+</form>
+{% endblock %}

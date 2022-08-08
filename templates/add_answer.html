@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+{% block title %}Post answer{% endblock %}
+
+{% block content %}
+<div class="container">
+
+<h2>Give an answer</h2><br>
+<form action='{{ url_for('add_answer', question_id=question_id) }}' method="POST" enctype="multipart/form-data">
+
+    <label for="message">Message</label><br>
+    <textarea id="message" name="message"  rows="10" cols="50" required></textarea><br><br>
+
+
+    <button type="submit">Post</button>
+</form>
+</div>
+{% endblock %}
