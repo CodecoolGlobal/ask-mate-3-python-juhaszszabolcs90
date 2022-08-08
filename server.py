@@ -1,24 +1,27 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from werkzeug.utils import secure_filename
 from psycopg2.errors import UniqueViolation
+from datetime import timedelta
 import data_manager
 
 from bonus_questions import SAMPLE_QUESTIONS
 
 import os
+
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-
-
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 UPLOAD_FOLDER = 'static/images'
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.secret_key = b'\x1dH@\xb94\xc9\xb0\x8e\xd5\xa8\xfe\\r\x00\x0c\xb4'
+app.permanent_session_lifetime = timedelta(minutes=10)
 
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @app.route("/bonus-questions")
 def main():
@@ -229,6 +232,18 @@ def delete_tag(id):
     question_tag_id = data_manager.get_question_id_for_tag(id)
     data_manager.delete_tag(id)
     return redirect(url_for('display_question', question_id=question_tag_id.get('question_id')))
+
+
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    if request.method == "POST":
+        username = request.form['username']
+        plain_text_password = request.form['password']
+        hashed_password = data_manager.hash_password(plain_text_password)
+        data_manager.users[username] = hashed_password
+        session['username'] = username
+        return redirect(url_for('index'))
+    return render_template('register.html')
 
 
 if __name__ == "__main__":
