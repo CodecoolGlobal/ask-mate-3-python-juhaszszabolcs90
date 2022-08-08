@@ -2,7 +2,16 @@
 {% block title %}Friendster{% endblock %}
 
 {% block content %}
-<div class="container"><br>
+{#    FLASH message#}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p style="color:#FF0000">{{msg}}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+<div class="container">
     <h1>FRIENDSTER</h1>
     <h4>New questions</h4>
     <form action="/search" method="GET">
@@ -38,5 +47,13 @@
             {% endfor %}
  </table>
 <button> <a class= "rainbow rainbow-1" href="/list">To all questions</a> </button>
+</div>
+
+    <div class="container">
+    {% if username %}
+        <a href = '/logout'>Log out</a>&nbsp;&nbsp;&nbsp;
+    {% else %}
+        <a href = '/login'>Log in</a>
+    {% endif %}
 </div>
 {% endblock %}

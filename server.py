@@ -12,6 +12,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 UPLOAD_FOLDER = 'static/images'
 
+
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = b'\x1dH@\xb94\xc9\xb0\x8e\xd5\xa8\xfe\\r\x00\x0c\xb4'
@@ -30,9 +31,12 @@ def main():
 
 @app.route("/")
 def index():
+    if 'username' in session:
+        username = session['username']
+        flash(f'You are logged in {username}')
     data_manager.delete_empty_questions()
     questions = data_manager.get_five_latest_questions()
-    return render_template('index.html', questions=questions)
+    return render_template('index.html', questions=questions, username=username)
 
 
 @app.route("/list", methods=['GET', 'POST'])
