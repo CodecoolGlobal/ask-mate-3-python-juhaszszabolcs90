@@ -26,27 +26,22 @@ def index():
     return render_template('index.html', questions=questions)
 
 
-@app.route("/list")
+@app.route("/list", methods=['GET', 'POST'])
 def display_questions():
     data_manager.delete_empty_questions()
-    if request.method == 'POST':
-        return redirect(url_for('add_question'))
-    columns = data_manager.get_columns()
-    if request.args.get('sort'):
-        for_order_by = request.args.get('sort').split('|')
-        order_by = for_order_by[0]
-        order = for_order_by[1]
-        column_names = {
-            'date': 'submission_time',
-            'views': 'view_number',
-            'votes': 'vote_number',
-            'title': 'title',
-            'message': 'message'
-        }
-        questions = data_manager.get_and_sort_questions(column_names[order_by], order)
-    else:
-        questions = data_manager.get_and_sort_questions()
-    return render_template('questions.html', questions=questions, columns=columns.keys(), order=['ASC', 'DESC'], sort=request.args.get('sort'))
+    column_names = {
+        'date': 'submission_time',
+        'views': 'view_number',
+        'votes': 'vote_number',
+        'title': 'title',
+        'message': 'message'
+    }
+    for_order_by = request.args.get('sort', 'title|ASC').split('|')
+    order_by = for_order_by[0]
+    order = for_order_by[1]
+
+    questions = data_manager.get_and_sort_questions(column_names[order_by], order)
+    return render_template('questions.html', questions=questions, columns=column_names.keys(), order=['ASC', 'DESC'], sort=request.args.get('sort'))
 
 
 @app.route("/question/<question_id>", methods=["GET", 'POST'])
