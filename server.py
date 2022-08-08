@@ -31,12 +31,14 @@ def main():
 
 @app.route("/")
 def index():
-    if 'username' in session:
-        username = session['username']
-        flash(f'You are logged in {username}')
     data_manager.delete_empty_questions()
     questions = data_manager.get_five_latest_questions()
-    return render_template('index.html', questions=questions, username=username)
+    if 'username' in session:
+        username = session['username']
+        flash(f'You are logged in as {username}')
+        return render_template('index.html', questions=questions, username=username)
+
+    return render_template('index.html', questions=questions)
 
 
 @app.route("/list", methods=['GET', 'POST'])
@@ -248,6 +250,35 @@ def register():
         session['username'] = username
         return redirect(url_for('index'))
     return render_template('register.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        session.permanent = True
+        username = request.form['username']
+        plain_text_password = request.form['psw']
+        if username in data_manager.users.keys():
+            if data_manager.verify_password(plain_text_password, data_manager.users[username]):
+                session['username'] = username
+            return redirect(url_for('index'))
+        elif username not in data_manager.users.keys():
+            flash(f'No such as username as: {username} and password combination')
+            return redirect(url_for('login'))
+    else:
+        if "user" in session:
+            return redirect(url_for('index'))
+    return render_template('login.html')
+
+
+@app.route('/logout')
+def logout():
+    if 'username' in session:
+        username = session['username']
+        session.clear()
+    # session.pop("user", None)
+    flash(f'You have been logged out {username}')
+    return redirect(url_for('index'))
 
 
 if __name__ == "__main__":

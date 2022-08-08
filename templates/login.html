@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="container"><br>
+    <h2>Login</h2>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p style="color:#FF0000";>{{msg}}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="post">
+        <p>Email<br><input type="email" name=username>
+        <p>Password<br><input type="password" name="psw">
+        <p><input type=submit value=Login>
+    </form>
+</div>
+
+<div class="container">
+    <p>If you do not have an account, please register it</p><br>
+    <a href = '/register'>REGISTER</a>
+</div>
+{% endblock %}
