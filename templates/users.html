@@ -26,21 +26,14 @@
 
         {% for users in users_data %}
             <tr class="table-info">
-                <td> <a href={{ url_for('user', user_name=users.user_name) }} > {{ users.user_name }} </a> </td>
+                <td> <a href={{ url_for('user', user_name=users.user_name) }} > {{ users.user_name }} </a></td>
                 <td> {{ users.submission_time.strftime("%Y-%m-%d %H:%M") }}</td>
-{#                <td> {{ users. }}<td>#}
-{#                <td> {{ users. }}<td>#}
-{#                <td> {{ users. }}<td>#}
+                <td> {{ users.number_of_questions }}<td>
+                <td> {{ users.number_of_answers }}<td>
+                <td> {{ users.number_of_comments }}<td>
                 <td> {{ users.honor }}</td>
-
             </tr>
         {% endfor %}
-        {#Username (with a link to the user page if implemented)#}
-        {#Registration date#}
-        {#Number of asked questions (if binding is implemented)#}
-        {#Number of answers (if binding is implemented)#}
-        {#Number of comments (if binding is implemented)#}
-        {#Reputation (if implemented)#}
 
 
         <div class="container">

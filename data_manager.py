@@ -86,8 +86,10 @@ def get_question(cursor, id):
 @Database_connection.connection_handler
 def list_users(cursor):
     query = """
-    SELECT *
-    FROM users_data
+    SELECT users_data.*,
+       (SELECT COUNT(question.user_id) from question where question.user_id = users_data.id) AS number_of_questions,
+       (SELECT COUNT(answer.user_id) from answer where answer.user_id = users_data.id) AS number_of_answers,
+       (SELECT COUNT(comment.user_id) from comment where comment.user_id = users_data.id) AS number_of_comments FROM users_data
     """
     cursor.execute(query)
     return cursor.fetchall()
@@ -346,14 +348,14 @@ def display_comment(cursor):
 
 
 @Database_connection.connection_handler
-def add_comment_to_answer(cursor, answer_id, message):
+def add_comment_to_answer(cursor, user_id, answer_id, message):
     query = """
-                INSERT INTO comment(answer_id, message, submission_time, edited_count)
+                INSERT INTO comment(user_id, answer_id, message, submission_time, edited_count)
                  VALUES
-                (%(answer_id)s,%(message)s,%(dt)s,0)
+                (%(user_id)s, %(answer_id)s,%(message)s,%(dt)s,0)
                 RETURNING id    
                 """
-    cursor.execute(query, {'answer_id': answer_id, 'message': message,'dt': datetime.now()})
+    cursor.execute(query, {'user_id': user_id, 'answer_id': answer_id, 'message': message,'dt': datetime.now()})
     return cursor.fetchone()
 
 
