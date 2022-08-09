@@ -144,7 +144,7 @@ def add_question(cursor, user_id, title, message, image):
 def add_users(cursor, user_name, email, password):
     dt = datetime.now()
     query = """
-            INSERT INTO users_data(user_name, email, password, honor, role, registration_time)  
+            INSERT INTO users_data(user_name, email, password, honor, role, submission_time)  
             VALUES
             (%(user_name)s,%(email)s,%(password)s, 0, 0, %(dt)s)
             RETURNING id
