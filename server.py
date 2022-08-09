@@ -72,11 +72,14 @@ def display_question(question_id):
 
 @app.route('/add_question/', methods=['GET', 'POST'])
 def add_question():
+    username = session.get('username', 'lazlo') # replace with if username in session
+    logged_in_user = data_manager.get_user(username)
+    user_id = logged_in_user['id']
     title = ''
     message = ''
     image = None
     if data_manager.get_question_by_title(title) is None:
-        new_question = data_manager.add_question(title, message, image)
+        new_question = data_manager.add_question(user_id, title, message, image)
     else:
         new_question = data_manager.get_question_by_title(title)
     tags = data_manager.get_tags(new_question.get('id'))
@@ -283,6 +286,11 @@ def logout():
     return redirect(url_for('index'))
 
 
+@app.route('/users')
+def users():
+    # if 'username' in session:
+    username = session.get('username', 'lazlo')
+    return render_template('users.html')
 
 
 if __name__ == "__main__":
