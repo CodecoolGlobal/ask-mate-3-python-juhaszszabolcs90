@@ -140,4 +140,5 @@ INSERT INTO question_tag VALUES (1, 3);
 INSERT INTO question_tag VALUES (2, 3);
 
 INSERT INTO users_data VALUES (0,'lazlo', 'lazlo@lazlo.com', '$2b$12$B0RoonchcmcHFe0SG2CHyOJtXi2ubd1FBnzTxIrNHtA7u/JmHk1F6', 0, 'user');
+
 SELECT pg_catalog.setval('users_data_id_seq', 1, true);
