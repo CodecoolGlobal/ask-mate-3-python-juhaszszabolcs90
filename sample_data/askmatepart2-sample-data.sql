@@ -73,7 +73,7 @@ CREATE TABLE public.users_data (
     password  varchar not null,
     honor     int,
     role      varchar not null,
-    registration_time    timestamp without time zone
+    submission_time   timestamp without time zone
 );
 
 create unique index users_data_email_uindex
@@ -139,7 +139,7 @@ INSERT INTO question VALUES (2, NULL,'2017-05-01 10:41:00', 1364, 57, 'Drawing c
 ', NULL);
 SELECT pg_catalog.setval('question_id_seq', 2, true);
 
-INSERT INTO answer VALUES (1, NULL,'2017-04-28 16:49:00', 4, 1, 'You need to use brackets: my_list = []', NULL);
+INSERT INTO answer VALUES (1, NULL, '2017-04-28 16:49:00', 4, 1, 'You need to use brackets: my_list = []', NULL);
 INSERT INTO answer VALUES (2, NULL, '2017-04-25 14:42:00', 35, 1, 'Look it up in the Python docs', 'images/image2.jpg');
 SELECT pg_catalog.setval('answer_id_seq', 2, true);
 
@@ -156,5 +156,5 @@ INSERT INTO question_tag VALUES (0, 1);
 INSERT INTO question_tag VALUES (1, 3);
 INSERT INTO question_tag VALUES (2, 3);
 
-INSERT INTO users_data VALUES (1,'lazlo', 'lazlo@lazlo.com', '$2b$12$B0RoonchcmcHFe0SG2CHyOJtXi2ubd1FBnzTxIrNHtA7u/JmHk1F6', 0, 'user');
+INSERT INTO users_data VALUES (1,'lazlo', 'lazlo@lazlo.com', '$2b$12$B0RoonchcmcHFe0SG2CHyOJtXi2ubd1FBnzTxIrNHtA7u/JmHk1F6', 0, 'user', '2022-08-08 16:55:00');
 SELECT pg_catalog.setval('users_data_id_seq', 2, true);

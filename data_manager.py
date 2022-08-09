@@ -92,22 +92,22 @@ def list_users(cursor):
     cursor.execute(query)
     return cursor.fetchall()
 
+# @Database_connection.connection_handler
+# def get_user(cursor, user_name):
+#     query = """
+#     SELECT user_name, password
+#     FROM users_data
+#     WHERE user_name = %(user_name)s
+#
+#     """
+#     cursor.execute(query,{'user_name': user_name})
+#     return cursor.fetchone()
+
+
 @Database_connection.connection_handler
 def get_user(cursor, user_name):
     query = """
-    SELECT user_name, password
-    FROM users_data
-    WHERE user_name = %(user_name)s
-
-    """
-    cursor.execute(query,{'user_name': user_name})
-    return cursor.fetchone()
-
-
-@Database_connection.connection_handler
-def get_user(cursor, user_name):
-    query = """
-    SELECT id, user_name, email, password, honor, role, registration_time
+    SELECT id, user_name, email, password, honor, role, submission_time
     FROM users_data
     WHERE user_name = %(user_name)s
     """
@@ -247,7 +247,7 @@ def add_answer(cursor, user_id, message, question_id):
             (%(dt)s, %(user_id)s, 0, %(message)s, %(question_id)s)
             RETURNING id
             """
-    cursor.execute(query, {'dt': datetime.now(), 'user_id': user_id, 'message': message, 'question_id': question_id})
+    cursor.execute(query, {'dt': datetime.now(), 'user_id':user_id, 'message': message, 'question_id': question_id})
     return cursor.fetchone()
 
 

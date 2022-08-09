@@ -295,9 +295,22 @@ def logout():
 
 @app.route('/users')
 def users():
-    # if 'username' in session:
-    username = session.get('username', 'lazlo')
-    return render_template('users.html')
+    if 'username' in session:
+        users_data = data_manager.list_users()
+        print(users_data)
+        return render_template('users.html', users_data=users_data)
+    else:
+        flash(f'you need to be logged in to check users')
+        return redirect(url_for('index'))
+
+@app.route('/user/<user_name>')
+def user(user_name):
+    if 'username' in session:
+        user_data = data_manager.get_user(user_name)
+        return render_template('user_page.html', user_data=user_data)
+    else:
+        flash(f'you need to be logged in to check users')
+        return redirect(url_for('index'))
 
 
 if __name__ == "__main__":
