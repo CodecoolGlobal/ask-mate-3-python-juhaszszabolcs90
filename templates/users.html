@@ -1,0 +1,44 @@
+{% extends 'layout.html' %}
+{% block title %}Users{% endblock %}
+
+{% block content %}
+<div class="container"><br>
+    <h2>Users</h2>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p style="color:#FF0000";>{{msg}}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+<table class= "table table-hover table-condensed" style="width:100%">
+    <tr class="table-danger">
+        <th> Username</th>
+        <th> Registration date</th>
+        <th> Number of asked questions</th>
+        <th> Number of answers</th>
+        <th> Number of comments</th>
+        <th> Reputation</th>
+{#        <th colspan="4"> Options</th>#}
+    </tr>
+
+        {% for user in users %}
+        <tr class="table-info">
+            <td> {{ data.message }} </td>
+            <td> {{ data.vote_number }}<td>
+            <td> {{ data.submission_time.strftime("%d-%m-%Y %H:%M") }}</td>
+        </tr>
+        {% endfor %}
+{#Username (with a link to the user page if implemented)#}
+{#Registration date#}
+{#Number of asked questions (if binding is implemented)#}
+{#Number of answers (if binding is implemented)#}
+{#Number of comments (if binding is implemented)#}
+{#Reputation (if implemented)#}
+
+
+<div class="container">
+</div>
+{% endblock %}

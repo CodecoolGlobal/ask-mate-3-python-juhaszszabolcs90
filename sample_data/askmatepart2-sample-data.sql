@@ -5,6 +5,7 @@
 -- Dumped from database version 9.5.6
 -- Dumped by pg_dump version 9.5.6
 ALTER TABLE IF EXISTS ONLY public.users_data DROP CONSTRAINT IF EXISTS pk_users_data CASCADE;
+ALTER TABLE IF EXISTS ONLY public.question DROP CONSTRAINT IF EXISTS fk_users_data_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.question DROP CONSTRAINT IF EXISTS pk_question_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.answer DROP CONSTRAINT IF EXISTS pk_answer_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.answer DROP CONSTRAINT IF EXISTS fk_question_id CASCADE;
@@ -16,22 +17,11 @@ ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_ques
 ALTER TABLE IF EXISTS ONLY public.tag DROP CONSTRAINT IF EXISTS pk_tag_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_tag_id CASCADE;
 
-CREATE TABLE users_data (
-    id     serial
-        constraint pk_users_data
-            primary key,
-    user_name varchar not null,
-    email     varchar not null,
-    password  varchar not null,
-    honor     int,
-    role      varchar not null,
-    registration_time    timestamp without time zone
-);
-
 
 DROP TABLE IF EXISTS public.question;
 CREATE TABLE question (
     id serial NOT NULL,
+    user_id integer,
     submission_time timestamp without time zone,
     view_number integer,
     vote_number integer,
@@ -73,11 +63,25 @@ CREATE TABLE tag (
     name text
 );
 
+DROP TABLE IF EXISTS public.users_data;
+CREATE TABLE public.users_data (
+    id     serial not null,
+    user_name varchar not null,
+    email     varchar not null,
+    password  varchar not null,
+    honor     int,
+    role      varchar not null,
+    registration_time    timestamp without time zone
+);
+
 create unique index users_data_email_uindex
     on users_data (email);
 
 create unique index users_data_user_name_uindex
     on users_data (user_name);
+
+ALTER TABLE ONLY users_data
+    ADD CONSTRAINT pk_users_data_id PRIMARY KEY (id);
 
 ALTER TABLE ONLY answer
     ADD CONSTRAINT pk_answer_id PRIMARY KEY (id);
@@ -109,8 +113,12 @@ ALTER TABLE ONLY comment
 ALTER TABLE ONLY question_tag
     ADD CONSTRAINT fk_tag_id FOREIGN KEY (tag_id) REFERENCES tag(id) ON DELETE CASCADE;
 
-INSERT INTO question VALUES (0, '2017-04-28 08:29:00', 29, 7, 'How to make lists in Python?', 'I am totally new to this, any hints?', NULL);
-INSERT INTO question VALUES (1, '2017-04-29 09:19:00', 15, 9, 'Wordpress loading multiple jQuery Versions', 'I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $(".myBook").booklet();
+ALTER TABLE ONLY question
+    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users_data(id) ON DELETE CASCADE;
+
+
+INSERT INTO question VALUES (0, NULL,'2017-04-28 08:29:00', 29, 7, 'How to make lists in Python?', 'I am totally new to this, any hints?', NULL);
+INSERT INTO question VALUES (1, NULL, '2017-04-29 09:19:00', 15, 9, 'Wordpress loading multiple jQuery Versions', 'I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $(".myBook").booklet();
 
 I could easy managing the loading order with wp_enqueue_script so first I load jquery then I load booklet so everything is fine.
 
@@ -119,7 +127,7 @@ BUT in my theme i also using jquery via webpack so the loading order is now foll
 jquery
 booklet
 app.js (bundled file with webpack, including jquery)', 'images/image1.png');
-INSERT INTO question VALUES (2, '2017-05-01 10:41:00', 1364, 57, 'Drawing canvas with an image picked with Cordova Camera Plugin', 'I''m getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I''m on IOS, it throws errors such as cross origin issue, or that I''m trying to use an unknown format.
+INSERT INTO question VALUES (2, NULL,'2017-05-01 10:41:00', 1364, 57, 'Drawing canvas with an image picked with Cordova Camera Plugin', 'I''m getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I''m on IOS, it throws errors such as cross origin issue, or that I''m trying to use an unknown format.
 ', NULL);
 SELECT pg_catalog.setval('question_id_seq', 2, true);
 
@@ -140,6 +148,5 @@ INSERT INTO question_tag VALUES (0, 1);
 INSERT INTO question_tag VALUES (1, 3);
 INSERT INTO question_tag VALUES (2, 3);
 
-INSERT INTO users_data VALUES (0,'lazlo', 'lazlo@lazlo.com', '$2b$12$B0RoonchcmcHFe0SG2CHyOJtXi2ubd1FBnzTxIrNHtA7u/JmHk1F6', 0, 'user');
-
-SELECT pg_catalog.setval('users_data_id_seq', 1, true);
+INSERT INTO users_data VALUES (1,'lazlo', 'lazlo@lazlo.com', '$2b$12$B0RoonchcmcHFe0SG2CHyOJtXi2ubd1FBnzTxIrNHtA7u/JmHk1F6', 0, 'user');
+SELECT pg_catalog.setval('users_data_id_seq', 2, true);

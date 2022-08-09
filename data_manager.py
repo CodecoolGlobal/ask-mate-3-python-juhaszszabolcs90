@@ -20,7 +20,7 @@ def verify_password(plain_text_password, hashed_password):
 
 
 users = {'john@doe.com': '$2b$12$/TYFvXOy9wDQUOn5SKgTzedwiqB6cm.UIfPewBnz0kUQeK9Eu4mSC'}
-admin_users = {'juhaszszabolcs90@gmail.com', 'juhaszszabojetta@gmail.com'}
+admin_users = {'juhaszszabolcs90', 'juhasz'}
 
 
 #QUESTIONS
@@ -104,6 +104,16 @@ def get_user(cursor, user_name):
     return cursor.fetchone()
 
 
+@Database_connection.connection_handler
+def get_user(cursor, user_name):
+    query = """
+    SELECT id, user_name, email, password, honor, role, registration_time
+    FROM users_data
+    WHERE user_name = %(user_name)s
+    """
+    cursor.execute(query,{'user_name': user_name})
+    return cursor.fetchone()
+
 
 @Database_connection.connection_handler
 def get_question_by_title(cursor, title):
@@ -117,15 +127,15 @@ def get_question_by_title(cursor, title):
 
 
 @Database_connection.connection_handler
-def add_question(cursor, title, message, image):
+def add_question(cursor, user_id, title, message, image):
     dt = datetime.now()
     query = """
-            INSERT INTO question(title, submission_time, message, view_number, vote_number, image)
+            INSERT INTO question(user_id, title, submission_time, message, view_number, vote_number, image)
             VALUES
-            (%(title)s, %(dt)s, %(message)s, 0, 0, %(image)s)
+            (%(user_id)s, %(title)s, %(dt)s, %(message)s, 0, 0, %(image)s)
             RETURNING id
             """
-    cursor.execute(query, {'title': title, 'dt': dt, 'message': message, 'image': image})
+    cursor.execute(query, {'title': title, 'dt': dt, 'message': message, 'image': image, 'user_id': user_id})
     return cursor.fetchone()
 
 @Database_connection.connection_handler
