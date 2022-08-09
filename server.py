@@ -168,18 +168,24 @@ def edit_answer(answer_id):
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def add_answer(question_id):
+    username = session.get('username', 'lazlo') # replace with if username in session
+    logged_in_user = data_manager.get_user(username)
+    user_id = logged_in_user['id']
     if request.method == 'POST':
         message = request.form.get('message')
-        data_manager.add_answer(message, question_id)
+        data_manager.add_answer(user_id, message, question_id)
         return redirect(url_for('display_question', question_id=question_id))
     return render_template('add_answer.html', question_id=question_id)
 
 
 @app.route("/answer/<answer_id>/new-comment", methods=["GET", "POST"])
 def add_comment_to_answer(answer_id):
+    username = session.get('username', 'lazlo') # replace with if username in session
+    logged_in_user = data_manager.get_user(username)
+    user_id = logged_in_user['id']
     if request.method == 'POST':
         answer_comment_message = request.form.get('comment')
-        data_manager.add_comment_to_answer(answer_id, answer_comment_message)
+        data_manager.add_comment_to_answer(user_id, answer_id, answer_comment_message)
         data = data_manager.get_answer(answer_id)
         return redirect(url_for('display_question', question_id=data.get('question_id')))
     return render_template('add_comment_to_answer.html', answer_id=answer_id)

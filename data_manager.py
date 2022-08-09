@@ -86,8 +86,10 @@ def get_question(cursor, id):
 @Database_connection.connection_handler
 def list_users(cursor):
     query = """
-    SELECT *
-    FROM users_data
+    SELECT users_data.*,
+       (SELECT COUNT(question.user_id) from question where question.user_id = users_data.id) AS number_of_questions,
+       (SELECT COUNT(answer.user_id) from answer where answer.user_id = users_data.id) AS number_of_answers,
+       (SELECT COUNT(comment.user_id) from comment where comment.user_id = users_data.id) AS number_of_comments FROM users_data
     """
     cursor.execute(query)
     return cursor.fetchall()
@@ -107,7 +109,7 @@ def list_users(cursor):
 @Database_connection.connection_handler
 def get_user(cursor, user_name):
     query = """
-    SELECT id, user_name, email, password, honor, role, registration_time
+    SELECT id, user_name, email, password, honor, role, submission_time
     FROM users_data
     WHERE user_name = %(user_name)s
     """
@@ -240,14 +242,14 @@ def get_answers_to_question(cursor, question_id):
 
 
 @Database_connection.connection_handler
-def add_answer(cursor, message, question_id):
+def add_answer(cursor, user_id, message, question_id):
     query = """
-            INSERT INTO answer(submission_time, vote_number, message, question_id)
+            INSERT INTO answer(submission_time, user_id, vote_number, message, question_id)
              VALUES
-            (%(dt)s, 0, %(message)s, %(question_id)s)
+            (%(dt)s, %(user_id)s, 0, %(message)s, %(question_id)s)
             RETURNING id
             """
-    cursor.execute(query, {'dt': datetime.now(), 'message': message, 'question_id': question_id})
+    cursor.execute(query, {'dt': datetime.now(), 'user_id':user_id, 'message': message, 'question_id': question_id})
     return cursor.fetchone()
 
 
@@ -346,14 +348,14 @@ def display_comment(cursor):
 
 
 @Database_connection.connection_handler
-def add_comment_to_answer(cursor, answer_id, message):
+def add_comment_to_answer(cursor, user_id, answer_id, message):
     query = """
-                INSERT INTO comment(answer_id, message, submission_time, edited_count)
+                INSERT INTO comment(user_id, answer_id, message, submission_time, edited_count)
                  VALUES
-                (%(answer_id)s,%(message)s,%(dt)s,0)
+                (%(user_id)s, %(answer_id)s,%(message)s,%(dt)s,0)
                 RETURNING id    
                 """
-    cursor.execute(query, {'answer_id': answer_id, 'message': message,'dt': datetime.now()})
+    cursor.execute(query, {'user_id': user_id, 'answer_id': answer_id, 'message': message,'dt': datetime.now()})
     return cursor.fetchone()
 
 
