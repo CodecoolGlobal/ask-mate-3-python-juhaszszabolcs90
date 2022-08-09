@@ -244,10 +244,12 @@ def delete_tag(id):
 def register():
     if request.method == "POST":
         username = request.form['username']
-        plain_text_password = request.form['password']
+        email = request.form['email']
+        plain_text_password = request.form['psw']
         hashed_password = data_manager.hash_password(plain_text_password)
-        data_manager.users[username] = hashed_password
-        session['username'] = username
+        # data_manager.users[username] = hashed_password
+        data_manager.add_users(username,email,hashed_password)
+        # session['username'] = username
         return redirect(url_for('index'))
     return render_template('register.html')
 
@@ -279,6 +281,8 @@ def logout():
     # session.pop("user", None)
     flash(f'You have been logged out {username}')
     return redirect(url_for('index'))
+
+
 
 
 if __name__ == "__main__":

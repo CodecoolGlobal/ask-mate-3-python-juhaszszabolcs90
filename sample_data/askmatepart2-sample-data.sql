@@ -24,7 +24,8 @@ CREATE TABLE users_data (
     email     varchar not null,
     password  varchar not null,
     honor     int,
-    role      varchar not null
+    role      varchar not null,
+    registration_time    timestamp without time zone
 );
 
 

@@ -22,7 +22,7 @@ users = {'john@doe.com': '$2b$12$/TYFvXOy9wDQUOn5SKgTzedwiqB6cm.UIfPewBnz0kUQeK9
 admin_users = {'juhaszszabolcs90@gmail.com', 'juhaszszabojetta@gmail.com'}
 
 
-QUESTIONS
+#QUESTIONS
 
 
 @Database_connection.connection_handler
@@ -82,6 +82,17 @@ def get_question(cursor, id):
     cursor.execute(query)
     return cursor.fetchone()
 
+@Database_connection.connection_handler
+def get_users(cursor, user_name):
+    query = """
+    SELECT *
+    FROM users_data
+    WHERE user_name = %(user_name)s
+    """
+    cursor.execute(query,{'user_name': user_name})
+    return cursor.fetchall()
+
+
 
 @Database_connection.connection_handler
 def get_question_by_title(cursor, title):
@@ -104,6 +115,18 @@ def add_question(cursor, title, message, image):
             RETURNING id
             """
     cursor.execute(query, {'title': title, 'dt': dt, 'message': message, 'image': image})
+    return cursor.fetchone()
+
+@Database_connection.connection_handler
+def add_users(cursor, user_name, email, password):
+    dt = datetime.now()
+    query = """
+            INSERT INTO users_data(user_name, email, password, honor, role, registration_time)  
+            VALUES
+            (%(user_name)s,%(email)s,%(password)s, 0, 0, %(dt)s)
+            RETURNING id
+            """
+    cursor.execute(query, {'user_name': user_name, 'email': email, 'password':password, 'dt': dt})
     return cursor.fetchone()
 
 
@@ -453,3 +476,4 @@ def search(cursor, phrase):
     """
     cursor.execute(query, {'phrase': phrase})
     return cursor.fetchall()
+
