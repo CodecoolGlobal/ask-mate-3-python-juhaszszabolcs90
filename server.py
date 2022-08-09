@@ -168,9 +168,12 @@ def edit_answer(answer_id):
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def add_answer(question_id):
+    username = session.get('username', 'lazlo') # replace with if username in session
+    logged_in_user = data_manager.get_user(username)
+    user_id = logged_in_user['id']
     if request.method == 'POST':
         message = request.form.get('message')
-        data_manager.add_answer(message, question_id)
+        data_manager.add_answer(user_id, message, question_id)
         return redirect(url_for('display_question', question_id=question_id))
     return render_template('add_answer.html', question_id=question_id)
 
@@ -267,9 +270,10 @@ def login():
             password = user_data['password']
             if data_manager.verify_password(plain_text_password, password):
                 session['username'] = username
+                return redirect(url_for('index'))
             else:
                 flash(f'Password is incorrect')
-            return redirect(url_for('login'))
+                return redirect(url_for('login'))
         else:
             flash(f'No such as username as: {username} and password combination')
             return redirect(url_for('login'))

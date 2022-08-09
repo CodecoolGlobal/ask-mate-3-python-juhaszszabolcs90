@@ -240,14 +240,14 @@ def get_answers_to_question(cursor, question_id):
 
 
 @Database_connection.connection_handler
-def add_answer(cursor, message, question_id):
+def add_answer(cursor, user_id, message, question_id):
     query = """
-            INSERT INTO answer(submission_time, vote_number, message, question_id)
+            INSERT INTO answer(submission_time, user_id, vote_number, message, question_id)
              VALUES
-            (%(dt)s, 0, %(message)s, %(question_id)s)
+            (%(dt)s, %(user_id)s, 0, %(message)s, %(question_id)s)
             RETURNING id
             """
-    cursor.execute(query, {'dt': datetime.now(), 'message': message, 'question_id': question_id})
+    cursor.execute(query, {'dt': datetime.now(), 'user_id': user_id, 'message': message, 'question_id': question_id})
     return cursor.fetchone()
 
 
