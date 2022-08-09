@@ -4,7 +4,7 @@
 
 -- Dumped from database version 9.5.6
 -- Dumped by pg_dump version 9.5.6
-
+ALTER TABLE IF EXISTS ONLY public.users_data DROP CONSTRAINT IF EXISTS pk_users_data CASCADE;
 ALTER TABLE IF EXISTS ONLY public.question DROP CONSTRAINT IF EXISTS pk_question_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.answer DROP CONSTRAINT IF EXISTS pk_answer_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.answer DROP CONSTRAINT IF EXISTS fk_question_id CASCADE;
@@ -15,6 +15,18 @@ ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS pk_ques
 ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_question_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.tag DROP CONSTRAINT IF EXISTS pk_tag_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_tag_id CASCADE;
+
+CREATE TABLE users_data (
+    id     serial
+        constraint pk_users_data
+            primary key,
+    user_name varchar not null,
+    email     varchar not null,
+    password  varchar not null,
+    honor     int,
+    role      varchar not null
+);
+
 
 DROP TABLE IF EXISTS public.question;
 CREATE TABLE question (
@@ -60,6 +72,11 @@ CREATE TABLE tag (
     name text
 );
 
+create unique index users_data_email_uindex
+    on users_data (email);
+
+create unique index users_data_user_name_uindex
+    on users_data (user_name);
 
 ALTER TABLE ONLY answer
     ADD CONSTRAINT pk_answer_id PRIMARY KEY (id);
@@ -121,3 +138,6 @@ SELECT pg_catalog.setval('tag_id_seq', 3, true);
 INSERT INTO question_tag VALUES (0, 1);
 INSERT INTO question_tag VALUES (1, 3);
 INSERT INTO question_tag VALUES (2, 3);
+
+INSERT INTO users_data VALUES (0,'lazlo', 'lazlo@lazlo.com', '$2b$12$B0RoonchcmcHFe0SG2CHyOJtXi2ubd1FBnzTxIrNHtA7u/JmHk1F6', 0, 'user');
+SELECT pg_catalog.setval('users_data_id_seq', 1, true);

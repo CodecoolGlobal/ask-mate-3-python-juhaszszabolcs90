@@ -22,7 +22,7 @@ users = {'john@doe.com': '$2b$12$/TYFvXOy9wDQUOn5SKgTzedwiqB6cm.UIfPewBnz0kUQeK9
 admin_users = {'juhaszszabolcs90@gmail.com', 'juhaszszabojetta@gmail.com'}
 
 
-# QUESTIONS
+QUESTIONS
 
 
 @Database_connection.connection_handler
