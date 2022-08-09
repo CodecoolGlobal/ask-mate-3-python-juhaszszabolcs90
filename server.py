@@ -257,14 +257,17 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        session.permanent = True
         username = request.form['username']
         plain_text_password = request.form['psw']
-        if username in data_manager.users.keys():
-            if data_manager.verify_password(plain_text_password, data_manager.users[username]):
+        user_data = data_manager.get_user(username)
+        if user_data is not None:
+            password = user_data['password']
+            if data_manager.verify_password(plain_text_password, password):
                 session['username'] = username
-            return redirect(url_for('index'))
-        elif username not in data_manager.users.keys():
+            else:
+                flash(f'Password is incorrect')
+            return redirect(url_for('login'))
+        else:
             flash(f'No such as username as: {username} and password combination')
             return redirect(url_for('login'))
     else:
