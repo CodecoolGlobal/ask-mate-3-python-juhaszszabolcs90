@@ -267,9 +267,10 @@ def login():
             password = user_data['password']
             if data_manager.verify_password(plain_text_password, password):
                 session['username'] = username
+                return redirect(url_for('index'))
             else:
                 flash(f'Password is incorrect')
-            return redirect(url_for('login'))
+                return redirect(url_for('login'))
         else:
             flash(f'No such as username as: {username} and password combination')
             return redirect(url_for('login'))
@@ -291,9 +292,22 @@ def logout():
 
 @app.route('/users')
 def users():
-    # if 'username' in session:
-    username = session.get('username', 'lazlo')
-    return render_template('users.html')
+    if 'username' in session:
+        users_data = data_manager.list_users()
+        print(users_data)
+        return render_template('users.html', users_data=users_data)
+    else:
+        flash(f'you need to be logged in to check users')
+        return redirect(url_for('index'))
+
+@app.route('/user/<user_name>')
+def user(user_name):
+    if 'username' in session:
+        user_data = data_manager.get_user(user_name)
+        return render_template('user_page.html', user_data=user_data)
+    else:
+        flash(f'you need to be logged in to check users')
+        return redirect(url_for('index'))
 
 
 if __name__ == "__main__":

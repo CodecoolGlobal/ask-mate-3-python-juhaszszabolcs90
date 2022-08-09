@@ -3,7 +3,7 @@
 
 {% block content %}
     <div class="container"><br>
-        <h2>Users</h2>
+        <h2> User {{ user_data.user_name }}</h2>
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 {% for msg in messages %}
@@ -24,14 +24,14 @@
             {#        <th colspan="4"> Options</th>#}
         </tr>
 
-        {% for users in users_data %}
+        {% for user in user_data %}
             <tr class="table-info">
-                <td> <a href={{ url_for('user', user_name=users.user_name) }} > {{ users.user_name }} </a> </td>
-                <td> {{ users.registration_time}}</td>
+                <td> {{ user.user_name }} </td>
+                <td> {{ user.registration_time}}</td>
 {#                <td> {{ users. }}<td>#}
 {#                <td> {{ users. }}<td>#}
 {#                <td> {{ users. }}<td>#}
-                <td> {{ users.honor }}</td>
+                <td> {{ user.honor }}</td>
 
             </tr>
         {% endfor %}
