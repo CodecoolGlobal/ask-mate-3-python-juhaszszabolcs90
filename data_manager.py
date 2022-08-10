@@ -1,29 +1,48 @@
-from typing import List, Dict
 from psycopg2 import sql
-from psycopg2.extras import RealDictCursor
 from datetime import datetime
 
 import Database_connection
-import bcrypt
 
 
-def hash_password(plain_text_password):
-    # By using bcrypt, the salt is saved into the hash itself
-    hashed_bytes = bcrypt.hashpw(plain_text_password.encode('utf-8'), bcrypt.gensalt())
-    return hashed_bytes.decode('utf-8')
+# USERS
 
 
+@Database_connection.connection_handler
+def list_users(cursor):
+    query = """
+    SELECT users_data.*,
+       (SELECT COUNT(question.user_id) from question where question.user_id = users_data.id) AS number_of_questions,
+       (SELECT COUNT(answer.user_id) from answer where answer.user_id = users_data.id) AS number_of_answers,
+       (SELECT COUNT(comment.user_id) from comment where comment.user_id = users_data.id) AS number_of_comments FROM users_data
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
 
-def verify_password(plain_text_password, hashed_password):
-    hashed_bytes_password = hashed_password.encode('utf-8')
-    return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
+
+@Database_connection.connection_handler
+def add_users(cursor, user_name, email, password):
+    dt = datetime.now()
+    query = """
+            INSERT INTO users_data(user_name, email, password, honor, role, submission_time)  
+            VALUES
+            (%(user_name)s,%(email)s,%(password)s, 0, 0, %(dt)s)
+            RETURNING id
+            """
+    cursor.execute(query, {'user_name': user_name, 'email': email, 'password':password, 'dt': dt})
+    return cursor.fetchone()
 
 
-users = {'john@doe.com': '$2b$12$/TYFvXOy9wDQUOn5SKgTzedwiqB6cm.UIfPewBnz0kUQeK9Eu4mSC'}
-admin_users = {'juhaszszabolcs90', 'juhasz'}
+@Database_connection.connection_handler
+def get_user(cursor, user_name):
+    query = """
+    SELECT id, user_name, email, password, honor, role, submission_time
+    FROM users_data
+    WHERE user_name = %(user_name)s
+    """
+    cursor.execute(query,{'user_name': user_name})
+    return cursor.fetchone()
 
-
-#QUESTIONS
+# QUESTIONS
 
 
 @Database_connection.connection_handler
@@ -63,16 +82,6 @@ def get_and_sort_questions(cursor, order_by='submission_time', order='DESC'):
     return cursor.fetchall()
 
 
-# @Database_connection.connection_handler
-# def get_columns(cursor):
-#     query = """
-#         SELECT submission_time AS date, view_number AS views, vote_number AS votes, title, message
-#         FROM question;
-#     """
-#     cursor.execute(query)
-#     return cursor.fetchone()
-
-
 @Database_connection.connection_handler
 def get_question(cursor, id):
     query = f"""
@@ -81,39 +90,6 @@ def get_question(cursor, id):
         WHERE id = '{id}'
         """
     cursor.execute(query)
-    return cursor.fetchone()
-
-@Database_connection.connection_handler
-def list_users(cursor):
-    query = """
-    SELECT users_data.*,
-       (SELECT COUNT(question.user_id) from question where question.user_id = users_data.id) AS number_of_questions,
-       (SELECT COUNT(answer.user_id) from answer where answer.user_id = users_data.id) AS number_of_answers,
-       (SELECT COUNT(comment.user_id) from comment where comment.user_id = users_data.id) AS number_of_comments FROM users_data
-    """
-    cursor.execute(query)
-    return cursor.fetchall()
-
-# @Database_connection.connection_handler
-# def get_user(cursor, user_name):
-#     query = """
-#     SELECT user_name, password
-#     FROM users_data
-#     WHERE user_name = %(user_name)s
-#
-#     """
-#     cursor.execute(query,{'user_name': user_name})
-#     return cursor.fetchone()
-
-
-@Database_connection.connection_handler
-def get_user(cursor, user_name):
-    query = """
-    SELECT id, user_name, email, password, honor, role, submission_time
-    FROM users_data
-    WHERE user_name = %(user_name)s
-    """
-    cursor.execute(query,{'user_name': user_name})
     return cursor.fetchone()
 
 
@@ -138,18 +114,6 @@ def add_question(cursor, user_id, title, message, image):
             RETURNING id
             """
     cursor.execute(query, {'title': title, 'dt': dt, 'message': message, 'image': image, 'user_id': user_id})
-    return cursor.fetchone()
-
-@Database_connection.connection_handler
-def add_users(cursor, user_name, email, password):
-    dt = datetime.now()
-    query = """
-            INSERT INTO users_data(user_name, email, password, honor, role, submission_time)  
-            VALUES
-            (%(user_name)s,%(email)s,%(password)s, 0, 0, %(dt)s)
-            RETURNING id
-            """
-    cursor.execute(query, {'user_name': user_name, 'email': email, 'password':password, 'dt': dt})
     return cursor.fetchone()
 
 
