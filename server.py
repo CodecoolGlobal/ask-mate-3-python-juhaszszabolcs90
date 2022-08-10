@@ -16,7 +16,7 @@ UPLOAD_FOLDER = 'static/images'
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = b'\x1dH@\xb94\xc9\xb0\x8e\xd5\xa8\xfe\\r\x00\x0c\xb4'
-app.permanent_session_lifetime = timedelta(minutes=10)
+app.permanent_session_lifetime = timedelta(minutes=30)
 
 
 def allowed_file(filename):
@@ -297,10 +297,19 @@ def users():
 @app.route('/user/<user_name>')
 def user(user_name):
     if 'username' in session:
+        user_name = user_name
         user_data = data_manager.get_user(user_name)
-        return render_template('user_page.html', user_data=user_data)
-    flash(f'you need to be logged in to check users')
-    return redirect(url_for('index'))
+        user_answer_question_comment_count = data_manager.get_user_answer_question_comment_count(user_name)
+        user_answer_list = data_manager.get_user_answer_list(user_name)
+        user_question_list = data_manager.get_user_question_list(user_name)
+        user_comment_list = data_manager.get_user_comment_list(user_name)
+        return render_template('user_page.html', user_data=user_data,
+                               user_answer_question_comment=user_answer_question_comment_count,
+                               answer_list=user_answer_list, question_list=user_question_list,
+                               comment_list=user_comment_list)
+    else:
+        flash(f'you need to be logged in to check users')
+        return redirect(url_for('index'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
