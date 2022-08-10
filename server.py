@@ -60,6 +60,17 @@ def display_questions():
     return render_template('questions.html', questions=questions, columns=column_names.keys(), order=['ASC', 'DESC'], sort=request.args.get('sort'))
 
 
+@app.route("/question/<question_id>", methods=["GET", 'POST'])
+def display_question(question_id):
+    data_manager.update_question_view_number(question_id)
+    question = data_manager.get_question(question_id)
+    answers = data_manager.get_answers_to_question(question.get('id'))
+    answers_comment = data_manager.get_answers_comment_by_question_id(question.get('id'))
+    comment_messages = data_manager.get_comments_about_question(question_id)
+    tags = data_manager.get_tags(question_id)
+    return render_template("display_question.html", question=question, answers=answers, tags=tags, comments=comment_messages, answers_comment=answers_comment, question_id=question_id)
+
+
 @app.route('/add_question/', methods=['GET', 'POST'])
 def add_question():
     username = session.get('username', 'lazlo') # replace with if username in session
@@ -298,10 +309,14 @@ def users():
 def user(user_name):
     if 'username' in session:
         user_data = data_manager.get_user(user_name)
-        return render_template('user_page.html', user_data=user_data)
-    flash(f'you need to be logged in to check users')
-    return redirect(url_for('index'))
-
+        user_answer_question_comment_count = data_manager.get_user_answer_question_comment_count(user_name)
+        user_answer_list = data_manager.get_user_answer_list(user_name)
+        user_question_list = data_manager.get_user_question_list(user_name)
+        user_comment_list = data_manager.get_user_comment_list(user_name)
+        return render_template('user_page.html', user_data=user_data,user_answer_question_comment=user_answer_question_comment_count,answer_list=user_answer_list, question_list=user_question_list,comment_list=user_comment_list)
+    else:
+        flash(f'you need to be logged in to check users')
+        return redirect(url_for('index'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -333,7 +348,6 @@ def logout():
     # session.pop("user", None)
     flash(f'You have been logged out {username}')
     return redirect(url_for('index'))
-
 
 if __name__ == "__main__":
     app.run(
