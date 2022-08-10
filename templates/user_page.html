@@ -7,7 +7,7 @@
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 {% for msg in messages %}
-                    <p style="color:#FF0000" ;>{{ msg }}</p>
+                    <p style="color:#FF0000">{{ msg }}</p>
                 {% endfor %}
             {% endif %}
         {% endwith %}
@@ -22,22 +22,59 @@
             <th> Number of answers</th>
             <th> Number of comments</th>
             <th> Reputation</th>
-            {#        <th colspan="4"> Options</th>#}
-        </tr>
-{#        {% for user in user_data %}#}
-            <tr class="table-info">
-                <td> {{ user_data.id }}</td>
-                <td> {{ user_data.user_name }} </td>
-                <td> {{ user_data.submission_time }}</td>
-                <td> {{ user_answer_question_comment.number_of_questions }}</td>
-                <td> {{ user_answer_question_comment.number_of_answers }}</td>
-                <td> {{ user_answer_question_comment.number_of_comments }}</td>
-                <td> {{ user_data.honor }}</td>
 
-            </tr>
-{#        {% endfor %}#}
+        </tr>
+        <tr class="table-info">
+            <td> {{ user_data.id }}</td>
+            <td> {{ user_data.user_name }} </td>
+            <td> {{ user_data.submission_time.strftime("%Y-%m-%d %H:%M") }}</td>
+            <td> {{ user_answer_question_comment.number_of_questions }}</td>
+            <td> {{ user_answer_question_comment.number_of_answers }}</td>
+            <td> {{ user_answer_question_comment.number_of_comments }}</td>
+            <td> {{ user_data.honor }}</td>
+
+        </tr>
     </table>
-{#.strftime("%Y-%m-%d %H:%M")#}
+    <table class="table table-hover table-condensed" style="width:100%">
+        <tr class="table-danger">
+            <th> Show list of questions by user</th>
+        </tr>
+        {% if question_list is not none %}
+            {% for question in question_list %}
+                <td>{{ question.title }}</td>
+            {% endfor %}
+        {% else %}
+            NONE
+        {% endif %}
+
+    </table>
+    <table class="table table-hover table-condensed" style="width:100%">
+        <tr class="table-danger">
+            <th> Show list of answers by user</th>
+        </tr>
+        {% if answer_list is not none %}
+            {% for answer in answer_list %}
+                <td>{{ answer.message }}</td>
+            {% endfor %}
+        {% else %}
+            NONE
+        {% endif %}
+
+    </table>
+    <table class="table table-hover table-condensed" style="width:100%">
+        <tr class="table-danger">
+            <th> Show list of comments by user</th>
+        </tr>
+        {% if comment_list is not none %}
+            {% for comment in comment_list %}
+                <td>{{ comment.message }} </td>
+            {% endfor %}
+        {% else %}
+            NONE
+        {% endif %}
+
+    </table>
+
 
 
     <button><a class="rainbow rainbow-1" href="/"><i class="fa fa-home"></i>Take me back</a></button>

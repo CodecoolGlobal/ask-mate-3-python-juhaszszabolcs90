@@ -95,17 +95,54 @@ def list_users(cursor):
     return cursor.fetchall()
 
 @Database_connection.connection_handler
-def get_user_answer_question_comment(cursor, user_name):
+def get_user_answer_list(cursor, user_name):
+    query = """
+    SELECT answer.message
+    FROM answer
+        left join users_data ud on ud.id = answer.user_id
+    WHERE user_name = %(user_name)s
+    GROUP BY answer.message
+    """
+    cursor.execute(query,{'user_name': user_name})
+    return cursor.fetchall()
+
+@Database_connection.connection_handler
+def get_user_question_list(cursor, user_name):
+    query = """
+    SELECT question.title
+    FROM question
+        left join users_data ud on ud.id = question.user_id
+    WHERE user_name = %(user_name)s
+    GROUP BY question.title
+    """
+    cursor.execute(query,{'user_name': user_name})
+    return cursor.fetchall()
+
+@Database_connection.connection_handler
+def get_user_comment_list(cursor, user_name):
+    query = """
+    SELECT comment.message
+    FROM comment
+        left join users_data ud on ud.id = comment.user_id
+    WHERE user_name = %(user_name)s
+    GROUP BY comment.message
+    """
+    cursor.execute(query,{'user_name': user_name})
+    return cursor.fetchall()
+
+
+@Database_connection.connection_handler
+def get_user_answer_question_comment_count(cursor, user_name):
     query = """
     SELECT users_data.*,
        (SELECT COUNT(question.user_id) from question where question.user_id = users_data.id) AS number_of_questions,
        (SELECT COUNT(answer.user_id) from answer where answer.user_id = users_data.id) AS number_of_answers,
        (SELECT COUNT(comment.user_id) from comment where comment.user_id = users_data.id) AS number_of_comments FROM users_data
-     
+
     WHERE user_name = %(user_name)s
 
     """
-    cursor.execute(query,{'user_name': user_name})
+    cursor.execute(query, {'user_name': user_name})
     return cursor.fetchone()
 
 

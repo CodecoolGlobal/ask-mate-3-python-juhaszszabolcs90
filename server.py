@@ -309,9 +309,11 @@ def users():
 def user(user_name):
     if 'username' in session:
         user_data = data_manager.get_user(user_name)
-        user_answer_question_comment = data_manager.get_user_answer_question_comment(user_name)
-        print(user_data)
-        return render_template('user_page.html', user_data=user_data, user_answer_question_comment=user_answer_question_comment)
+        user_answer_question_comment_count = data_manager.get_user_answer_question_comment_count(user_name)
+        user_answer_list = data_manager.get_user_answer_list(user_name)
+        user_question_list = data_manager.get_user_question_list(user_name)
+        user_comment_list = data_manager.get_user_comment_list(user_name)
+        return render_template('user_page.html', user_data=user_data,user_answer_question_comment=user_answer_question_comment_count,answer_list=user_answer_list, question_list=user_question_list,comment_list=user_comment_list)
     else:
         flash(f'you need to be logged in to check users')
         return redirect(url_for('index'))
