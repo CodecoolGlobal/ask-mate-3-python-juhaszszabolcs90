@@ -15,6 +15,7 @@
 
     <table class="table table-hover table-condensed" style="width:100%">
         <tr class="table-danger">
+            <th> User ID#</th>
             <th> Username</th>
             <th> Registration date</th>
             <th> Number of asked questions</th>
@@ -23,29 +24,21 @@
             <th> Reputation</th>
             {#        <th colspan="4"> Options</th>#}
         </tr>
-
-        {% for user in user_data %}
+{#        {% for user in user_data %}#}
             <tr class="table-info">
-                <td> {{ user.user_name }} </td>
-                <td> {{ user.registration_time}}</td>
-{#                <td> {{ users. }}<td>#}
-{#                <td> {{ users. }}<td>#}
-{#                <td> {{ users. }}<td>#}
-                <td> {{ user.honor }}</td>
+                <td> {{ user_data.id }}</td>
+                <td> {{ user_data.user_name }} </td>
+                <td> {{ user_data.submission_time }}</td>
+                <td> {{ user_answer_question_comment.number_of_questions }}</td>
+                <td> {{ user_answer_question_comment.number_of_answers }}</td>
+                <td> {{ user_answer_question_comment.number_of_comments }}</td>
+                <td> {{ user_data.honor }}</td>
 
             </tr>
-        {% endfor %}
-        {#Username (with a link to the user page if implemented)#}
-        {#Registration date#}
-        {#Number of asked questions (if binding is implemented)#}
-        {#Number of answers (if binding is implemented)#}
-        {#Number of comments (if binding is implemented)#}
-        {#Reputation (if implemented)#}
+{#        {% endfor %}#}
+    </table>
+{#.strftime("%Y-%m-%d %H:%M")#}
 
 
-        <div class="container">
-        </div>
-</table>
-
-    <button> <a class= "rainbow rainbow-1" href="/"><i class="fa fa-home"></i>Take me back</a> </button>
+    <button><a class="rainbow rainbow-1" href="/"><i class="fa fa-home"></i>Take me back</a></button>
 {% endblock %}

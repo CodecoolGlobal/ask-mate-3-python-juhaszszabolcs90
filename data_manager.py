@@ -94,16 +94,19 @@ def list_users(cursor):
     cursor.execute(query)
     return cursor.fetchall()
 
-# @Database_connection.connection_handler
-# def get_user(cursor, user_name):
-#     query = """
-#     SELECT user_name, password
-#     FROM users_data
-#     WHERE user_name = %(user_name)s
-#
-#     """
-#     cursor.execute(query,{'user_name': user_name})
-#     return cursor.fetchone()
+@Database_connection.connection_handler
+def get_user_answer_question_comment(cursor, user_name):
+    query = """
+    SELECT users_data.*,
+       (SELECT COUNT(question.user_id) from question where question.user_id = users_data.id) AS number_of_questions,
+       (SELECT COUNT(answer.user_id) from answer where answer.user_id = users_data.id) AS number_of_answers,
+       (SELECT COUNT(comment.user_id) from comment where comment.user_id = users_data.id) AS number_of_comments FROM users_data
+     
+    WHERE user_name = %(user_name)s
+
+    """
+    cursor.execute(query,{'user_name': user_name})
+    return cursor.fetchone()
 
 
 @Database_connection.connection_handler
