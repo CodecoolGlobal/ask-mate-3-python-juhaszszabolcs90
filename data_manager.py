@@ -9,13 +9,21 @@ import Database_connection
 @Database_connection.connection_handler
 def list_users(cursor):
     query = """
-    SELECT users_data.*,
-       (SELECT COUNT(question.user_id) from question where question.user_id = users_data.id) AS number_of_questions,
-       (SELECT COUNT(answer.user_id) from answer where answer.user_id = users_data.id) AS number_of_answers,
-       (SELECT COUNT(comment.user_id) from comment where comment.user_id = users_data.id) AS number_of_comments FROM users_data
+        SELECT users_data.*,
+            COUNT(DISTINCT q.id) AS number_of_questions,
+            COUNT(DISTINCT a.id) AS number_of_answers,
+            COUNT(DISTINCT c.id) AS number_of_comments
+            FROM users_data 
+        LEFT JOIN question q on  q.user_id =users_data.id
+        LEFT JOIN answer a on a.user_id = users_data.id
+        LEFT JOIN comment c on c.user_id = users_data.id 
+        GROUP BY users_data.id
     """
     cursor.execute(query)
     return cursor.fetchall()
+
+
+print(list_users())
 
 
 @Database_connection.connection_handler

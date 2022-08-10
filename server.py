@@ -288,6 +288,7 @@ def register():
 def users():
     if 'username' in session:
         users_data = data_manager.list_users()
+        print(users_data)
         return render_template('users.html', users_data=users_data)
     flash(f'you need to be logged in to check users')
     return redirect(url_for('index'))
