@@ -197,8 +197,10 @@ def delete_answer(answer_id):
 
 @app.route("/answer/<answer_id>/vote-up", methods=['GET'])
 def vote_answer_up(answer_id):
-    data_manager.vote_answer_up(answer_id)
     data = data_manager.get_answer(answer_id)
+    user_id = data['user_id']
+    data_manager.vote_answer_up(answer_id)
+    print(user_id)
     return redirect(url_for('display_question', question_id=data.get('question_id')))
 
 
@@ -214,9 +216,12 @@ def vote_answer_down(answer_id):
 
 @app.route("/question/<question_id>/new-comment", methods=["GET", "POST"])
 def add_comment(question_id):
+    username = session.get('username', 'lazlo') # replace with if username in session
+    logged_in_user = data_manager.get_user(username)
+    user_id = logged_in_user['id']
     if request.method == 'POST':
         comment_message = request.form.get('message')
-        data_manager.add_comment(question_id, comment_message)
+        data_manager.add_comment(question_id, comment_message, user_id)
         return redirect(url_for('display_question', question_id=question_id))
     return render_template('add_comment.html', question_id=question_id)
 

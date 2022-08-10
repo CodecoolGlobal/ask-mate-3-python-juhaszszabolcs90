@@ -289,15 +289,15 @@ def delete_comment(cursor, comment_id):
 
 
 @Database_connection.connection_handler
-def add_comment(cursor, question_id, message):
+def add_comment(cursor, question_id, message, user_id):
     query = """
-                INSERT INTO comment(question_id, message, submission_time, edited_count)
+                INSERT INTO comment(question_id, user_id, message, submission_time, edited_count)
                  VALUES
-                (%(question_id)s,%(message)s,%(dt)s,0)
+                (%(question_id)s, %(user_id)s, %(message)s,%(dt)s,0)
                 RETURNING id
                 """
     print(question_id)
-    cursor.execute(query, {'question_id': question_id, 'message': message,'dt': datetime.now()})
+    cursor.execute(query, {'question_id': question_id, 'user_id': user_id, 'message': message,'dt': datetime.now()})
 
 
 @Database_connection.connection_handler
