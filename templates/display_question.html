@@ -162,7 +162,7 @@
     {% if 'username' in session %}
         <button> <a class= "rainbow rainbow-1" href="{{ url_for('add_comment', question_id=question.id) }}">Add new comment</a> </button>
     {% endif %}
-        <button> <a class= "rainbow rainbow-1" href="{{ url_for('display_questions') }}"><i class="fa fa-home"></i>Back to list of questions</a> </button><br>
+        <button> <a class= "rainbow rainbow-1" href="{{ url_for('display_questions') }}"><i class="fa fa-home"></i>List of questions</a> </button><br>
 <br></div>
 
 {% endblock %}

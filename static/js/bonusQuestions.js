@@ -62,9 +62,16 @@ function getFilteredItems(items, filterValue) {
     }
 
     function increaseFont() {
+    // let size =18
+    //     for (let i = 0; i < 6; i++) {
+    //         size += 1;
+    //     }
+        document.getElementById("doNotModifyThisId_QuestionsTableBody").style.fontSize = `25px`;
+        // document.getElementById("doNotModifyThisId_QuestionsTableBody").style.fontSize = `${size}px`;
         console.log("increaseFont")
     }
 
     function decreaseFont() {
+    document.getElementById("doNotModifyThisId_QuestionsTableBody").style.fontSize = '10px';
         console.log("decreaseFont")
     }
