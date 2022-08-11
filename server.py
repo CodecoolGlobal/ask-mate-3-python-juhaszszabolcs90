@@ -162,6 +162,13 @@ def delete_tag(id):
     data_manager.delete_tag(id)
     return redirect(url_for('display_question', question_id=question_tag_id.get('question_id')))
 
+
+@app.route('/tags', methods=['GET', 'POST'])
+def list_tags():
+    if 'username' in session:
+        listed_tags = data_manager.list_tags()
+        return render_template('tag_page.html', listed_tags=listed_tags)
+
 # ANSWERS
 
 

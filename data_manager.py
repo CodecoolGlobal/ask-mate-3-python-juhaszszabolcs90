@@ -25,11 +25,10 @@ def list_users(cursor):
 @Database_connection.connection_handler
 def list_tags(cursor):
     query = """
-        SELECT 
-            COUNT() AS number_of_tags
-            FROM users_data 
-        LEFT JOIN 
-        GROUP BY 
+        SELECT tag.name, COUNT(tag_id) AS amount_of_tags
+        FROM tag
+            inner join question_tag qt on tag.id = qt.tag_id
+        GROUP BY tag.name
     """
     cursor.execute(query)
     return cursor.fetchall()
