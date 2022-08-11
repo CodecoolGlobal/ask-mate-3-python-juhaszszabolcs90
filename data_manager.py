@@ -22,6 +22,16 @@ def list_users(cursor):
     cursor.execute(query)
     return cursor.fetchall()
 
+@Database_connection.connection_handler
+def list_tags(cursor):
+    query = """
+        SELECT tag.name, COUNT(tag_id) AS amount_of_tags
+        FROM tag
+            inner join question_tag qt on tag.id = qt.tag_id
+        GROUP BY tag.name
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
 
 @Database_connection.connection_handler
 def get_user_answer_list(cursor, user_name):
@@ -274,7 +284,7 @@ def get_answer(cursor, id):
 @Database_connection.connection_handler
 def get_answers_comment_by_question_id(cursor, id):
     query = """
-        SELECT answer.id AS answer_id,  comment.id, comment.message, comment.submission_time, comment.edited_count, comment.user_id
+        SELECT answer.id AS answer_id,  comment.id, comment.message, comment.submission_time, comment.edited_count
         FROM answer 
         INNER JOIN comment ON answer.id = comment.answer_id 
         WHERE answer.question_id = %(id)s 
