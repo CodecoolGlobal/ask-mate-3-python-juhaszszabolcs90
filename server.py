@@ -220,6 +220,7 @@ def vote_answer_down(answer_id):
 @app.route("/answer/<answer_id>/accept", methods=['GET'])
 def accept_answer(answer_id):
     answer = data_manager.get_answer(answer_id)
+    print(answer)
     acceptions = [accept_state for accept_state in data_manager.get_answers_to_question(answer.get('question_id')) if accept_state.get('accepted')]
     question = data_manager.get_question(answer.get('question_id'))
     question_user = data_manager.get_user_by_id(question.get('user_id'))
@@ -251,23 +252,21 @@ def add_comment(question_id):
 @app.route('/comment/<comment_id>/edit', methods=['GET', 'POST'])
 def edit_comment_question(comment_id):
     comment = data_manager.get_comment(comment_id)
-    answer = data_manager.get_answer(comment.get('answer_id'))
+    question = data_manager.get_question(comment.get('question_id'))
     if request.method == 'POST':
         data_manager.update_edit_count_to_comment(comment_id)
         message = request.form.get('message')
         data_manager.update_comment_question(comment_id, message)
-        return redirect(url_for("display_question", question_id=answer.get('question_id')))
+        return redirect(url_for("display_question", question_id=question.get('id')))
     return render_template("edit_question_comment.html", comment=comment)
 
 
 @app.route("/answer/<answer_id>/new-comment", methods=["GET", "POST"])
 def add_comment_to_answer(answer_id):
-    username = session.get('username', 'lazlo') # replace with if username in session
-    logged_in_user = data_manager.get_user(username)
-    user_id = logged_in_user['id']
+    user = data_manager.get_user(session.get('username'))
     if request.method == 'POST':
         answer_comment_message = request.form.get('comment')
-        data_manager.add_comment_to_answer(user_id, answer_id, answer_comment_message)
+        data_manager.add_comment_to_answer(user.get('id'), answer_id, answer_comment_message)
         data = data_manager.get_answer(answer_id)
         return redirect(url_for('display_question', question_id=data.get('question_id')))
     return render_template('add_comment_to_answer.html', answer_id=answer_id)

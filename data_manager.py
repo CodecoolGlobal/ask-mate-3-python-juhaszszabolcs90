@@ -570,5 +570,25 @@ def search(cursor, phrase):
             answer.message ILIKE '%%' || %(phrase)s || '%%';
     """
     cursor.execute(query, {'phrase': phrase})
-    return cursor.fetchall()
+    return cursor.fetchall()\
 
+
+# HONOR
+
+
+@Database_connection.connection_handler
+def increase_honor_by_accepted_answer(cursor, user_id):
+    query = """
+    UPDATE users_data 
+    SET honor = honor + 15 
+    WHERE id = %(user_id)s;"""
+    cursor.execute(query, {'user_id': user_id})
+
+
+@Database_connection.connection_handler
+def decrease_honor_by_accepted_answer(cursor, user_id):
+    query = """
+    UPDATE users_data 
+    SET honor = honor - 15 
+    WHERE id = %(user_id)s;"""
+    cursor.execute(query, {'user_id': user_id})
