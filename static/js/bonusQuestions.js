@@ -8,21 +8,21 @@ function getSortedItems(items, sortField, sortDirection) {
     // if you have not changed the original html uncomment the code below to have an idea of the
     // effect this function has on the table
     //
-    if (sortDirection === "asc") {
-        const firstItem = items.shift()
-        if (firstItem) {
-            items.push(firstItem)
-        }
-    } else {
-        const lastItem = items.pop()
-        if (lastItem) {
-            items.push(lastItem)
-        }
-    }
 
+    items.sort((a, b) => {
+        let numberFields = ['VoteCount', 'ViewNumber']
+        let valueA = numberFields.includes(sortField) ? parseInt(a[sortField]) : a[sortField]
+        let valueB = numberFields.includes(sortField) ? parseInt(b[sortField]) : b[sortField]
+        if (valueA < valueB ) {
+            return sortDirection === 'asc' ? -1 : 1;
+        }
+        if (valueA  > valueB ) {
+            return sortDirection === 'asc' ? 1 : -1;
+        }
+        return 0;
+    })
     return items
 }
-
 // you receive an array of objects which you must filter by all it's keys to have a value matching "filterValue"
 function getFilteredItems(items, filterValue) {
     console.log(items)
