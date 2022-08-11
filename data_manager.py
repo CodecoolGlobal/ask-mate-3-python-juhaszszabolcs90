@@ -429,39 +429,51 @@ def update_edit_count_to_comment(cursor, id):
 
 
 @Database_connection.connection_handler
-def vote_answer_up(cursor, id):
+def vote_answer_up(cursor, id, user_id):
     query = """
         UPDATE answer
         SET vote_number = vote_number + 1
-        WHERE id = %(id)s;"""
-    cursor.execute(query, {'id': id})
+        WHERE id = %(id)s;
+        UPDATE users_data
+        SET honor = honor + 10
+        WHERE id = %(user_id)s;"""
+    cursor.execute(query, {'id': id, 'user_id': user_id})
 
 
 @Database_connection.connection_handler
-def vote_answer_down(cursor, id):
+def vote_answer_down(cursor, id, user_id):
     query = """
         UPDATE answer
         SET vote_number = vote_number - 1
-        WHERE id = %(id)s AND vote_number > 0;"""
-    cursor.execute(query, {'id': id})
+        WHERE id = %(id)s AND vote_number > 0;
+        UPDATE users_data
+        SET honor = honor - 2 
+        WHERE id = %(user_id)s;"""
+    cursor.execute(query, {'id': id, 'user_id': user_id})
 
 
 @Database_connection.connection_handler
-def vote_question_up(cursor, id):
+def vote_question_up(cursor, id, user_id):
     query = """
         UPDATE question
         SET vote_number = vote_number + 1
-        WHERE id = %(id)s;"""
-    cursor.execute(query, {'id': id})
+        WHERE id = %(id)s;
+        UPDATE users_data
+        SET honor = honor + 5
+        WHERE id = %(user_id)s;"""
+    cursor.execute(query, {'id': id, 'user_id': user_id})
 
 
 @Database_connection.connection_handler
-def vote_question_down(cursor, id):
+def vote_question_down(cursor, id, user_id):
     query = """
         UPDATE question
         SET vote_number = vote_number - 1
-        WHERE id = %(id)s AND vote_number > 0;"""
-    cursor.execute(query, {'id': id})
+        WHERE id = %(id)s AND vote_number > 0;
+        UPDATE users_data
+        SET honor = honor - 2
+        WHERE id = %(user_id)s;"""
+    cursor.execute(query, {'id': id, 'user_id': user_id})
 
 
 # TAGS
@@ -537,3 +549,21 @@ def search(cursor, phrase):
     """
     cursor.execute(query, {'phrase': phrase})
     return cursor.fetchall()
+
+@Database_connection.connection_handler
+def get_user_id_by_answer_id(cursor, answer_id):
+    query = """
+        SELECT user_id FROM answer
+        WHERE id = %(answer_id)s; 
+        """
+    cursor.execute(query, {'answer_id': answer_id})
+    return cursor.fetchone()
+
+@Database_connection.connection_handler
+def get_user_id_by_question_id(cursor, question_id):
+    query = """
+        SELECT user_id FROM question
+        WHERE id = %(question_id)s; 
+        """
+    cursor.execute(query, {'question_id': question_id})
+    return cursor.fetchone()

@@ -130,13 +130,15 @@ def edit_question(question_id):
 
 @app.route("/question/<question_id>/vote-up", methods=['GET'])
 def vote_question_up(question_id):
-    data_manager.vote_question_up(question_id)
+    user_id = data_manager.get_user_id_by_question_id(question_id)
+    data_manager.vote_question_up(question_id, user_id.get('user_id'))
     return redirect("/list")
 
 
 @app.route("/question/<question_id>/vote-down", methods=['GET'])
 def vote_question_down(question_id):
-    data_manager.vote_question_down(question_id)
+    user_id = data_manager.get_user_id_by_question_id(question_id)
+    data_manager.vote_question_down(question_id, user_id.get('user_id'))
     return redirect("/list")
 
 # TAGS
@@ -198,16 +200,16 @@ def delete_answer(answer_id):
 @app.route("/answer/<answer_id>/vote-up", methods=['GET'])
 def vote_answer_up(answer_id):
     data = data_manager.get_answer(answer_id)
-    user_id = data['user_id']
-    data_manager.vote_answer_up(answer_id)
-    print(user_id)
+    user_id = data_manager.get_user_id_by_answer_id(answer_id)
+    data_manager.vote_answer_up(answer_id, user_id.get('user_id'))
     return redirect(url_for('display_question', question_id=data.get('question_id')))
 
 
 @app.route("/answer/<answer_id>/vote-down", methods=['GET'])
 def vote_answer_down(answer_id):
-    data_manager.vote_answer_down(answer_id)
     data = data_manager.get_answer(answer_id)
+    user_id = data_manager.get_user_id_by_answer_id(answer_id)
+    data_manager.vote_answer_down(answer_id, user_id.get('user_id'))
     return redirect(url_for('display_question', question_id=data.get('question_id')))
 
 
