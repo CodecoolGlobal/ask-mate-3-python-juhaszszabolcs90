@@ -52,11 +52,12 @@ def get_user_question_list(cursor, user_name):
 @Database_connection.connection_handler
 def get_user_comment_list(cursor, user_name):
     query = """
-    SELECT comment.message, comment.id, question_id, comment.answer_id
+    SELECT comment.message, comment.id, COALESCE(comment.question_id, a.question_id) AS question_id
     FROM comment
         left join users_data ud on ud.id = comment.user_id
+        left join answer a on comment.answer_id = a.id
     WHERE user_name = %(user_name)s
-    GROUP BY comment.message, comment.id
+    GROUP BY comment.id, a.id
     """
     cursor.execute(query, {'user_name': user_name})
     return cursor.fetchall()
