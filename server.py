@@ -37,7 +37,7 @@ def index():
     questions = data_manager.get_five_latest_questions()
     if 'username' in session:
         username = session['username']
-        flash(f'You are logged in as {username}')
+        flash(f'You are logged in as {username}', category='info')
         return render_template('index.html', questions=questions, username=username)
 
     return render_template('index.html', questions=questions)
@@ -89,6 +89,8 @@ def add_question():
 
 @app.route("/question/<question_id>", methods=["GET", 'POST'])
 def display_question(question_id):
+    # if 'username' in session:
+    #     user = data_manager.get_user(session.get('username'))
     data_manager.update_question_view_number(question_id)
     question_information = server_functions.get_question_information(question_id)
     return render_template(
@@ -98,6 +100,7 @@ def display_question(question_id):
         tags=question_information['tags'],
         comments=question_information['comment_messages'],
         answers_comment=question_information['answers_comment'],
+        user=user,
         question_id=question_id
     )
 
@@ -143,15 +146,19 @@ def vote_question_down(question_id):
 
 # TAGS
 
+
 @app.route('/add_tags/<question_id>', methods=['POST'])
 def add_tags(question_id):
     if request.method == 'POST':
         try:
-            tag_id = data_manager.add_tag(request.form.get('tag'))
-            data_manager.add_question_tag(question_id, tag_id.get('id'))
+            try:
+                tag_id = data_manager.add_tag(request.form.get('tag'))
+                data_manager.add_question_tag(question_id, tag_id.get('id'))
+            except UniqueViolation:
+                tag_id = data_manager.get_tag(request.form.get('tag'))
+                data_manager.add_question_tag(question_id, tag_id.get('id'))
         except UniqueViolation:
-            tag_id = data_manager.get_tag(request.form.get('tag'))
-            data_manager.add_question_tag(question_id, tag_id.get('id'))
+            pass
         tags = data_manager.get_tags(question_id)
         return redirect(url_for('add_question', tags=tags))
 
@@ -167,14 +174,12 @@ def delete_tag(id):
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def add_answer(question_id):
-    username = session.get('username', 'lazlo') # replace with if username in session
-    logged_in_user = data_manager.get_user(username)
-    user_id = logged_in_user['id']
-    if request.method == 'POST':
-        message = request.form.get('message')
-        data_manager.add_answer(user_id, message, question_id)
-        return redirect(url_for('display_question', question_id=question_id))
-    return render_template('add_answer.html', question_id=question_id)
+    if 'username' in session:
+        if request.method == 'POST':
+            message = request.form.get('message')
+            data_manager.add_answer(user_id, message, question_id)
+            return redirect(url_for('display_question', question_id=question_id))
+        return render_template('add_answer.html', question_id=question_id)
 
 
 @app.route('/answer/<answer_id>/edit', methods=['GET', 'POST'])
@@ -232,14 +237,13 @@ def accept_answer(answer_id):
 
 @app.route("/question/<question_id>/new-comment", methods=["GET", "POST"])
 def add_comment(question_id):
-    username = session.get('username', 'lazlo') # replace with if username in session
-    logged_in_user = data_manager.get_user(username)
-    user_id = logged_in_user['id']
-    if request.method == 'POST':
-        comment_message = request.form.get('message')
-        data_manager.add_comment(question_id, comment_message, user_id)
-        return redirect(url_for('display_question', question_id=question_id))
-    return render_template('add_comment.html', question_id=question_id)
+    if 'username' in session:
+        if request.method == 'POST':
+            comment_message = request.form.get('message')
+            data_manager.add_comment(question_id, comment_message, user_id)
+            return redirect(url_for('display_question', question_id=question_id))
+        return render_template('add_comment.html', question_id=question_id)
+    return redirect(url_for('display_question', question_id=question_id))
 
 
 @app.route('/comment/<comment_id>/edit', methods=['GET', 'POST'])

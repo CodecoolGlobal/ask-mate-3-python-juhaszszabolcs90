@@ -16,5 +16,6 @@ def get_question_information(question_id):
         'answers': data_manager.get_answers_to_question(data_manager.get_question(question_id).get('id')),
         'answers_comment': data_manager.get_answers_comment_by_question_id(data_manager.get_question(question_id).get('id')),
         'comment_messages': data_manager.get_comments_about_question(question_id),
-        'tags': data_manager.get_tags(question_id)
+        'tags': data_manager.get_tags(question_id),
+        'users': data_manager.list_users()
     }

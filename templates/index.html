@@ -3,7 +3,7 @@
 
 {% block content %}
 {#    FLASH message#}
-    {% with messages = get_flashed_messages() %}
+    {% with messages = get_flashed_messages(category_filter=['info']) %}
         {% if messages %}
             {% for msg in messages %}
                 <p style="color:#FF0000">{{msg}}</p>
