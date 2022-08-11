@@ -18,19 +18,29 @@
         </div>
 
         <div class="container">
+
                  {% for tag in tags %}
                 <nobr>
+                    {% if 'username' in session %}
                     <p>
                         <a href={{ url_for('delete_tag', id=tag.id) }}> #{{ tag.name }} </a>
                     </p>
+                    {% else %}]
+                    <p>#{{ tag.name }}</p>
+                    {% endif %}
                 </nobr>
                 {% endfor %}
-                {% if tags|length != 0 %}
-                    <p>Click to delete #tag</p>
-                {% endif %}
-                    <p><a href="/question/{{ question.id }}/edit">
-                    <button type="button">Edit</button></a>
-        </p>
+
+
+                        {% if tags|length != 0 %}
+                            <p>Click to delete #tag</p>
+                        {% endif %}
+                    {% if 'username' in session %}
+                        <p><a href="/question/{{ question.id }}/edit">
+                        <button type="button">Edit</button></a>
+                        </p>
+                    {% endif %}
+
     </div>
 <div class="container">
     <h3>Answers</h3>
@@ -49,6 +59,7 @@
                         <td> {{ data.message }} </td>
                         <td> {{ data.vote_number }}<td>
                         <td> {{ data.submission_time.strftime("%d-%m-%Y %H:%M") }}</td>
+                    {% if 'username' in session %}
                         <td><a href="/answer/{{ data.id }}/vote-up">
                                 <button type="button">↑</button></a>
                             <a href="/answer/{{ data.id }}/vote-down">
@@ -66,17 +77,20 @@
                             <td><a href="/answer/{{ data.id }}/accept"><button type="button">☑</button></a></td>
                         {% endif %}
                         <td> <button> <a href="{{ url_for('add_comment_to_answer', answer_id=data.id) }}">Add new comment</a> </button></td>
+                    {% endif %}
                     </tr>
                         {% for commentdata in answers_comment %}
                             {% if commentdata.answer_id == data.id %}
                                 <tr class="table-secondary">
                                     <td>{{ commentdata.message }}</td>
                                     <td colspan="5">
-                                    <td><a href="/comment/{{ commentdata.id }}/edit"><button type="button">Edit comment</button></a></td>
-                                    <td><form action="/comments/{{ commentdata.id }}/delete" method='POST'>
-                                    <input type="hidden" value="{{ question_id }}" name="questionID">
-                                    <button type="submit"><i class="fa fa-trash-o"></i></button>
-                                    </form></td>
+                                    {% if 'username' in session %}
+                                        <td><a href="/comment/{{ commentdata.id }}/edit"><button type="button">Edit comment</button></a></td>
+                                        <td><form action="/comments/{{ commentdata.id }}/delete" method='POST'>
+                                        <input type="hidden" value="{{ question_id }}" name="questionID">
+                                        <button type="submit"><i class="fa fa-trash-o"></i></button>
+                                        </form></td>
+                                    {% endif %}
                                 </tr>
 
                             {% endif %}
@@ -84,10 +98,11 @@
 
                 {% endfor %}
         </table>
-
+    {% if 'username' in session %}
     `   <a href="/question/{{ question.id }}/new-answer">
             <button type="button">Post answer</button>
         </a>
+    {% endif %}
 </div>
 <br>
 
@@ -106,13 +121,15 @@
                 <td>{{ comment.message }}</td>
                 <td>{{ comment.submission_time.strftime("%d-%m-%Y %H:%M") }}</td>
                 <td>{{ comment.edited_count }}</td>
-                <td><a href="/comment/{{ comment.id }}/edit"><button type="button">Edit</button></a></td>
-                <td>
-                <form action="/comments/{{ comment['id'] }}/delete" method='POST'>
-                    <input type="hidden" value="{{ question_id }}" name="questionID">
-                    <button type="submit"><i class="fa fa-trash-o"></i></button>
-                </form>
-                </td>
+                {% if 'username' in session and session.username%}
+                    <td><a href="/comment/{{ comment.id }}/edit"><button type="button">Edit</button></a></td>
+                    <td>
+                    <form action="/comments/{{ comment['id'] }}/delete" method='POST'>
+                        <input type="hidden" value="{{ question_id }}" name="questionID">
+                        <button type="submit"><i class="fa fa-trash-o"></i></button>
+                    </form>
+                    </td>
+                {% endif %}
 
             <tr>
         {% endfor %}
@@ -121,7 +138,9 @@
 </div><br>
 
 <div class="container">
+    {% if 'username' in session %}
         <button> <a class= "rainbow rainbow-1" href="{{ url_for('add_comment', question_id=question.id) }}">Add new comment</a> </button>
+    {% endif %}
         <button> <a class= "rainbow rainbow-1" href="{{ url_for('display_questions') }}"><i class="fa fa-home"></i>Back to list of questions</a> </button><br>
 <br></div>
 
