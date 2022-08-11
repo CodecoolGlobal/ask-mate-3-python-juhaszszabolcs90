@@ -7,7 +7,7 @@
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 {% for msg in messages %}
-                    <p style="color:#FF0000">{{ msg }}</p>
+                    <p style="color:#FF0000" ;>{{ msg }}</p>
                 {% endfor %}
             {% endif %}
         {% endwith %}
@@ -15,17 +15,16 @@
 
     <table class="table table-hover table-condensed" style="width:100%">
         <tr class="table-danger">
-            <th> User ID#</th>
             <th> Username</th>
             <th> Registration date</th>
             <th> Number of asked questions</th>
             <th> Number of answers</th>
             <th> Number of comments</th>
             <th> Reputation</th>
-
+            {#        <th colspan="4"> Options</th>#}
         </tr>
+
         <tr class="table-info">
-            <td> {{ user_data.id }}</td>
             <td> {{ user_data.user_name }} </td>
             <td> {{ user_data.submission_time.strftime("%Y-%m-%d %H:%M") }}</td>
             <td> {{ user_answer_question_comment.number_of_questions }}</td>
@@ -39,43 +38,46 @@
         <tr class="table-danger">
             <th> Show list of questions by user</th>
         </tr>
-        {% if question_list is not none %}
+{#                    {% if question_list is not none %}#}
             {% for question in question_list %}
+                <tr>
                 <td>{{ question.title }}</td>
+                </tr>
             {% endfor %}
-        {% else %}
-            NONE
-        {% endif %}
-
+{#        {% else %}#}
+{#            NONE#}
+{#        {% endif %}#}
     </table>
+
     <table class="table table-hover table-condensed" style="width:100%">
         <tr class="table-danger">
             <th> Show list of answers by user</th>
         </tr>
-        {% if answer_list is not none %}
+{#        {% if answer_list is not none %}#}
             {% for answer in answer_list %}
+                <tr>
                 <td>{{ answer.message }}</td>
+                </tr>
             {% endfor %}
-        {% else %}
-            NONE
-        {% endif %}
-
+{#        {% else %}#}
+{#            NONE#}
+{#        {% endif %}#}
     </table>
+
     <table class="table table-hover table-condensed" style="width:100%">
         <tr class="table-danger">
             <th> Show list of comments by user</th>
         </tr>
-        {% if comment_list is not none %}
+{#        {% if comment_list is not none %}#}
             {% for comment in comment_list %}
+                <tr></tr>
                 <td>{{ comment.message }} </td>
+                </tr>
             {% endfor %}
-        {% else %}
-            NONE
-        {% endif %}
-
+{#        {% else %}#}
+{#            NONE#}
+{#        {% endif %}#}
     </table>
 
-
-
-    <button><a class="rainbow rainbow-1" href="/"><i class="fa fa-home"></i>Take me back</a></button>
+    <button> <a class= "rainbow rainbow-1" href="/"><i class="fa fa-home"></i>Take me back</a> </button>
 {% endblock %}
