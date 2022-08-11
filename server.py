@@ -211,6 +211,20 @@ def vote_answer_down(answer_id):
     return redirect(url_for('display_question', question_id=data.get('question_id')))
 
 
+@app.route("/answer/<answer_id>/accept", methods=['GET'])
+def accept_answer(answer_id):
+    answer = data_manager.get_answer(answer_id)
+    acceptions = [accept_state for accept_state in data_manager.get_answers_to_question(answer.get('question_id')) if accept_state.get('accepted')]
+    question = data_manager.get_question(answer.get('question_id'))
+    question_user = data_manager.get_user_by_id(question.get('user_id'))
+    if session.get('username') == question_user.get('user_name'):
+        if answer.get('accepted') is False and len(acceptions) == 0:
+            data_manager.accept_answer(answer_id, 'True')
+        elif answer.get('accepted') is True:
+            data_manager.accept_answer(answer_id, 'False')
+    return redirect(url_for('display_question', question_id=answer.get('question_id')))
+
+
 # COMMENTS
 
 

@@ -98,6 +98,16 @@ def get_user(cursor, user_name):
     cursor.execute(query,{'user_name': user_name})
     return cursor.fetchone()
 
+
+@Database_connection.connection_handler
+def get_user_by_id(cursor, id):
+    query = """
+    SELECT id, user_name
+    FROM users_data
+    WHERE id = %(id)s"""
+    cursor.execute(query, {'id': id})
+    return cursor.fetchone()
+
 # QUESTIONS
 
 
@@ -239,7 +249,6 @@ def get_answer(cursor, id):
     return cursor.fetchone()
 
 
-
 @Database_connection.connection_handler
 def get_answers_comment_by_question_id(cursor, id):
     query = """
@@ -289,6 +298,15 @@ def edit_answer(cursor, id, message):
         WHERE id = %(id)s;
     """
     cursor.execute(query, {'id': id, 'message': message})
+
+
+@Database_connection.connection_handler
+def accept_answer(cursor, id, acception_state):
+    query = """
+    UPDATE answer
+    SET accepted = %(acception_state)s
+    WHERE id = %(id)s;"""
+    cursor.execute(query, {'id': id, 'acception_state': acception_state})
 
 # COMMENTS
 
