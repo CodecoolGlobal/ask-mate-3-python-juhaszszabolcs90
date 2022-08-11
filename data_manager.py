@@ -22,6 +22,17 @@ def list_users(cursor):
     cursor.execute(query)
     return cursor.fetchall()
 
+@Database_connection.connection_handler
+def list_tags(cursor):
+    query = """
+        SELECT 
+            COUNT() AS number_of_tags
+            FROM users_data 
+        LEFT JOIN 
+        GROUP BY 
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
 
 @Database_connection.connection_handler
 def get_user_answer_list(cursor, user_name):
@@ -568,3 +579,4 @@ def get_user_id_by_question_id(cursor, question_id):
         """
     cursor.execute(query, {'question_id': question_id})
     return cursor.fetchone()
+
