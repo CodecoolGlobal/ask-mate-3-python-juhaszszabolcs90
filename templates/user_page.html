@@ -38,46 +38,49 @@
         <tr class="table-danger">
             <th> Show list of questions by user</th>
         </tr>
-{#                    {% if question_list is not none %}#}
-            {% for question in question_list %}
-                <tr>
-                <td>{{ question.title }}</td>
-                </tr>
-            {% endfor %}
-{#        {% else %}#}
-{#            NONE#}
-{#        {% endif %}#}
+        {#                    {% if question_list is not none %}#}
+        {% for question in question_list %}
+            <tr>
+                <td><a href={{ url_for('display_question', question_id=question.id) }}> {{ question.title }} </a></td>
+            </tr>
+        {% endfor %}
+        {#        {% else %}#}
+        {#            NONE#}
+        {#        {% endif %}#}
     </table>
 
     <table class="table table-hover table-condensed" style="width:100%">
         <tr class="table-danger">
             <th> Show list of answers by user</th>
         </tr>
-{#        {% if answer_list is not none %}#}
-            {% for answer in answer_list %}
-                <tr>
-                <td>{{ answer.message }}</td>
-                </tr>
-            {% endfor %}
-{#        {% else %}#}
-{#            NONE#}
-{#        {% endif %}#}
+        {#        {% if answer_list is not none %}#}
+        {% for answer in answer_list %}
+            <tr>
+                <td><a href={{ url_for('display_question', question_id=answer.question_id) }}> {{ answer.message }} </a>
+                </td>
+            </tr>
+        {% endfor %}
+        {#        {% else %}#}
+        {#            NONE#}
+        {#        {% endif %}#}
     </table>
 
     <table class="table table-hover table-condensed" style="width:100%">
         <tr class="table-danger">
             <th> Show list of comments by user</th>
         </tr>
-{#        {% if comment_list is not none %}#}
-            {% for comment in comment_list %}
-                <tr></tr>
-                <td>{{ comment.message }} </td>
-                </tr>
-            {% endfor %}
-{#        {% else %}#}
-{#            NONE#}
-{#        {% endif %}#}
+        {#        {% if comment_list is not none %}#}
+        {% for comment in comment_list %}
+            <tr>
+                <td>
+                    <a href={{ url_for('display_question',question_id=comment.question_id) }}> {{ comment.message }} </a>
+                </td>
+            </tr>
+        {% endfor %}
+        {#        {% else %}#}
+        {#            NONE#}
+        {#        {% endif %}#}
     </table>
 
-    <button> <a class= "rainbow rainbow-1" href="/"><i class="fa fa-home"></i>Take me back</a> </button>
+    <button><a class="rainbow rainbow-1" href="/"><i class="fa fa-home"></i>Take me back</a></button>
 {% endblock %}
