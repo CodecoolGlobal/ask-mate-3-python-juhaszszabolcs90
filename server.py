@@ -222,8 +222,10 @@ def accept_answer(answer_id):
     if session.get('username') == question_user.get('user_name'):
         if answer.get('accepted') is False and len(acceptions) == 0:
             data_manager.accept_answer(answer_id, 'True')
+            data_manager.increase_honor_by_accepted_answer(answer.get('user_id'))
         elif answer.get('accepted') is True:
             data_manager.accept_answer(answer_id, 'False')
+            data_manager.decrease_honor_by_accepted_answer(answer.get('user_id'))
     return redirect(url_for('display_question', question_id=answer.get('question_id')))
 
 

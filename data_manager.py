@@ -567,3 +567,22 @@ def get_user_id_by_question_id(cursor, question_id):
         """
     cursor.execute(query, {'question_id': question_id})
     return cursor.fetchone()
+
+@Database_connection.connection_handler
+def increase_honor_by_accepted_answer(cursor, user_id):
+    query = """
+        UPDATE users_data
+        SET honor = honor + 15
+        WHERE id = %(user_id)s;
+        """
+    cursor.execute(query, {'user_id': user_id})
+
+
+@Database_connection.connection_handler
+def decrease_honor_by_accepted_answer(cursor, user_id):
+    query = """
+        UPDATE users_data
+        SET honor = honor - 15
+        WHERE id = %(user_id)s;
+        """
+    cursor.execute(query, {'user_id': user_id})
