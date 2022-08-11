@@ -109,6 +109,27 @@ def get_user_by_id(cursor, id):
     cursor.execute(query, {'id': id})
     return cursor.fetchone()
 
+
+@Database_connection.connection_handler
+def get_user_id_by_answer_id(cursor, answer_id):
+    query = """
+        SELECT user_id FROM answer
+        WHERE id = %(answer_id)s; 
+        """
+    cursor.execute(query, {'answer_id': answer_id})
+    return cursor.fetchone()
+
+
+@Database_connection.connection_handler
+def get_user_id_by_question_id(cursor, question_id):
+    query = """
+        SELECT user_id FROM question
+        WHERE id = %(question_id)s; 
+        """
+    cursor.execute(query, {'question_id': question_id})
+    return cursor.fetchone()
+
+
 # QUESTIONS
 
 
@@ -253,7 +274,7 @@ def get_answer(cursor, id):
 @Database_connection.connection_handler
 def get_answers_comment_by_question_id(cursor, id):
     query = """
-        SELECT answer.id AS answer_id,  comment.id, comment.message, comment.submission_time, comment.edited_count
+        SELECT answer.id AS answer_id,  comment.id, comment.message, comment.submission_time, comment.edited_count, comment.user_id
         FROM answer 
         INNER JOIN comment ON answer.id = comment.answer_id 
         WHERE answer.question_id = %(id)s 
@@ -551,20 +572,3 @@ def search(cursor, phrase):
     cursor.execute(query, {'phrase': phrase})
     return cursor.fetchall()
 
-@Database_connection.connection_handler
-def get_user_id_by_answer_id(cursor, answer_id):
-    query = """
-        SELECT user_id FROM answer
-        WHERE id = %(answer_id)s; 
-        """
-    cursor.execute(query, {'answer_id': answer_id})
-    return cursor.fetchone()
-
-@Database_connection.connection_handler
-def get_user_id_by_question_id(cursor, question_id):
-    query = """
-        SELECT user_id FROM question
-        WHERE id = %(question_id)s; 
-        """
-    cursor.execute(query, {'question_id': question_id})
-    return cursor.fetchone()

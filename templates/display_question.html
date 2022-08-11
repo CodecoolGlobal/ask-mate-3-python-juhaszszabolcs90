@@ -21,21 +21,21 @@
 
                  {% for tag in tags %}
                 <nobr>
-                    {% if 'username' in session %}
+                    {% if 'username' in session and user.id == question.user_id %}
                     <p>
                         <a href={{ url_for('delete_tag', id=tag.id) }}> #{{ tag.name }} </a>
                     </p>
-                    {% else %}]
+                    {% else %}
                     <p>#{{ tag.name }}</p>
                     {% endif %}
                 </nobr>
                 {% endfor %}
 
 
-                        {% if tags|length != 0 %}
+                        {% if tags|length != 0  and 'username' in session and user.id == question.user_id %}
                             <p>Click to delete #tag</p>
                         {% endif %}
-                    {% if 'username' in session %}
+                    {% if 'username' in session and user.id == question.user_id %}
                         <p><a href="/question/{{ question.id }}/edit">
                         <button type="button">Edit</button></a>
                         </p>
@@ -65,12 +65,21 @@
                             <a href="/answer/{{ data.id }}/vote-down">
                                 <button type="button">↓</button></a>
                         </td>
-                        <td><form action='{{ url_for( 'delete_answer', answer_id = data.id) }}' method = 'POST'>
-                            <button type='submit' class="delete-btn">Delete</button></form>
+                    {% endif %}
+                        <td>
+                            {% if 'username' in session and user.id == data.user_id %}
+                                <form action='{{ url_for( 'delete_answer', answer_id = data.id) }}' method = 'POST'>
+                                <button type='submit' class="delete-btn">Delete</button></form>
+                            {% endif %}
                         </td>
 
-                        <td><a href="/answer/{{ data.id }}/edit">
-                            <button type="button">Edit answer</button></a></td>
+                        <td>
+                            {% if 'username' in session and user.id == data.user_id%}
+                                <a href="/answer/{{ data.id }}/edit">
+                                <button type="button">Edit answer</button></a>
+                            {% endif %}
+                        </td>
+                    {% if 'username' in session %}
                         {% if data.accepted == False %}
                             <td><a href="/answer/{{ data.id }}/accept"><button type="button">☐</button></a></td>
                         {% else %}
@@ -84,16 +93,22 @@
                                 <tr class="table-secondary">
                                     <td>{{ commentdata.message }}</td>
                                     <td colspan="5">
-                                    {% if 'username' in session %}
-                                        <td><a href="/comment/{{ commentdata.id }}/edit"><button type="button">Edit comment</button></a></td>
-                                        <td><form action="/comments/{{ commentdata.id }}/delete" method='POST'>
-                                        <input type="hidden" value="{{ question_id }}" name="questionID">
-                                        <button type="submit"><i class="fa fa-trash-o"></i></button>
-                                        </form></td>
+                                        <td>
+                                            {% if 'username' in session and user.id == commentdata.user_id%}
+                                                <a href="/comment/{{ commentdata.id }}/edit"><button type="button">Edit comment</button></a>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if 'username' in session and user.id == commentdata.user_id%}
+                                                <form action="/comments/{{ commentdata.id }}/delete" method='POST'>
+                                                <input type="hidden" value="{{ question_id }}" name="questionID">
+                                                <button type="submit"><i class="fa fa-trash-o"></i></button>
+                                                </form>
+                                            {% endif %}
+                                        </td>
                                     {% endif %}
                                 </tr>
 
-                            {% endif %}
                         {% endfor %}
 
                 {% endfor %}
@@ -121,15 +136,21 @@
                 <td>{{ comment.message }}</td>
                 <td>{{ comment.submission_time.strftime("%d-%m-%Y %H:%M") }}</td>
                 <td>{{ comment.edited_count }}</td>
-                {% if 'username' in session and session.username%}
-                    <td><a href="/comment/{{ comment.id }}/edit"><button type="button">Edit</button></a></td>
+
                     <td>
-                    <form action="/comments/{{ comment['id'] }}/delete" method='POST'>
-                        <input type="hidden" value="{{ question_id }}" name="questionID">
-                        <button type="submit"><i class="fa fa-trash-o"></i></button>
-                    </form>
+                        {% if 'username' in session and user.id == comment.user_id %}
+                         <a href="/comment/{{ comment.id }}/edit"><button type="button">Edit</button></a>
+                        {% endif %}
                     </td>
-                {% endif %}
+                    <td>
+                        {% if 'username' in session and user.id == comment.user_id %}
+                            <form action="/comments/{{ comment['id'] }}/delete" method='POST'>
+                                <input type="hidden" value="{{ question_id }}" name="questionID">
+                                <button type="submit"><i class="fa fa-trash-o"></i></button>
+                            </form>
+                        {% endif %}
+                    </td>
+
 
             <tr>
         {% endfor %}
