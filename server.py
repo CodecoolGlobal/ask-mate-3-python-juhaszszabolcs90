@@ -62,9 +62,6 @@ def display_questions():
 
 @app.route('/add_question/', methods=['GET', 'POST'])
 def add_question():
-    username = session.get('username', 'lazlo') # replace with if username in session
-    logged_in_user = data_manager.get_user(username)
-    user_id = logged_in_user['id']
     title = ''
     message = ''
     image = None
@@ -89,8 +86,9 @@ def add_question():
 
 @app.route("/question/<question_id>", methods=["GET", 'POST'])
 def display_question(question_id):
-    # if 'username' in session:
-    #     user = data_manager.get_user(session.get('username'))
+    user = None
+    if 'username' in session:
+        user = data_manager.get_user(session.get('username'))
     data_manager.update_question_view_number(question_id)
     question_information = server_functions.get_question_information(question_id)
     return render_template(
@@ -175,9 +173,10 @@ def delete_tag(id):
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def add_answer(question_id):
     if 'username' in session:
+        user = data_manager.get_user(session.get('username'))
         if request.method == 'POST':
             message = request.form.get('message')
-            data_manager.add_answer(user_id, message, question_id)
+            data_manager.add_answer(user.get('id'), message, question_id)
             return redirect(url_for('display_question', question_id=question_id))
         return render_template('add_answer.html', question_id=question_id)
 
@@ -240,9 +239,10 @@ def accept_answer(answer_id):
 @app.route("/question/<question_id>/new-comment", methods=["GET", "POST"])
 def add_comment(question_id):
     if 'username' in session:
+        user = data_manager.get_user(session.get('username'))
         if request.method == 'POST':
             comment_message = request.form.get('message')
-            data_manager.add_comment(question_id, comment_message, user_id)
+            data_manager.add_comment(question_id, comment_message, user.get('id'))
             return redirect(url_for('display_question', question_id=question_id))
         return render_template('add_comment.html', question_id=question_id)
     return redirect(url_for('display_question', question_id=question_id))
