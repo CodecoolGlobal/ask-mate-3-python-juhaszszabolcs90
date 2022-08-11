@@ -2,32 +2,32 @@
 {% block title %}Friendster{% endblock %}
 
 {% block content %}
-{#    FLASH message#}
+    {#    FLASH message#}
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for msg in messages %}
-                <p style="color:#FF0000">{{msg}}</p>
+                <p style="color:#FF0000">{{ msg }}</p>
             {% endfor %}
         {% endif %}
     {% endwith %}
 
-<div class="container">
-    <h1>FRIENDSTER</h1>
-    <h4>New questions</h4>
-    <form action="/search" method="GET">
-                <label for="search">Search:</label>
-                <input id="search" type="search" name="search">
-                <button type="submit">Search</button>
-    </form>
+    <div class="container">
+        <h1>FRIENDSTER</h1>
+        <h4>New questions</h4>
+        <form action="/search" method="GET">
+            <label for="search">Search:</label>
+            <input id="search" type="search" name="search">
+            <button type="submit">Search</button>
+        </form>
     </div><br>
 
-<div class="container">
- <table  class="table table-hover table-condensed" style="width:100%">
+    <div class="container">
+        <table class="table table-hover table-condensed" style="width:100%">
             {% for cell in questions[1].keys() %}
                 {% if cell != 'id' %}
-                <th
-                        style="color:cadetblue">{{ cell|capitalize|replace("_", " ") }}
-                </th>
+                    <th
+                            style="color:cadetblue">{{ cell|capitalize|replace("_", " ") }}
+                    </th>
                 {% endif %}
             {% endfor %}
             {% for data in questions %}
@@ -35,28 +35,30 @@
                     <td> {{ data.date.strftime("%d-%m-%Y %H:%M") }}</td>
                     <td> {{ data.views }}</td>
                     <td> {{ data.votes }}</td>
-                    <td> <a class= "rainbow rainbow-1" href={{ url_for('display_question', question_id=data.id) }} > {{ data.title }} </a>
+                    <td><a class="rainbow rainbow-1"
+                           href={{ url_for('display_question', question_id=data.id) }}> {{ data.title }} </a>
                     </td>
                     <td> {{ data.message }}</td>
                     {% if data.image == 'images/' or data.image == None or data.image == '' %}
                         <td></td>
                     {% else %}
-                        <td><img src="{{ url_for('static', filename=data.image) }}" alt='{{ data.image }}' width="100" ></td>
+                        <td><img src="{{ url_for('static', filename=data.image) }}" alt='{{ data.image }}' width="100">
+                        </td>
                     {% endif %}
                 </tr>
             {% endfor %}
- </table>
-<button> <a class= "rainbow rainbow-1" href="/list">To all questions</a> </button>
-</div>
+        </table>
+        <button><a class="rainbow rainbow-1" href="/list">To all questions</a></button>
+    </div>
 
     <div class="container">
-    {% if username %}
-        <a href = '/logout'>Log out</a>&nbsp;&nbsp;&nbsp;
-        <a href = '/users'>Show all users</a>
-    {% else %}
-        <a href = '/login'>Log in</a>&nbsp;&nbsp;&nbsp;
-        <a href = '/register'>REGISTER</a>
+        {% if username %}
+            <a href='/logout'>Log out</a>&nbsp;&nbsp;&nbsp;
+            <a href='/users'>Show all users</a>
+        {% else %}
+            <a href='/login'>Log in</a>&nbsp;&nbsp;&nbsp;
+            <a href='/register'>REGISTER</a>
 
-    {% endif %}
-</div>
+        {% endif %}
+    </div>
 {% endblock %}
