@@ -1,5 +1,5 @@
 import data_manager
-from flask import request
+from flask import request, session
 
 
 def get_ordered_questions(column_names):
@@ -17,5 +17,5 @@ def get_question_information(question_id):
         'answers_comment': data_manager.get_answers_comment_by_question_id(data_manager.get_question(question_id).get('id')),
         'comment_messages': data_manager.get_comments_about_question(question_id),
         'tags': data_manager.get_tags(question_id),
-        'users': data_manager.list_users()
+        'user': data_manager.get_user(session.get('username', None))
     }

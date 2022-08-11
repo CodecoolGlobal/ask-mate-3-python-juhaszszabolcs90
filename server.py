@@ -65,8 +65,9 @@ def add_question():
     title = ''
     message = ''
     image = None
+    user = data_manager.get_user(session.get('username'))
     if data_manager.get_question_by_title(title) is None:
-        new_question = data_manager.add_question(user_id, title, message, image)
+        new_question = data_manager.add_question(user.get('id'), title, message, image)
     else:
         new_question = data_manager.get_question_by_title(title)
     tags = data_manager.get_tags(new_question.get('id'))
@@ -86,9 +87,6 @@ def add_question():
 
 @app.route("/question/<question_id>", methods=["GET", 'POST'])
 def display_question(question_id):
-    user = None
-    if 'username' in session:
-        user = data_manager.get_user(session.get('username'))
     data_manager.update_question_view_number(question_id)
     question_information = server_functions.get_question_information(question_id)
     return render_template(
@@ -98,7 +96,7 @@ def display_question(question_id):
         tags=question_information['tags'],
         comments=question_information['comment_messages'],
         answers_comment=question_information['answers_comment'],
-        user=user,
+        user=question_information['user'],
         question_id=question_id
     )
 
@@ -179,13 +177,12 @@ def list_tags():
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def add_answer(question_id):
-    if 'username' in session:
-        user = data_manager.get_user(session.get('username'))
-        if request.method == 'POST':
-            message = request.form.get('message')
-            data_manager.add_answer(user.get('id'), message, question_id)
-            return redirect(url_for('display_question', question_id=question_id))
-        return render_template('add_answer.html', question_id=question_id)
+    user = data_manager.get_user(session.get('username', None))
+    if request.method == 'POST':
+        message = request.form.get('message')
+        data_manager.add_answer(user.get('id'), message, question_id)
+        return redirect(url_for('display_question', question_id=question_id))
+    return render_template('add_answer.html', question_id=question_id)
 
 
 @app.route('/answer/<answer_id>/edit', methods=['GET', 'POST'])
@@ -379,3 +376,35 @@ if __name__ == "__main__":
         debug=True,
         port=5000
     )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
