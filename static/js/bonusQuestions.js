@@ -13,40 +13,57 @@ function getSortedItems(items, sortField, sortDirection) {
         let numberFields = ['VoteCount', 'ViewNumber']
         let valueA = numberFields.includes(sortField) ? parseInt(a[sortField]) : a[sortField]
         let valueB = numberFields.includes(sortField) ? parseInt(b[sortField]) : b[sortField]
-        if (valueA < valueB ) {
+        if (valueA < valueB) {
             return sortDirection === 'asc' ? -1 : 1;
         }
-        if (valueA  > valueB ) {
+        if (valueA > valueB) {
             return sortDirection === 'asc' ? 1 : -1;
         }
         return 0;
     })
     return items
 }
+
 // you receive an array of objects which you must filter by all it's keys to have a value matching "filterValue"
 function getFilteredItems(items, filterValue) {
     console.log(items)
     console.log(filterValue)
+    console.log(filterValue.slice(12))
 
-    // === SAMPLE CODE ===
-    // if you have not changed the original html uncomment the code below to have an idea of the
-    // effect this function has on the table
-    //
-    for (let i=0; i<filterValue.length; i++) {
-        items.pop()
+    let solution = []
+    for (let item of items) {
+        if (filterValue[0] == '!') {
+            if (filterValue.includes('Description:')) {
+                if (!(item.Description.includes(filterValue.slice(13)))) {
+                    solution.push(item)
+                }
+            } else {
+                if (!(item.Title.includes(filterValue.slice(1)))) {
+                    solution.push(item)
+                }
+            }
+        } else {
+            if (filterValue.includes('Description:')) {
+                if (item.Description.includes(filterValue.slice(12))) {
+                    solution.push(item)
+                }
+            } else {
+                if (item.Title.includes(filterValue)) {
+                    solution.push(item)
+                }
+            }
+        }
+    }
+    return solution
+}
+    function toggleTheme() {
+        console.log("toggle theme")
     }
 
-    return items
-}
+    function increaseFont() {
+        console.log("increaseFont")
+    }
 
-function toggleTheme() {
-    console.log("toggle theme")
-}
-
-function increaseFont() {
-    console.log("increaseFont")
-}
-
-function decreaseFont() {
-    console.log("decreaseFont")
-}
+    function decreaseFont() {
+        console.log("decreaseFont")
+    }
