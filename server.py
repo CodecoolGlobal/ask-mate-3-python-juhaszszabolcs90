@@ -319,6 +319,8 @@ def user(user_name):
         user_answer_list = data_manager.get_user_answer_list(user_name)
         user_question_list = data_manager.get_user_question_list(user_name)
         user_comment_list = data_manager.get_user_comment_list(user_name)
+        print(user_comment_list)
+        # user_comment_list['']
         return render_template('user_page.html', user_data=user_data,
                                user_answer_question_comment=user_answer_question_comment_count,
                                answer_list=user_answer_list, question_list=user_question_list,
