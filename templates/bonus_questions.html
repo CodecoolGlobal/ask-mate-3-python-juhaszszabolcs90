@@ -1,9 +1,19 @@
+{#{% extends 'layout.html' %}#}
+{#{% block title %}Users{% endblock %}#}
 <html>
     <head>
         <script type="text/javascript" src="{{ url_for('static', filename='js/bonusQuestions.js') }}" defer></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/doNotModifyThisFile.js') }}" defer></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     </head>
-    <body>
+
+
+{#{% block content %}#}
+<body>
+    <style>
+        {#body{background: #FF0000}#}
+        .dark-mode{background: grey}
+    </style>
         <h1>AskMate</h1>
         <h2>All Questions:</h2>
         <button id="theme-button">Change Theme to Dark</button>
@@ -14,6 +24,7 @@
                 style="width: 500px" id="doNotModifyThisId_QuestionsFilter"
                 type="text"
                 placeholder="filter questions by keywords">
+    <div class="container">
         <table>
             <thead id="doNotModifyThisId_QuestionsTableHeader">
                 <tr>
@@ -34,5 +45,8 @@
                 {% endfor %}
             </tbody>
         </table>
-    </body>
+    </div>
+</body>
+<button> <a class= "rainbow rainbow-1" href="/"><i class="fa fa-home"></i>Take me back</a> </button>
 </html>
+{#{% endblock %}#}

@@ -57,7 +57,8 @@ function getFilteredItems(items, filterValue) {
     return solution
 }
     function toggleTheme() {
-        console.log("toggle theme")
+        // console.log("toggle theme")
+        document.body.classList.toggle("dark-mode")
     }
 
     function increaseFont() {

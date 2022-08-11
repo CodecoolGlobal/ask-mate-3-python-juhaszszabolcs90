@@ -46,10 +46,13 @@
                 </tr>
             {% endfor %}
  </table>
-<button> <a class= "rainbow rainbow-1" href="/list">To all questions</a> </button>
 </div>
 
     <div class="container">
+    <button> <a class= "rainbow rainbow-1" href="{{ url_for('list_tags') }}">list of tags</a> </button>
+    <button> <a class= "rainbow rainbow-1" href="/list">To all questions</a> </button>
+    <button> <a class= "rainbow rainbow-1" href="{{ url_for('main') }}">Bonus questions</a> </button><br>
+
     {% if username %}
         <a href = '/logout'>Log out</a>&nbsp;&nbsp;&nbsp;
         <a href = '/users'>Show all users</a>
