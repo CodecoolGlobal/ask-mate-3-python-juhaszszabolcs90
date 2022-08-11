@@ -60,7 +60,11 @@
 
                         <td><a href="/answer/{{ data.id }}/edit">
                             <button type="button">Edit answer</button></a></td>
-
+                        {% if data.accepted == False %}
+                            <td><a href="/answer/{{ data.id }}/accept"><button type="button">☐</button></a></td>
+                        {% else %}
+                            <td><a href="/answer/{{ data.id }}/accept"><button type="button">☑</button></a></td>
+                        {% endif %}
                         <td> <button> <a href="{{ url_for('add_comment_to_answer', answer_id=data.id) }}">Add new comment</a> </button></td>
                     </tr>
                         {% for commentdata in answers_comment %}

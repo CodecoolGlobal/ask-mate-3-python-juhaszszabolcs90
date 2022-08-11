@@ -98,6 +98,16 @@ def get_user(cursor, user_name):
     cursor.execute(query,{'user_name': user_name})
     return cursor.fetchone()
 
+
+@Database_connection.connection_handler
+def get_user_by_id(cursor, id):
+    query = """
+    SELECT id, user_name
+    FROM users_data
+    WHERE id = %(id)s"""
+    cursor.execute(query, {'id': id})
+    return cursor.fetchone()
+
 # QUESTIONS
 
 
@@ -239,7 +249,6 @@ def get_answer(cursor, id):
     return cursor.fetchone()
 
 
-
 @Database_connection.connection_handler
 def get_answers_comment_by_question_id(cursor, id):
     query = """
@@ -289,6 +298,15 @@ def edit_answer(cursor, id, message):
         WHERE id = %(id)s;
     """
     cursor.execute(query, {'id': id, 'message': message})
+
+
+@Database_connection.connection_handler
+def accept_answer(cursor, id, acception_state):
+    query = """
+    UPDATE answer
+    SET accepted = %(acception_state)s
+    WHERE id = %(id)s;"""
+    cursor.execute(query, {'id': id, 'acception_state': acception_state})
 
 # COMMENTS
 
@@ -411,39 +429,51 @@ def update_edit_count_to_comment(cursor, id):
 
 
 @Database_connection.connection_handler
-def vote_answer_up(cursor, id):
+def vote_answer_up(cursor, id, user_id):
     query = """
         UPDATE answer
         SET vote_number = vote_number + 1
-        WHERE id = %(id)s;"""
-    cursor.execute(query, {'id': id})
+        WHERE id = %(id)s;
+        UPDATE users_data
+        SET honor = honor + 10
+        WHERE id = %(user_id)s;"""
+    cursor.execute(query, {'id': id, 'user_id': user_id})
 
 
 @Database_connection.connection_handler
-def vote_answer_down(cursor, id):
+def vote_answer_down(cursor, id, user_id):
     query = """
         UPDATE answer
         SET vote_number = vote_number - 1
-        WHERE id = %(id)s AND vote_number > 0;"""
-    cursor.execute(query, {'id': id})
+        WHERE id = %(id)s AND vote_number > 0;
+        UPDATE users_data
+        SET honor = honor - 2 
+        WHERE id = %(user_id)s;"""
+    cursor.execute(query, {'id': id, 'user_id': user_id})
 
 
 @Database_connection.connection_handler
-def vote_question_up(cursor, id):
+def vote_question_up(cursor, id, user_id):
     query = """
         UPDATE question
         SET vote_number = vote_number + 1
-        WHERE id = %(id)s;"""
-    cursor.execute(query, {'id': id})
+        WHERE id = %(id)s;
+        UPDATE users_data
+        SET honor = honor + 5
+        WHERE id = %(user_id)s;"""
+    cursor.execute(query, {'id': id, 'user_id': user_id})
 
 
 @Database_connection.connection_handler
-def vote_question_down(cursor, id):
+def vote_question_down(cursor, id, user_id):
     query = """
         UPDATE question
         SET vote_number = vote_number - 1
-        WHERE id = %(id)s AND vote_number > 0;"""
-    cursor.execute(query, {'id': id})
+        WHERE id = %(id)s AND vote_number > 0;
+        UPDATE users_data
+        SET honor = honor - 2
+        WHERE id = %(user_id)s;"""
+    cursor.execute(query, {'id': id, 'user_id': user_id})
 
 
 # TAGS
@@ -519,3 +549,21 @@ def search(cursor, phrase):
     """
     cursor.execute(query, {'phrase': phrase})
     return cursor.fetchall()
+
+@Database_connection.connection_handler
+def get_user_id_by_answer_id(cursor, answer_id):
+    query = """
+        SELECT user_id FROM answer
+        WHERE id = %(answer_id)s; 
+        """
+    cursor.execute(query, {'answer_id': answer_id})
+    return cursor.fetchone()
+
+@Database_connection.connection_handler
+def get_user_id_by_question_id(cursor, question_id):
+    query = """
+        SELECT user_id FROM question
+        WHERE id = %(question_id)s; 
+        """
+    cursor.execute(query, {'question_id': question_id})
+    return cursor.fetchone()

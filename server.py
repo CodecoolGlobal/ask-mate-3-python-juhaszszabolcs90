@@ -130,13 +130,15 @@ def edit_question(question_id):
 
 @app.route("/question/<question_id>/vote-up", methods=['GET'])
 def vote_question_up(question_id):
-    data_manager.vote_question_up(question_id)
+    user_id = data_manager.get_user_id_by_question_id(question_id)
+    data_manager.vote_question_up(question_id, user_id.get('user_id'))
     return redirect("/list")
 
 
 @app.route("/question/<question_id>/vote-down", methods=['GET'])
 def vote_question_down(question_id):
-    data_manager.vote_question_down(question_id)
+    user_id = data_manager.get_user_id_by_question_id(question_id)
+    data_manager.vote_question_down(question_id, user_id.get('user_id'))
     return redirect("/list")
 
 # TAGS
@@ -198,17 +200,31 @@ def delete_answer(answer_id):
 @app.route("/answer/<answer_id>/vote-up", methods=['GET'])
 def vote_answer_up(answer_id):
     data = data_manager.get_answer(answer_id)
-    user_id = data['user_id']
-    data_manager.vote_answer_up(answer_id)
-    print(user_id)
+    user_id = data_manager.get_user_id_by_answer_id(answer_id)
+    data_manager.vote_answer_up(answer_id, user_id.get('user_id'))
     return redirect(url_for('display_question', question_id=data.get('question_id')))
 
 
 @app.route("/answer/<answer_id>/vote-down", methods=['GET'])
 def vote_answer_down(answer_id):
-    data_manager.vote_answer_down(answer_id)
     data = data_manager.get_answer(answer_id)
+    user_id = data_manager.get_user_id_by_answer_id(answer_id)
+    data_manager.vote_answer_down(answer_id, user_id.get('user_id'))
     return redirect(url_for('display_question', question_id=data.get('question_id')))
+
+
+@app.route("/answer/<answer_id>/accept", methods=['GET'])
+def accept_answer(answer_id):
+    answer = data_manager.get_answer(answer_id)
+    acceptions = [accept_state for accept_state in data_manager.get_answers_to_question(answer.get('question_id')) if accept_state.get('accepted')]
+    question = data_manager.get_question(answer.get('question_id'))
+    question_user = data_manager.get_user_by_id(question.get('user_id'))
+    if session.get('username') == question_user.get('user_name'):
+        if answer.get('accepted') is False and len(acceptions) == 0:
+            data_manager.accept_answer(answer_id, 'True')
+        elif answer.get('accepted') is True:
+            data_manager.accept_answer(answer_id, 'False')
+    return redirect(url_for('display_question', question_id=answer.get('question_id')))
 
 
 # COMMENTS
