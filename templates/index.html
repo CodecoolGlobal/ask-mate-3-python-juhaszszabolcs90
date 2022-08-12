@@ -2,6 +2,7 @@
 {% block title %}Friendster{% endblock %}
 
 {% block content %}
+<div class="container">
 {#    FLASH message#}
     {% with messages = get_flashed_messages(category_filter=['info']) %}
         {% if messages %}
@@ -10,9 +11,21 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
+</div>
 
 <div class="container">
     <h1>FRIENDSTER</h1>
+    <div class="container" align=right>
+        {% if username %}
+        <a href = '/users'>Show all users</a>
+        <a href = '/logout'>Log out</a>&nbsp;&nbsp;&nbsp;
+
+        {% else %}
+        <a href = '/login'>Log in</a>&nbsp;&nbsp;&nbsp;
+        <a href = '/register'>REGISTER</a>
+
+        {% endif %}
+    </div>
     <h4>New questions</h4>
     <form action="/search" method="GET">
                 <label for="search">Search:</label>
@@ -49,17 +62,18 @@
 </div>
 
     <div class="container">
-    <button> <a class= "rainbow rainbow-1" href="{{ url_for('list_tags') }}">list of tags</a> </button>
+    <button> <a class= "rainbow rainbow-1" href="{{ url_for('list_tags') }}">List of tags</a> </button>
     <button> <a class= "rainbow rainbow-1" href="/list"><i class="fa fa-question-circle-o" aria-hidden="true"></i>To all questions</a> </button>
     <button> <a class= "rainbow rainbow-1" href="{{ url_for('main') }}">Bonus questions</a> </button><br>
 
-    {% if username %}
-        <a href = '/logout'>Log out</a>&nbsp;&nbsp;&nbsp;
-        <a href = '/users'>Show all users</a>
-    {% else %}
-        <a href = '/login'>Log in</a>&nbsp;&nbsp;&nbsp;
-        <a href = '/register'>REGISTER</a>
-
-    {% endif %}
+{#    {% if username %}#}
+{#        <a href = '/users'>Show all users</a>#}
+{#        <a href = '/logout'>Log out</a>&nbsp;&nbsp;&nbsp;#}
+{##}
+{#    {% else %}#}
+{#        <a href = '/login'>Log in</a>&nbsp;&nbsp;&nbsp;#}
+{#        <a href = '/register'>REGISTER</a>#}
+{##}
+{#    {% endif %}#}
 </div>
 {% endblock %}

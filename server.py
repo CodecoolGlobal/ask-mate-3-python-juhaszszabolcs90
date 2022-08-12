@@ -26,7 +26,12 @@ def allowed_file(filename):
 
 @app.route("/bonus-questions")
 def main():
-    return render_template('bonus_questions.html', questions=SAMPLE_QUESTIONS)
+    if 'username' in session:
+        username = session['username']
+        flash(f'You are logged in as {username}', category='info')
+        return render_template('bonus_questions.html', questions=SAMPLE_QUESTIONS)
+    flash(f'You need to be logged in to check Bonus questions', category='info')
+    return redirect(url_for('index'))
 
 # INDEX
 
